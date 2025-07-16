@@ -7,7 +7,6 @@ import { Heart, MessageCircle, Share2, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { DUMMY_POSTS } from "@/mock/posts"; // <-- Use shared dummy posts
 import { formatRelativeTime } from "@/lib/utils";
-import { PostSidePanel } from "@/components/PostSidePanel";
 
 type Reply = {
   id: number;
