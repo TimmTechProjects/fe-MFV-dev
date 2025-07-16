@@ -25,7 +25,7 @@ type Post = {
 };
 
 interface PostSidePanelProps {
-  post: Post | any;
+  post: Post | null;
   comments: ModalComment[];
   onLikeComment: (commentId: number) => void;
   onReplyComment?: (commentId: number) => void;
@@ -41,27 +41,27 @@ export const PostSidePanel: React.FC<PostSidePanelProps> = ({
     {/* Modal Header */}
     <div className="flex items-center gap-3 px-6 pt-2 pb-4 border-t border-[#a9a4a4]">
       <Avatar className="w-9 h-9">
-        <AvatarImage src={post.user.avatarUrl} alt={post.user.username} />
+        <AvatarImage src={post?.user.avatarUrl} alt={post?.user.username} />
         <AvatarFallback>
-          {post.user.username?.slice(0, 2).toUpperCase()}
+          {post?.user.username?.slice(0, 2).toUpperCase()}
         </AvatarFallback>
       </Avatar>
       <div>
-        <div className="font-semibold text-white">{post.user.username}</div>
+        <div className="font-semibold text-white">{post?.user.username}</div>
         <div className="text-xs text-gray-400">
-          {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : ""}
+          {post?.createdAt ? new Date(post?.createdAt).toLocaleDateString() : ""}
         </div>
       </div>
     </div>
     {/* Post Caption */}
-    {post.text && (
-      <div className="text-white text-base px-6 pt-4 pb-2">{post.text}</div>
+    {post?.text && (
+      <div className="text-white text-base px-6 pt-4 pb-2">{post?.text}</div>
     )}
     {/* Actions */}
     <div className="flex gap-6 mb-4 px-6 pb-5 border-b border-[#a9a4a4]">
       <button className="flex items-center gap-1 text-gray-400 hover:text-[#81a308] transition cursor-pointer">
         <Heart className="w-5 h-5" />
-        <span>{post.upvotes || 0}</span>
+        <span>{post?.upvotes || 0}</span>
       </button>
       <button className="flex items-center gap-1 text-gray-400 hover:text-[#81a308] transition cursor-pointer">
         <MessageCircle className="w-5 h-5" />
@@ -69,7 +69,7 @@ export const PostSidePanel: React.FC<PostSidePanelProps> = ({
       </button>
       <button className="flex items-center gap-1 text-gray-400 hover:text-[#81a308] transition cursor-pointer">
         <Share2 className="w-5 h-5" />
-        <span>{post.shares || 0}</span>
+        <span>{post?.shares || 0}</span>
       </button>
     </div>
     {/* Comments */}
