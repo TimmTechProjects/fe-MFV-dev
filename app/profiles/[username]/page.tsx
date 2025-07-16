@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -62,12 +61,14 @@ const COVER_PHOTO =
 //   },
 // ];
 
+type UserForPost = {
+  username: string;
+  avatarUrl: string;
+};
+
 type Comment = {
   id: number;
-  user: {
-    username: string;
-    avatarUrl: string;
-  };
+  user: UserForPost;
   text: string;
   createdAt: string;
 };
@@ -78,8 +79,9 @@ type Post = {
   image?: string;
   createdAt: string;
   upvotes?: number;
-  comments?: Comment[]; // <-- Change from number to Comment[]
+  comments?: Comment[];
   shares?: number;
+  user: UserForPost;
 };
 
 type ModalComment = Comment & {
