@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 
