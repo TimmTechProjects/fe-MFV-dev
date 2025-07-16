@@ -102,7 +102,7 @@ const ProfilePage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<number | null>(null);
   const [modalImage, setModalImage] = useState<string | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | any>(null);
   const [modalComments, setModalComments] = useState<ModalComment[]>([]);
 
   useEffect(() => {
