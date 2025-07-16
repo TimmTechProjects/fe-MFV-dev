@@ -25,7 +25,7 @@ type Post = {
 };
 
 interface PostSidePanelProps {
-  post: Post;
+  post: Post | any;
   comments: ModalComment[];
   onLikeComment: (commentId: number) => void;
   onReplyComment?: (commentId: number) => void;
