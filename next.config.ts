@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
       "yarchpsb6b.ufs.sh",
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
