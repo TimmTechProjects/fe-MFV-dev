@@ -7,7 +7,6 @@ import { Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ResultsCard from "./cards/ResultsCard";
-
 import { Plant } from "@/types/plants";
 import { searchEverything } from "../lib/utils";
 import { authUserLinks, navLinks } from "@/constants/navLinks";
@@ -24,36 +23,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 import { UserResult } from "@/types/users";
 
 const Header = () => {
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [plantSuggestions, setPlantSuggestions] = useState<Plant[]>([]);
   const [userSuggestions, setUserSuggestions] = useState<UserResult[]>([]);
-
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { user, logout } = useUser();
-
   const router = useRouter();
   const pathname = usePathname() || "/";
 
-  // Debounce
+  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery.trim().toLowerCase());
     }, 500);
-
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Popover
+  // Fetch suggestions
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (!debouncedQuery) {
@@ -63,11 +58,20 @@ const Header = () => {
         return;
       }
 
-      const { plants, users } = await searchEverything(debouncedQuery);
-      setPlantSuggestions(plants);
-      setUserSuggestions(users);
+      setIsLoading(true);
+      setIsPopoverOpen(true);
 
-      setIsPopoverOpen(plants.length > 0 || users.length > 0);
+      try {
+        const { plants, users } = await searchEverything(debouncedQuery);
+        setPlantSuggestions(plants);
+        setUserSuggestions(users);
+        setIsPopoverOpen(plants.length > 0 || users.length > 0);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        setIsPopoverOpen(false);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchSuggestions();
@@ -86,121 +90,110 @@ const Header = () => {
     plantSuggestions.length > 0 || userSuggestions.length > 0;
 
   return (
-    <div className="bg-[#2b2a2a] flex w-full h-24 px-6 md:px-10 md:pt-2 items-center justify-between ">
-      {/* Logo */}
-      <h1
-        className="text-3xl md:text-4xl text-white font-bold tracking-tight cursor-pointer"
-        onClick={() => (window.location.href = "/")}
-      >
-        <span className="text-[#ecfaec]">My</span>
-        <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
-          Floral
-        </span>
-        <span className="text-[#81a308]">Vault</span>
-      </h1>
+    <header className="bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50">
+      {/* Logo - Responsive sizing */}
+      <Link href="/" className="flex-shrink-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-bold tracking-tight">
+          <span className="text-[#ecfaec]">My</span>
+          <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
+            Floral
+          </span>
+          <span className="text-[#81a308]">Vault</span>
+        </h1>
+      </Link>
 
-      {/* Searchbar */}
-
-      <form
-        onSubmit={handleSearch}
-        className="relative w-3/4 sm:w-1/2 lg:w-1/3 hidden sm:block"
-      >
-        <Input
-          type="text"
-          placeholder="Search plants, users, tags, or albums..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => {
-            if (hasSuggestions && debouncedQuery) {
-              setIsPopoverOpen(true);
-            }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleSearch(e);
-              setIsPopoverOpen(false);
-            }
-          }}
-          onBlur={() => {
-            setTimeout(() => setIsPopoverOpen(false), 100);
-          }}
-          className="pr-10 rounded-2xl bg-white border-0"
-        />
-        <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 cursor-pointer" />
-        {/* Popover-style dropdown */}
-        {isPopoverOpen && (
-          <div
-            onMouseDown={(e) => e.preventDefault()}
-            className="absolute top-full mt-2 z-50 w-full bg-transparent rounded-md shadow-lg p-2 max-h-[800px] overflow-y-hidden"
-          >
-            {plantSuggestions.length > 0 && (
-              <>
-                <p className="bg-[#2b2a2a] text-xs text-gray-400 px-2 pb-1">
-                  Plants
-                </p>
-                {plantSuggestions.map((plant) => (
-                  <div
-                    key={plant.id}
-                    onClick={() => {
-                      router.push(
-                        `/profiles/${plant.user.username}/plants/${plant.slug}`
-                      );
-                      setIsPopoverOpen(false);
-                    }}
-                  >
-                    <ResultsCard plant={plant} compact />
-                  </div>
-                ))}
-              </>
-            )}
-
-            {/* {plantSuggestions.length > 0 && userSuggestions.length > 0 && (
-              <hr className="my-2 bg-[#2b2a2a] border-gray-600" />
-            )}
-
-            {userSuggestions.length > 0 && (
-              <>
-                <p className="bg-[#2b2a2a] text-xs text-gray-400 px-2 pb-1 mt-2">
-                  Users
-                </p>
-                {userSuggestions.map((user) => (
-                  <div key={user.id} onClick={() => setIsPopoverOpen(false)}>
-                    <ResultsCard user={user} compact />
-                  </div>
-                ))}
-              </>
-            )} */}
+      {/* Searchbar - Responsive width and positioning */}
+      <div className="hidden sm:flex flex-1 max-w-xl mx-4 lg:mx-8 relative">
+        <form onSubmit={handleSearch} className="w-full">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search plants, users, tags, or albums..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => hasSuggestions && setIsPopoverOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
+              onBlur={() => setTimeout(() => setIsPopoverOpen(false), 100)}
+              className="w-full pr-10 rounded-2xl bg-white border-0 focus-visible:ring-2 focus-visible:ring-[#81a308]"
+            />
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2"
+            >
+              <Search className="h-5 w-5 text-gray-500" />
+            </button>
           </div>
-        )}
-      </form>
 
-      {/* Desktop Nav */}
-      <div className="hidden lg:flex items-center gap-5">
-        {/* NavLinks */}
-        <div className="flex text-white gap-5">
-          {navLinks.map((link) => {
-            let href = link.href;
+          {/* Suggestions dropdown */}
+          {isPopoverOpen && (
+            <div
+              onMouseDown={(e) => e.preventDefault()}
+              className="absolute top-full mt-1 w-full bg-[#3a3a3a] rounded-lg shadow-xl border border-[#4a4a4a] overflow-hidden z-50"
+            >
+              {isLoading ? (
+                <div className="p-3 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#81a308]"></div>
+                  <span className="ml-2 text-white text-sm">Loading...</span>
+                </div>
+              ) : (
+                <div className="max-h-[70vh] overflow-y-auto">
+                  {plantSuggestions.length > 0 && (
+                    <div className="py-1">
+                      <p className="px-3 py-1 text-xs text-gray-400 bg-[#2b2a2a] sticky top-0">
+                        Plants
+                      </p>
+                      {plantSuggestions.map((plant) => (
+                        <div
+                          key={plant.id}
+                          className="hover:bg-[#4a4a4a] transition-colors"
+                          onClick={() => setIsPopoverOpen(false)}
+                        >
+                          <ResultsCard plant={plant} compact />
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-            if (link.label === "My Collection") {
-              href = user
-                ? `/profiles/${user.username}/collections`
-                : `/login?redirect=/profiles/temp/collections`; // fallback target if not logged in
-            }
+                  {userSuggestions.length > 0 && (
+                    <div className="py-1">
+                      <p className="px-3 py-1 text-xs text-gray-400 bg-[#2b2a2a] sticky top-0">
+                        Users
+                      </p>
+                      {userSuggestions.map((user) => (
+                        <div
+                          key={user.id}
+                          className="hover:bg-[#4a4a4a] transition-colors"
+                          onClick={() => setIsPopoverOpen(false)}
+                        >
+                          <ResultsCard user={user} compact />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </form>
+      </div>
 
-            return (
-              <React.Fragment key={link.href}>
-                <Link href={href}>
-                  <p className="text-white hover:bg-gradient-to-r from-[#6ca148] to-[#756b56] bg-clip-text hover:text-transparent duration-200 ease-in-out">
-                    {link.label}
-                  </p>
-                </Link>
-              </React.Fragment>
-            );
-          })}
-        </div>
+      {/* Desktop Navigation */}
+      <nav className="hidden lg:flex items-center space-x-6">
+        {navLinks.map((link) => {
+          const href =
+            link.label === "My Collection" && user
+              ? `/profiles/${user.username}/collections`
+              : link.href;
 
-        {/* Login */}
+          return (
+            <Link key={link.href} href={href}>
+              <span className="text-white hover:text-[#81a308] transition-colors text-sm md:text-base">
+                {link.label}
+              </span>
+            </Link>
+          );
+        })}
+
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -219,7 +212,7 @@ const Header = () => {
               <DropdownMenuItem>
                 <Link
                   href={`/profiles/${user.username}`}
-                  className="hover:text-[#dab9df]"
+                  className="cursor-pointer"
                 >
                   Profile
                 </Link>
@@ -266,66 +259,114 @@ const Header = () => {
           </DropdownMenu>
         ) : (
           <Link href={`/login?redirect=${pathname}`}>
-            <Button className="bg-primary text-primary-foreground hover:bg-[#756b56] rounded-2xl px-4 py-2 font-semibold transition-colors duration-200 ease-in-out cursor-pointer">
+            <Button className="bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-xl px-4 py-2 text-sm md:text-base">
               Login
             </Button>
           </Link>
         )}
-      </div>
+      </nav>
 
-      {/* Mobile Nav */}
+      {/* Mobile Navigation */}
       <div className="flex lg:hidden">
         <Sheet>
           <SheetTrigger asChild>
-            <Menu className="w-6 h-6 text-white" aria-label="Menu" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-[#3a3a3a]"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
           </SheetTrigger>
-          <SheetContent className="flex flex-col gap-10 bg-[#2b2a2a] text-white">
+          <SheetContent
+            side="right"
+            className="bg-[#2b2a2a] text-white border-l border-[#4a4a4a]"
+          >
             <SheetHeader>
               <SheetTitle className="text-2xl text-white">
-                Floral Vault
+                <span className="text-[#ecfaec]">My</span>
+                <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
+                  Floral
+                </span>
+                <span className="text-[#81a308]">Vault</span>
               </SheetTitle>
             </SheetHeader>
 
-            {/* Mobile Searchbar */}
-            <form
-              onSubmit={handleSearch}
-              className="flex sm:hidden w-full mb-4 items-center justify-center"
-            >
-              <Input
-                type="text"
-                placeholder="Search plants, users, tags, or albums..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 rounded-2xl bg-white text-black border-0 w-11/12 max-w-xs"
-              />
-              <button type="submit" className="hidden" aria-label="Search" />
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch}>
+              <div className="relative px-2">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pr-10 rounded-xl bg-white text-black border-0"
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500 " />
+              </div>
             </form>
 
-            <div className="flex flex-col text-white gap-5 pl-10">
+            {/* Mobile Menu Links */}
+            <div className="">
               {navLinks.map((link) => {
-                let href = link.href;
-
-                if (link.label === "My Collection") {
-                  href = user
+                const href =
+                  link.label === "My Collection" && user
                     ? `/profiles/${user.username}/collections`
-                    : `/login?redirect=/profiles/temp/collections`;
-                }
+                    : link.href;
 
                 return (
-                  <React.Fragment key={link.href}>
-                    <Link href={href}>
-                      <p className="text-white hover:bg-gradient-to-r from-[#6ca148] to-[#756b56] bg-clip-text hover:text-transparent duration-200 ease-in-out">
-                        {link.label}
-                      </p>
-                    </Link>
-                  </React.Fragment>
+                  <Link key={link.href} href={href}>
+                    <div className="py-1  mb-1 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                      {link.label}
+                    </div>
+                  </Link>
                 );
               })}
+
+              {user ? (
+                <>
+                  <div className="pt-4 border-t border-[#4a4a4a]">
+                    <Link href={`/profiles/${user.username}`}>
+                      <div className="flex items-center py-2 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                        <Avatar className="h-8 w-8 mr-3">
+                          <AvatarImage
+                            src={user.avatarUrl || "/default-avatar.png"}
+                          />
+                          <AvatarFallback className="bg-white text-[#2b2a2a] text-sm">
+                            {user.firstName?.[0]}
+                            {user.lastName?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>My Profile</span>
+                      </div>
+                    </Link>
+                    {authUserLinks.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        <div className="py-2 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                          {link.label}
+                        </div>
+                      </Link>
+                    ))}
+                    <div
+                      onClick={logout}
+                      className="py-2 px-3 rounded-lg hover:bg-[#3a3a3a] text-red-400 transition-colors cursor-pointer"
+                    >
+                      Logout
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Link href={`/login?redirect=${pathname}`}>
+                  <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-xl py-2 mt-4">
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
           </SheetContent>
         </Sheet>
       </div>
-    </div>
+    </header>
   );
 };
 

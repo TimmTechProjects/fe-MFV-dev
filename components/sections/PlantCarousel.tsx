@@ -82,7 +82,7 @@ export default function PlantCarousel() {
                 {plants.map((plant) => (
                   <CarouselItem
                     key={plant.id}
-                    className="md:basis-1/3 lg:basis-1/5 px-4 relative"
+                    className="md:basis-1/3 lg:basis-1/4 px-4 relative"
                   >
                     <PlantCarouselCard plant={plant} />
                   </CarouselItem>
@@ -98,7 +98,7 @@ export default function PlantCarousel() {
             <button
               key={index}
               className={`w-2 h-2 rounded-full mx-0.5 transition-all duration-300 ease-in-out ${
-                activeIndex === index ? "bg-white scale-125" : "bg-gray-600"
+                activeIndex === index ? "bg-[#81a308] scale-125" : "bg-gray-200"
               }`}
               onClick={() => carouselApiRef.current?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}

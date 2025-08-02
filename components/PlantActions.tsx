@@ -61,7 +61,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   }, [plantId]);
 
   return (
-    <div className="flex gap-3 items-center mt-10">
+    <div className="flex gap-3 items-center">
       <button
         onClick={toggleLike}
         className={cn(

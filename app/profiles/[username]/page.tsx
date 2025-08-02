@@ -431,7 +431,7 @@ const ProfilePage = () => {
                       {post.image && (
                         <div className="relative w-full max-h-96">
                           <Image
-                            src={post.image || "/fallback.jpg"}
+                            src={post.image || "/fallback.png"}
                             alt={post.text || "Media"}
                             width={800}
                             height={400}
@@ -482,31 +482,37 @@ const ProfilePage = () => {
           )}
 
           {/* Media Section */}
-          {activeTab === "media" && (
-            <div>
-              <h2 className="text-lg font-semibold mb-4 text-white">Media</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {photoPosts.length === 0 && (
-                  <div className="text-gray-400">No media yet.</div>
-                )}
-                {photoPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="relative w-full h-60 rounded-lg overflow-hidden border border-gray-800"
-                  >
-                    <Image
-                      src={post.image || "/fallback.jpg"}
-                      alt={post.text || "Media"}
-                      fill
-                      className="object-cover cursor-pointer"
-                      unoptimized
-                      onClick={() => setModalImage(post.image!)}
-                    />
-                  </div>
-                ))}
+        {activeTab === "media" && (
+  <div>
+    <h2 className="text-lg font-semibold mb-4 text-white">Media</h2>
+    {photoPosts.length === 0 ? (
+      <div className="text-gray-400 py-8 text-center">No media yet.</div>
+    ) : (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {photoPosts.map((post) => (
+          <div
+            key={post.id}
+            className="relative aspect-square w-full rounded-lg overflow-hidden border border-gray-800 hover:border-[#81a308] transition-colors duration-200"
+          >
+            <img
+              src={post.image || "/fallback.png"}
+              alt={post.text || "Media post"}
+              className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+              onClick={() => setModalImage(post.image!)}
+              loading="lazy"
+              decoding="async"
+            />
+            {post.text && (
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-white text-sm line-clamp-2">{post.text}</p>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
           {/* Marketplace Section */}
           {activeTab === "marketplace" && (
@@ -539,7 +545,7 @@ const ProfilePage = () => {
                         src={
                           collection.thumbnailImage?.url ||
                           collection.plants?.[0]?.images?.[0]?.url ||
-                          "/fallback-image.jpg"
+                          "/fallback.png"
                         }
                         alt={collection?.name}
                         fill

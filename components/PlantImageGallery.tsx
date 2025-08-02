@@ -18,13 +18,11 @@ export default function PlantImageGallery({
   return (
     <div className="flex flex-col gap-4">
       {/* Main Image */}
-      <div className="h-[400px] max-w-[600px] xl:w-[600px] bg-black rounded-xl overflow-hidden flex items-center justify-center">
-        <Image
+      <div className="h-full max-w-full rounded-xl overflow-hidden flex items-center justify-center">
+        <img
           src={selectedImage.url}
           alt={alt}
-          width={800}
-          height={400}
-          className="object-contain max-h-[400px]"
+          className="object-contain bg-gray-200 max-h-[400px] w-full"
         />
       </div>
 

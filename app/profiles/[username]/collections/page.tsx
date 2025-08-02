@@ -123,7 +123,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
             const imgUrl =
               collection.thumbnailImage?.url ??
               collection.plants?.[0]?.images?.[0]?.url ??
-              "/fallback-image.jpg";
+              "/fallback.png";
 
             const authorUsername = collection.plants?.[0]?.user?.username;
             const originalCollectionSlug =

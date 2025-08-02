@@ -101,7 +101,7 @@ const ClientCollectionView = ({
       ) : (
         <div className="space-y-8">
           {plants.map((plant: Plant) => {
-            const mainImage = plant.images?.[0]?.url ?? "/fallback-image.jpg";
+            const mainImage = plant.images?.[0]?.url ?? "/fallback.png";
             const author = plant.user?.username;
             const originalSlug = plant.originalCollection?.slug;
 

@@ -1,64 +1,139 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Plant } from "@/types/plants";
+import fallback from "../../public/fallback.png";
 
 interface PlantCarouselCardProps {
   plant: Plant;
 }
 
 const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
-  return (
-    <div className="relative group">
-      {/* Main Card Link */}
-      <Link
-        href={
-          plant.user?.username
-            ? `/profiles/${plant.user.username}/collections/${plant.collection}/${plant.slug}`
-            : "#"
-        }
-        className="block relative rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 group-hover:scale-[1.03] cursor-pointer"
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
-        <Image
-          src={plant.images?.[0]?.url || "/fallback.jpg"}
-          alt={plant.commonName || plant.botanicalName}
-          width={400}
-          height={320}
-          className="w-full h-80 object-cover rounded-md"
-        />
-        <div className="absolute inset-0 flex flex-col justify-end p-4 z-20 bottom-8">
-          <h3 className="text-lg font-bold leading-tight line-clamp-2">
-            {plant.commonName}
-          </h3>
-          <p className="text-sm font-medium opacity-90">
-            {plant.botanicalName}
-          </p>
-          <p className="text-sm opacity-80 line-clamp-1">
-            {plant.description.replace(/<[^>]*>/g, "").slice(0, 100)}
-          </p>
-        </div>
-      </Link>
+  const [imgError, setImgError] = useState(false);
+  const mainImgSrc = plant.images?.[0]?.url;
+  const imgSrc = !imgError && mainImgSrc ? mainImgSrc : fallback;
 
-      {/* Tags BELOW the card (outside the Link) */}
-      {plant?.tags?.length > 0 && (
-        <div className="absolute bottom-3 left-6 z-30 flex gap-1 flex-wrap">
-          {plant.tags.slice(0, 3).map((tag, i) => (
-            <Link
-              key={i}
-              href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
-            >
-              <Badge
-                variant="secondary"
-                className="text-[12px] px-2 py-0.5 max-w-[80px] truncate hover:bg-[#5f9f6a] hover:text-white hover:rounded-2xl"
-              >
-                {tag.name}
-              </Badge>
-            </Link>
-          ))}
+  return (
+    <div className="group relative w-full h-full">
+      {/* Main Card Container */}
+      <div className="relative overflow-hidden rounded-2xl bg-black/20 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full flex flex-col">
+        {/* Image Container */}
+        <Link
+          href={
+            plant.user?.username
+              ? `/profiles/${plant.user.username}/collections/${plant.collection}/${plant.slug}`
+              : "#"
+          }
+          className="block relative"
+        >
+          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+            <Image
+              src={imgSrc}
+              alt={plant.commonName || plant.botanicalName}
+              width={400}
+              height={300}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            {/* Tags Overlay on Image */}
+            {plant?.tags?.length > 0 && (
+              <div className="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[calc(100%-1.5rem)]">
+                {plant.tags.slice(0, 2).map((tag, i) => (
+                  <Link
+                    key={i}
+                    href={`/the-vault/results?tag=${encodeURIComponent(
+                      tag.name
+                    )}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="text-xs px-2 py-1 bg-white/90 text-gray-800 backdrop-blur-sm hover:bg-green-500 hover:text-white transition-all duration-200 border-0 shadow-sm max-w-[100px] truncate"
+                    >
+                      {tag.name}
+                    </Badge>
+                  </Link>
+                ))}
+                {plant.tags.length > 2 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-xs px-2 py-1 bg-white/90 text-gray-600 backdrop-blur-sm border-0 shadow-sm"
+                  >
+                    +{plant.tags.length - 2}
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+        </Link>
+
+        {/* Content Section */}
+        <div className="p-4 space-y-2 flex-1 flex flex-col">
+          <Link
+            href={
+              plant.user?.username
+                ? `/profiles/${plant.user.username}/collections/${plant.collection}/${plant.slug}`
+                : "#"
+            }
+            className="block group/content flex-1"
+          >
+            {/* Plant Names */}
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-white leading-tight line-clamp-2 group-hover/content:text-green-400 transition-colors duration-200">
+                {plant.commonName || plant.botanicalName}
+              </h3>
+              {plant.commonName && plant.botanicalName && (
+                <p className="text-sm font-medium text-gray-300 italic">
+                  {plant.botanicalName}
+                </p>
+              )}
+            </div>
+
+            {/* Description */}
+            {plant.description && (
+              <p className="text-sm text-gray-400 line-clamp-2 mt-2 leading-relaxed">
+                {plant.description.replace(/<[^>]*>/g, "").slice(0, 120)}
+                {plant.description.replace(/<[^>]*>/g, "").length > 120 &&
+                  "..."}
+              </p>
+            )}
+          </Link>
+
+          {/* Bottom Tags (if more than 2 tags) */}
+          {plant?.tags?.length > 2 && (
+            <div className="flex flex-wrap gap-1 pt-2 border-t border-gray-700 mt-auto">
+              {plant.tags.slice(2, 5).map((tag, i) => (
+                <Link
+                  key={i}
+                  href={`/the-vault/results?tag=${encodeURIComponent(
+                    tag.name
+                  )}`}
+                >
+                  <Badge
+                    variant="outline"
+                    className="text-xs px-2 py-0.5 text-gray-300 border-gray-600 hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-200 max-w-[80px] truncate"
+                  >
+                    {tag.name}
+                  </Badge>
+                </Link>
+              ))}
+              {plant.tags.length > 5 && (
+                <Badge
+                  variant="outline"
+                  className="text-xs px-2 py-0.5 text-gray-400 border-gray-600"
+                >
+                  +{plant.tags.length - 5}
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
