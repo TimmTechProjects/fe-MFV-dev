@@ -93,7 +93,7 @@ const Header = () => {
     <header className="bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50">
       {/* Logo - Responsive sizing */}
       <Link href="/" className="flex-shrink-0">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-bold tracking-tight">
+        <h1 className="text-2xl sm:text-3xl text-white font-bold tracking-tight">
           <span className="text-[#ecfaec]">My</span>
           <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
             Floral
@@ -139,13 +139,13 @@ const Header = () => {
                 <div className="max-h-[70vh] overflow-y-auto">
                   {plantSuggestions.length > 0 && (
                     <div className="py-1">
-                      <p className="px-3 py-1 text-xs text-gray-400 bg-[#2b2a2a] sticky top-0">
+                      <p className="px-3 py-1 text-xs text-gray-400  sticky top-0">
                         Plants
                       </p>
                       {plantSuggestions.map((plant) => (
                         <div
                           key={plant.id}
-                          className="hover:bg-[#4a4a4a] transition-colors"
+                          className="hover:bg-[#4a4a4a] transition-colors  my-2 "
                           onClick={() => setIsPopoverOpen(false)}
                         >
                           <ResultsCard plant={plant} compact />
@@ -156,13 +156,13 @@ const Header = () => {
 
                   {userSuggestions.length > 0 && (
                     <div className="py-1">
-                      <p className="px-3 py-1 text-xs text-gray-400 bg-[#2b2a2a] sticky top-0">
+                      <p className="px-3 py-1 text-xs text-gray-400   sticky top-0">
                         Users
                       </p>
                       {userSuggestions.map((user) => (
                         <div
                           key={user.id}
-                          className="hover:bg-[#4a4a4a] transition-colors"
+                          className="hover:bg-[#4a4a4a] transition-colors my-2"
                           onClick={() => setIsPopoverOpen(false)}
                         >
                           <ResultsCard user={user} compact />
