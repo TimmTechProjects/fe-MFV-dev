@@ -22,7 +22,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
         <Link
           href={
             plant.user?.username
-              ? `/profiles/${plant.user.username}/collections/${plant.collection}/${plant.slug}`
+              ? `/profiles/${plant.user.username}/collections/${plant.collectionId}/${plant.slug}`
               : "#"
           }
           className="block relative"

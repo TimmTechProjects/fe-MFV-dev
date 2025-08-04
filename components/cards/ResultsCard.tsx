@@ -33,7 +33,7 @@ const ResultsCard = ({
 
   // Build href based on type
   const href = isPlant
-    ? `/profiles/${plant!.user.username}/collections/${plant.collection}/${
+    ? `/profiles/${plant!.user.username}/collections/${plant.collectionId}/${
         plant.slug
       }`
     : isUser

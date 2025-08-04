@@ -7,6 +7,7 @@ export interface Plant {
     slug: string;
     name?: string;
   } | null;
+  collectionId?: string;
   originalCollection?: {
     slug: string;
   };
