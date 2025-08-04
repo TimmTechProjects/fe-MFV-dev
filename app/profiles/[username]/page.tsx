@@ -18,7 +18,7 @@ import {
 import Image from "next/image";
 import { Collection } from "@/types/collections";
 import { DUMMY_POSTS } from "@/mock/posts";
-import { PostSidePanel } from "@/components/PostSidePanel";
+import { PostSidePanel, NestedComment } from "@/components/PostSidePanel";
 
 const COVER_PHOTO =
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"; // Placeholder
@@ -84,10 +84,58 @@ type Post = {
   user: UserForPost;
 };
 
-type ModalComment = Comment & {
-  likes?: number;
-  likedByCurrentUser?: boolean;
-};
+const DEMO_COMMENTS: NestedComment[] = [
+  {
+    id: 1,
+    user: {
+      username: "john_doe",
+      avatarUrl: "https://i.pravatar.cc/150?u=john",
+    },
+    text: "This is a great post! Thanks for sharing.",
+    createdAt: "2024-01-15T10:30:00Z",
+    likes: 5,
+    likedByCurrentUser: false,
+    replies: [
+      {
+        id: 2,
+        user: {
+          username: "jane_smith",
+          avatarUrl: "https://i.pravatar.cc/150?u=jane",
+        },
+        text: "I totally agree! This is very helpful.",
+        createdAt: "2024-01-15T11:00:00Z",
+        likes: 2,
+        likedByCurrentUser: true,
+        replies: [
+          {
+            id: 3,
+            user: {
+              username: "bob_wilson",
+              avatarUrl: "https://i.pravatar.cc/150?u=bob",
+            },
+            text: "Same here! Great insights.",
+            createdAt: "2024-01-15T11:15:00Z",
+            likes: 1,
+            likedByCurrentUser: false,
+            replies: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    user: {
+      username: "alice_cooper",
+      avatarUrl: "https://i.pravatar.cc/150?u=alice",
+    },
+    text: "Could you explain more about this topic?",
+    createdAt: "2024-01-15T12:00:00Z",
+    likes: 3,
+    likedByCurrentUser: false,
+    replies: [],
+  },
+];
 
 const ProfilePage = () => {
   const { user } = useUser();
@@ -106,7 +154,7 @@ const ProfilePage = () => {
   const [postToDelete, setPostToDelete] = useState<number | null>(null);
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [modalComments, setModalComments] = useState<ModalComment[]>([]);
+  const [modalComments, setModalComments] = useState<NestedComment[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -172,17 +220,15 @@ const ProfilePage = () => {
   };
 
   const handleOpenModal = (post: Post) => {
-    setModalImage(post.image!);
+    setModalComments(DEMO_COMMENTS);  
     setSelectedPost(post);
-    setModalComments(
-      (post.comments || []).map((c) => ({
-        ...c,
-        likes: (c as ModalComment).likes ?? 0,
-        likedByCurrentUser: false,
-      }))
-    );
+    setModalImage(post.image!);
   };
-
+  useEffect(() => {
+    if (modalImage && selectedPost) {
+      setModalComments(DEMO_COMMENTS);
+    }
+  }, [modalImage, selectedPost]);
   const handleLikeComment = (commentId: number) => {
     setModalComments((prev) =>
       prev.map((c) =>
@@ -634,6 +680,7 @@ const ProfilePage = () => {
               post={selectedPost}
               comments={modalComments}
               onLikeComment={handleLikeComment}
+              onSubmitReply={() => {}}
             />
             {/* Close Button */}
             <button
