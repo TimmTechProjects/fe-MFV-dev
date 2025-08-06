@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useParams } from "next/navigation";
 import { User } from "@/types/users";
@@ -19,6 +18,7 @@ import Image from "next/image";
 import { Collection } from "@/types/collections";
 import { DUMMY_POSTS } from "@/mock/posts";
 import { PostSidePanel, NestedComment } from "@/components/PostSidePanel";
+import useAuth from "@/redux/hooks/useAuth";
 
 const COVER_PHOTO =
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"; // Placeholder
@@ -138,7 +138,7 @@ const DEMO_COMMENTS: NestedComment[] = [
 ];
 
 const ProfilePage = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { username } = useParams();
   const safeUsername = Array.isArray(username) ? username[0] : username || "";
 
@@ -220,7 +220,7 @@ const ProfilePage = () => {
   };
 
   const handleOpenModal = (post: Post) => {
-    setModalComments(DEMO_COMMENTS);  
+    setModalComments(DEMO_COMMENTS);
     setSelectedPost(post);
     setModalImage(post.image!);
   };

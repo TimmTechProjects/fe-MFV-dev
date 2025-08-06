@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useUser } from "@/context/UserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/redux/hooks/useAuth";
 
 const membershipTiers = [
   {
@@ -54,7 +54,7 @@ const membershipTiers = [
 ];
 
 const MembershipPage = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const [isYearly, setIsYearly] = useState(false);
 
   const currentPlan = user?.plan ?? "free";

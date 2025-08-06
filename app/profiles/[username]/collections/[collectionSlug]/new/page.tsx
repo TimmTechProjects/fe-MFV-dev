@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useUser } from "@/context/UserContext";
 import PlantSubmissionForm from "@/components/forms/PlantSubmissionForm";
 import { getCollectionBySlug } from "@/lib/utils";
+import useAuth from "@/redux/hooks/useAuth";
 
 const NewPlantPage = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const router = useRouter();
   const { username, collectionSlug } = useParams();
 

@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="w-full px-10 py-4 text-sm text-white bg-transparent">
+    <footer className="w-full px-10 py-4 text-sm text-white bg-[#262624]">
       <div className="flex flex-col md:flex-row items-center justify-between gap-2">
         <span>
           © {new Date().getFullYear()} FloraVault. All rights reserved.

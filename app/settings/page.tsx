@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useUser } from "@/context/UserContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import useAuth from "@/redux/hooks/useAuth";
 
 const settingsSchema = z.object({
   firstName: z.string().min(2),
@@ -27,7 +27,7 @@ const settingsSchema = z.object({
 });
 
 const SettingsPage = () => {
-  const { user, setUser } = useUser();
+  const { user, getLogin } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
@@ -68,7 +68,7 @@ const SettingsPage = () => {
       ...values,
     };
     localStorage.setItem("user", JSON.stringify(updatedUser));
-    setUser(updatedUser);
+    getLogin(updatedUser);
     // Optional: Show toast or redirect
     if (!values.email.includes("@")) {
       toast.error("Please enter a valid email.");

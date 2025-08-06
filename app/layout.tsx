@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 import { Toaster } from "sonner";
 import ReduxProvider from "@/redux/Provider";
+import ClientLayout from "../app/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,17 +69,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Toaster position="top-center" />
         <ReduxProvider>
-          <div className="flex flex-col min-h-screen bg-gradient-to-r from-[#3A3A38] to-[#151512]">
-            <Header />
-            <main className="flex-grow">
-              <>
-                {children}
-                <Toaster richColors position="bottom-right" />
-              </>
-            </main>
-            <Footer />
-          </div>
+          <ClientLayout>{children}</ClientLayout>
         </ReduxProvider>
       </body>
     </html>

@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { useUser } from "@/context/UserContext";
 import Link from "next/link";
 import Image from "next/image";
 import EditCollectionWrapper from "@/components/EditCollectionButton";
 import { useRouter } from "next/navigation";
 import { Plant } from "@/types/plants";
 import { Plus } from "lucide-react";
+import useAuth from "@/redux/hooks/useAuth";
 
 interface CollectionsPageProps {
   username: string;
@@ -32,7 +32,7 @@ const ClientCollectionView = ({
   collectionSlug,
   collectionData,
 }: CollectionsPageProps) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const router = useRouter();
 
   const isOwner = user?.username === username;

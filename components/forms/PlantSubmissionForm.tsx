@@ -28,9 +28,9 @@ import { plantSchema, PlantSchema } from "@/schemas/plantSchema";
 import ImageUploadField, { UploadedImage } from "./ImageUploadField";
 import { Tag } from "@/types/tags";
 import { getSuggestedTags, submitPlant } from "@/lib/utils";
-import { useUser } from "@/context/UserContext";
 import { Switch } from "../ui/switch";
 import { uploadFiles } from "@/lib/uploadthingClient";
+import useAuth from "@/redux/hooks/useAuth";
 
 const PlantEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
   ssr: false,
@@ -49,7 +49,7 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const router = useRouter();
-  const { user } = useUser();
+  const { user } = useAuth();
   const isFreeUser = user?.plan === "free";
 
   const form = useForm<PlantSchema>({

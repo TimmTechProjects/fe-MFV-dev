@@ -11,10 +11,10 @@ import { cn, getUserCollectionsWithAuth, savePlantToAlbum } from "@/lib/utils";
 import { Collection } from "@/types/collections";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useUser } from "@/context/UserContext";
+import useAuth from "@/redux/hooks/useAuth";
 
 export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
-  const { user } = useUser();
+  const { user } = useAuth();
   const username = user?.username;
 
   const [liked, setLiked] = useState(false);
