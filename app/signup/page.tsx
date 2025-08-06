@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -15,33 +13,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
-import { useUser } from "@/context/UserContext";
 import { Eye, EyeOff } from "lucide-react";
-import { registerUser } from "@/lib/utils";
 import { toast } from "sonner";
-
-const signupSchema = z.object({
-  firstName: z.string().min(2, "First name is required"),
-  lastName: z.string().min(2, "Last name is required"),
-  username: z
-    .string()
-    .min(2, "Username must be at least 2 characters long")
-    .max(30, "Username can not be more than 30 characters long"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
+import useAuth from "@/redux/hooks/useAuth";
+import useAppInit from "@/redux/hooks/useInit";
 
 const SignUp = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { setUser } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const { getSignup } = useAuth();
+  const { __init } = useAppInit();
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
+  const form = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -51,40 +37,37 @@ const SignUp = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
+  const onSubmit = async (values: any) => {
     setIsLoading(true);
 
-    const result = await registerUser(values);
+    getSignup(
+      values,
+      async () => {
+        await __init();
+        toast.success("Account created successfully!");
+        router.push("/");
+      },
+      (error: any) => {
+        console.error("Signup Error:", error);
 
-    // Check if user already exists in userData with email or username
-    if (!result || result.error || !result.user || !result.token) {
-      setIsLoading(false);
-
-      if (Array.isArray(result?.errors)) {
-        result.errors.forEach((err) => {
-          form.setError(err.field as keyof z.infer<typeof signupSchema>, {
-            message: err.message || "Invalid input",
+        if (error?.errors) {
+          error.errors.forEach((err: any) => {
+            form.setError(err.field, {
+              message: err.message || "Invalid input",
+            });
           });
-        });
-        toast.error("Please fix highlighted fields", {
-          description: "Username or email might already be in use.",
-        });
-      } else {
-        toast.error(result?.error || "Registration failed. Please try again.");
+          toast.error("Please fix highlighted fields", {
+            description: "Username or email might already be in use.",
+          });
+        } else {
+          toast.error(
+            error?.message || "Registration failed. Please try again."
+          );
+        }
+
+        setIsLoading(false);
       }
-      return;
-    }
-
-    const { user, token } = result;
-
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-
-    // save user data to local storage and to db then redirect to home page
-    setIsLoading(false);
-    setUser(user);
-
-    router.push("/");
+    );
   };
 
   return (

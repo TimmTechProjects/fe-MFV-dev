@@ -24,9 +24,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 import { UserResult } from "@/types/users";
+import useAuth from "@/redux/hooks/useAuth";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,8 +36,8 @@ const Header = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, logout } = useUser();
-  console.log("🚀 ~ Header ~ user:", user)
+  const { user, LogoutUser } = useAuth();
+  console.log("🚀 ~ Header ~ user:", user);
   const router = useRouter();
   const pathname = usePathname() || "/";
 
@@ -252,7 +252,7 @@ const Header = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer hover:text-red-400"
-                onClick={logout}
+                onClick={LogoutUser}
               >
                 Logout
               </DropdownMenuItem>
@@ -349,7 +349,7 @@ const Header = () => {
                       </Link>
                     ))}
                     <div
-                      onClick={logout}
+                      onClick={LogoutUser}
                       className="py-2 px-3 rounded-lg hover:bg-[#3a3a3a] text-red-400 transition-colors cursor-pointer"
                     >
                       Logout

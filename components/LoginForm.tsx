@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -14,24 +12,35 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Link from "next/link";
-import { cn, loginUser } from "@/lib/utils";
-import { useUser } from "@/context/UserContext";
-import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import useAuth from "@/redux/hooks/useAuth";
+import useAppInit from "@/redux/hooks/useInit";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(30),
-  password: z.string().min(8),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
-const LoginForm = () => {
+const SignInForm = () => {
+  const { getLogin, signInWithGoogle } = useAuth();
+  const { __init } = useAppInit();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setUser } = useUser();
+  const from = searchParams.get("from") || "/";
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { user } = useSelector((state: any) => state.auth);
+
+  const [loading, setLoading] = useState(false);
+  const [btnLoadings, setBtnLoadings] = useState({ google: false });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,42 +50,44 @@ const LoginForm = () => {
     },
   });
 
-  useEffect(() => {
-    if (searchParams.get("unauthorized") === "true") {
-      toast.error("Please login to access that page.");
-    }
-  }, [searchParams]);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    const user = await loginUser(values);
+    setLoading(true);
+    getLogin(
+      values,
+      async () => {
+        await __init();
+        toast.success("Logged in successfully!");
+        router.push(from);
+      },
+      (error: any) => {
+        console.error("Login Error:", error);
+        toast.error("Invalid credentials");
+        setLoading(false);
+      }
+    );
+  };
 
-    if (!user) {
-      setIsLoading(false);
-      form.setError("username", {
-        type: "manual",
-        message: "Invalid username or password",
-      });
-      return;
+  const handleGoogleLogin = async () => {
+    setBtnLoadings((prev) => ({ ...prev, google: true }));
+    try {
+      await signInWithGoogle();
+      toast.success("Signed in with Google!");
+      router.push(from);
+    } catch (err) {
+      toast.error("Google sign-in failed");
+    } finally {
+      setBtnLoadings((prev) => ({ ...prev, google: false }));
     }
-
-    toast.success(`Welcome back, ${user.firstName || user.username}!`);
-    localStorage.setItem("user", JSON.stringify(user));
-    setUser(user);
-
-    const redirect = searchParams.get("redirect") || "/";
-    router.push(redirect);
   };
 
   return (
     <div className="flex h-[80vh] items-center justify-center">
       <div className="shadow-input mx-auto w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
         <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-          Welcome Back
+          Sign In
         </h2>
         <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-          Login to access your Floral Vault account and manage your plant
-          journey.
+          Login to continue managing your dashboard.
         </p>
 
         <Form {...form}>
@@ -91,7 +102,7 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username" {...field} />
+                    <Input placeholder="yourusername" {...field} />
                   </FormControl>
                   <FormMessage className="text-red-500 font-semibold" />
                 </FormItem>
@@ -105,20 +116,7 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        {...field}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
-                      >
-                        {showPassword ? <EyeOff /> : <Eye />}
-                      </button>
-                    </div>
+                    <Input type="password" placeholder="••••••••" {...field} />
                   </FormControl>
                   <FormMessage className="text-red-500 font-semibold" />
                 </FormItem>
@@ -127,18 +125,28 @@ const LoginForm = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className={cn(
                 "group/btn relative block h-10 w-full rounded-md font-medium text-white transition",
-                isLoading
+                loading
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-gradient-to-br from-black to-neutral-600 hover:scale-[1.01]"
               )}
             >
-              {isLoading ? "Logging in..." : "Login →"}
+              {loading ? "Signing in..." : "Sign In →"}
             </button>
           </form>
         </Form>
+
+        <button
+          onClick={handleGoogleLogin}
+          className="mt-2 w-full rounded-md border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          disabled={btnLoadings.google}
+        >
+          {btnLoadings.google
+            ? "Signing in with Google..."
+            : "Sign in with Google"}
+        </button>
 
         <div className="mt-6 text-center text-sm text-neutral-600 dark:text-neutral-400">
           Don&apos;t have an account?{" "}
@@ -154,4 +162,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignInForm;

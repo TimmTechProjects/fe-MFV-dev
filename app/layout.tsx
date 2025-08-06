@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { UserProvider } from "@/context/UserContext";
 import { Toaster } from "sonner";
+import ReduxProvider from "@/redux/Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,7 +69,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>
+        <ReduxProvider>
           <div className="flex flex-col min-h-screen bg-gradient-to-r from-[#3A3A38] to-[#151512]">
             <Header />
             <main className="flex-grow">
@@ -80,7 +80,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-        </UserProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
