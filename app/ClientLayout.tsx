@@ -19,7 +19,7 @@ export default function ClientLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#121212] text-white">
+    <div className="min-h-screen flex flex-col bg-[#121212] ">
       <Header />
       <main className="flex-grow">{children}</main>
       <Footer />
