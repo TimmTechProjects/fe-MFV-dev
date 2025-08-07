@@ -5,9 +5,8 @@ import { RegisterUser, User, UserCredentials, UserResult } from "@/types/users";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const baseUrl = process.env.NEXT_PUBLIC_FLORAL_VAULT_DEV_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_FLORAL_VAULT_API_URL;
 // const devUrl = "http://localhost:5000";
-
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
