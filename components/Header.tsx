@@ -37,7 +37,6 @@ const Header = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { user, LogoutUser } = useAuth();
-  console.log("🚀 ~ Header ~ user:", user);
   const router = useRouter();
   const pathname = usePathname() || "/";
 

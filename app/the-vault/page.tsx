@@ -1,37 +1,22 @@
-"use client";
-
 import { getPaginatedPlants } from "@/lib/utils";
 import ResultsCard from "@/components/cards/ResultsCard";
-import React, { useState, useEffect } from "react";
 import { Plant } from "@/types/plants";
+import Pagination from "@/components/Pagination";
 import Loading from "../loading";
 
-const VaultPage = () => {
-  const [plants, setPlants] = useState<Plant[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const limit = 20;
+interface Props {
+  searchParams?: {
+    page?: string;
+  };
+}
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    const fetchPlants = async () => {
-      const { plants, total } = await getPaginatedPlants(currentPage, limit);
-      if (isMounted) {
-        setPlants(plants);
-        setTotal(total);
-        setLoading(false);
-      }
-    };
+const limit = 5;
 
-    fetchPlants();
-    return () => {
-      isMounted = false;
-    };
-  }, [currentPage]);
-
+export default async function VaultPage({ searchParams }: Props) {
+  const currentPage = Number(searchParams?.page || 1);
+  const { plants, total } = await getPaginatedPlants(currentPage, limit);
   const totalPages = Math.ceil(total / limit);
+  console.log(plants);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -80,7 +65,7 @@ const VaultPage = () => {
                   ].map((tag) => (
                     <button
                       key={tag}
-                      className="px-3 py-2 bg-[#81a308]  rounded-full text-sm text-white transition-all duration-200  "
+                      className="px-3 py-2 bg-[#81a308] rounded-full text-sm text-white transition-all duration-200"
                     >
                       {tag}
                     </button>
@@ -92,27 +77,23 @@ const VaultPage = () => {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0">
-            {/* Header Section */}
+            {/* Header */}
             <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2  ">Latest Uploads</h1>
-              <p className="text-gray-400 text-lg">
+              <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+                Latest Uploads
+              </h1>
+              <p className="text-gray-400 text-base sm:text-lg">
                 Discover the newest additions to our plant collection
               </p>
-              {!loading && (
-                <div className="mt-4 text-sm text-gray-500">
-                  Showing {(currentPage - 1) * limit + 1} -{" "}
-                  {Math.min(currentPage * limit, total)} of {total} plants
-                </div>
-              )}
+              <div className="mt-4 text-sm text-gray-500">
+                Showing {(currentPage - 1) * limit + 1} -{" "}
+                {Math.min(currentPage * limit, total)} of {total} plants
+              </div>
             </div>
 
             {/* Content Area */}
-            <div className=" ">
-              {loading ? (
-                <div>
-                  <Loading />
-                </div>
-              ) : plants.length === 0 ? (
+            <div className="relative min-h-[300px]">
+              {plants.length === 0 ? (
                 <div className="flex flex-col justify-center items-center h-64 text-center">
                   <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mb-4">
                     <svg
@@ -132,13 +113,13 @@ const VaultPage = () => {
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
                     No Plants Found
                   </h3>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 max-w-md px-4">
                     Try adjusting your filters or check back later for new
                     uploads.
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3   gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                   {plants.map((plant) => (
                     <div key={plant.id} className="h-full">
                       <ResultsCard plant={plant} compact />
@@ -148,73 +129,14 @@ const VaultPage = () => {
               )}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && !loading && (
+            {/* Pagination */}
+            {totalPages > 1 && (
               <div className="mt-8 flex justify-center">
-                <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800 shadow-xl">
-                  <div className="flex items-center gap-4">
-                    <button
-                      disabled={currentPage === 1}
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
-                      className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
-                        currentPage === 1
-                          ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                          : "bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 hover:border-gray-600"
-                      }`}
-                    >
-                      Previous
-                    </button>
-
-                    <div className="flex items-center gap-2">
-                      {/* Page Numbers */}
-                      {Array.from(
-                        { length: Math.min(5, totalPages) },
-                        (_, i) => {
-                          const pageNum =
-                            Math.max(
-                              1,
-                              Math.min(totalPages - 4, currentPage - 2)
-                            ) + i;
-                          if (pageNum > totalPages) return null;
-
-                          return (
-                            <button
-                              key={pageNum}
-                              onClick={() => setCurrentPage(pageNum)}
-                              className={`w-12 h-12 rounded-xl font-medium transition-all duration-200 ${
-                                currentPage === pageNum
-                                  ? "bg-gray-700 text-white border-2 border-gray-600"
-                                  : "bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700"
-                              }`}
-                            >
-                              {pageNum}
-                            </button>
-                          );
-                        }
-                      )}
-                    </div>
-
-                    <button
-                      disabled={currentPage === totalPages}
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
-                      className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
-                        currentPage === totalPages
-                          ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                          : "bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 hover:border-gray-600"
-                      }`}
-                    >
-                      Next
-                    </button>
-                  </div>
-
-                  <div className="text-center mt-3 text-sm text-gray-400">
-                    Page {currentPage} of {totalPages}
-                  </div>
-                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  maxVisiblePages={5}
+                />
               </div>
             )}
           </main>
@@ -222,6 +144,4 @@ const VaultPage = () => {
       </div>
     </div>
   );
-};
-
-export default VaultPage;
+}
