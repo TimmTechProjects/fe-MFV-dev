@@ -2,7 +2,6 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-
 export const constant = () => {
   if (window.location.hostname === "localhost") {
     return { baseUrl: "http://localhost:5000/" };
