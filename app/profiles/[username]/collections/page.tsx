@@ -84,8 +84,8 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
     <div className="text-white px-10 py-10">
       <h2 className="text-2xl font-bold mb-10 ml-4">
         <Link href={`/profiles/${username}`}>
-          <span className="text-white capitalize hover:text-[#81a308]">
-            {username}&apos;s
+          <span className="text-white hover:text-[#81a308]">
+            {isOwner ? "My" : <div className="capitalize inline-block">{username}&apos;s</div>}
           </span>
         </Link>{" "}
         <span className="text-white">Albums</span>
