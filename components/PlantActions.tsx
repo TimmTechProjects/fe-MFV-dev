@@ -12,11 +12,12 @@ import { Collection } from "@/types/collections";
 import { toast } from "sonner";
 import Link from "next/link";
 import useAuth from "@/redux/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   const { user } = useAuth();
   const username = user?.username;
-
+  const router = useRouter();
   const [liked, setLiked] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,11 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   }>({});
 
   const toggleLike = () => {
+    if (!user) {
+      router.push("/login");
+      toast.error("You must be logged in to like a plant.");
+      return;
+    }
     setLiked((prev) => !prev);
   };
 
