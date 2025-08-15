@@ -1,12 +1,14 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, Share2, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { DUMMY_POSTS } from "@/mock/posts"; // <-- Use shared dummy posts
 import { formatRelativeTime } from "@/lib/utils";
+import { toast } from "sonner";
+import useAuth from "@/redux/hooks/useAuth";
 
 type Reply = {
   id: number;
@@ -33,7 +35,8 @@ type CommentWithExtras = {
 
 const StatusPostPage = () => {
   const { postId } = useParams();
-
+  const router = useRouter();
+  const { user } = useAuth();
   // Find the post by ID (string to number)
   const post = useMemo(
     () => DUMMY_POSTS.find((p) => String(p.id) === String(postId)),
@@ -46,9 +49,9 @@ const StatusPostPage = () => {
   const [comments, setComments] = useState<CommentWithExtras[]>(
     (post?.comments || []).map((c) => ({
       ...c,
-      likes: (c as CommentWithExtras).likes ?? 0,
+      likes: (c as unknown as CommentWithExtras).likes ?? 0,
       likedByCurrentUser: false,
-      replies: (c as CommentWithExtras).replies ?? [],
+      replies: (c as unknown as CommentWithExtras).replies ?? [],
     }))
   );
   const [commentSort, setCommentSort] = useState<"relevant" | "newest" | "all">(
@@ -97,6 +100,11 @@ const StatusPostPage = () => {
   };
 
   const handleLikeComment = (commentId: number) => {
+    if (!user) {
+      router.push("/login");
+      toast.error("You must be logged in to like a comment.");
+      return;
+    }
     setComments((prev) =>
       prev.map((c) =>
         c.id === commentId
@@ -593,7 +601,7 @@ const StatusPostPage = () => {
                                       }
                                       onChange={(e) =>
                                         handleReplyInputChange(
-                                          `${comment.id}-${reply.id}`,
+                                          Number(`${comment.id}-${reply.id}`),
                                           e.target.value
                                         )
                                       }
