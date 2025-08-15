@@ -180,6 +180,7 @@ const Header = () => {
       {/* Desktop Navigation */}
       <nav className="hidden lg:flex items-center space-x-6">
         {navLinks.map((link) => {
+          if (link.protected && !user) return null;
           const href =
             link.label === "My Collection" && user
               ? `/profiles/${user.username}/collections`

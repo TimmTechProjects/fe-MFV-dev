@@ -5,8 +5,6 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("token");
 
   const protectedRoutes = [
-    "/membership",
-    "/profiles",
     "/notifications",
     "/settings",
     "/messages",
@@ -27,8 +25,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/membership/:path*",
-    "/profiles/:username/collections/:path*",
     "/notifications/:path*",
     "/settings/:path*",
     "/messages/:path*",

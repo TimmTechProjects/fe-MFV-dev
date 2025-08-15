@@ -24,6 +24,7 @@ export const navLinks = [
   {
     label: "My Collection",
     href: "/my-collection",
+    protected: true,
   },
 ];
 
