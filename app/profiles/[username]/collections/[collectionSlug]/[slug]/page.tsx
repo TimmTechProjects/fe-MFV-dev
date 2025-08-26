@@ -4,6 +4,7 @@ import { getPlantBySlug } from "@/lib/utils";
 import PlantImageGallery from "@/components/PlantImageGallery";
 import Link from "next/link";
 import PlantActions from "@/components/PlantActions";
+import RelatedPlants from "@/components/RelatedPlants";
 
 type PageProps = {
   params: Promise<{
@@ -170,23 +171,11 @@ export default async function PlantDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Related Content - Compact */}
-      <div className="max-w-7xl mx-auto px-6 pb-12">
-        <div className="bg-gradient-to-r from-gray-900/20 to-gray-800/20 rounded-3xl p-8 border border-gray-800 text-center">
-          <h3 className="text-xl font-bold mb-4 text-white">
-            Explore More Plants
-          </h3>
-          <p className="text-gray-400 mb-6">
-            Discover more amazing plants from our community
-          </p>
-          <Link
-            href="/the-vault"
-            className="inline-block px-6 py-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors font-medium"
-          >
-            Browse Collection
-          </Link>
-        </div>
-      </div>
+      {/* Related Plants Section */}
+      <RelatedPlants 
+        plantId={plant.id} 
+        currentPlantName={plant.commonName || plant.botanicalName} 
+      />
     </div>
   );
 }
