@@ -140,7 +140,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
             </nav>
 
             {/* Post Button */}
-            <button className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors">
+            <button className="w-full bg-[#81a308] text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors">
               Start now
             </button>
           </div>
@@ -171,7 +171,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
                   >
                     {filter}
                     {activeFilter === filter && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-500" />
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#81a308]" />
                     )}
                   </button>
                 ))}
@@ -346,7 +346,7 @@ function PlantPost({ plant }: { plant: Plant }) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+            <div className="w-full h-full bg-[#81a308] flex items-center justify-center">
               <span className="text-white font-bold text-lg">
                 {plant.user.firstName?.[0] ||
                   plant.user.username[0].toUpperCase()}
@@ -519,7 +519,7 @@ function PlantPost({ plant }: { plant: Plant }) {
             {/* Buy Interest Button */}
             <button
               onClick={handleBuyInterest}
-              className="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-1.5 rounded-full transition-colors duration-200 text-sm flex items-center space-x-1"
+              className="bg-[#81a308]  text-black font-semibold px-4 py-1.5 rounded-full transition-colors duration-200 text-sm flex items-center space-x-1"
             >
               <DollarSign className="w-4 h-4" />
               <span>Buy</span>
@@ -621,7 +621,7 @@ function MarketplaceContent() {
                 <span className="text-lg font-bold text-white">
                   {plant.price}
                 </span>
-                <button className="px-3 py-1 text-white text-sm rounded-lg bg-green-500 hover:bg-green-600 transition-colors border border-green-500">
+                <button className="px-3 py-1 text-white text-sm rounded-lg bg-[#81a308] hover:bg-green-600 transition-colors border border-green-500">
                   View
                 </button>
               </div>

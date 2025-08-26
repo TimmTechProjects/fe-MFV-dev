@@ -53,7 +53,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
                   >
                     <Badge
                       variant="secondary"
-                      className="text-xs px-2 py-1 bg-white/90 text-gray-800 backdrop-blur-sm hover:bg-green-500 hover:text-white transition-all duration-200 border-0 shadow-sm max-w-[100px] truncate"
+                      className="text-xs px-2 py-1 bg-white/90 text-gray-800 backdrop-blur-sm hover:bg-[#81a308] hover:text-white transition-all duration-200 border-0 shadow-sm max-w-[100px] truncate"
                     >
                       {tag.name}
                     </Badge>
@@ -116,7 +116,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
                 >
                   <Badge
                     variant="outline"
-                    className="text-xs px-2 py-0.5 text-gray-300 border-gray-600 hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-200 max-w-[80px] truncate"
+                    className="text-xs px-2 py-0.5 text-gray-300 border-gray-600 hover:bg-[#81a308] hover:border-green-500 hover:text-white transition-all duration-200 max-w-[80px] truncate"
                   >
                     {tag.name}
                   </Badge>
