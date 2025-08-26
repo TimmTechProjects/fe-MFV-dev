@@ -13,10 +13,10 @@ export const navLinks = [
     label: "The Vault",
     href: "/the-vault",
   },
-  {
-    label: "Garden Builds",
-    href: "/garden-builds",
-  },
+  // {
+  //   label: "Garden Builds",
+  //   href: "/garden-builds",
+  // },
   {
     label: "Marketplace",
     href: "/marketplace",

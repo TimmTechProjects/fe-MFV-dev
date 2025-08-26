@@ -1,23 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import {
   Heart,
   MessageCircle,
   Repeat2,
   Share,
   Search,
-  TrendingUp,
-  Users,
   MoreHorizontal,
   Home,
-  Bell,
   Mail,
-  Bookmark,
-  User,
-  Settings,
   ShoppingCart,
-  DollarSign,
+  ImageIcon,
+  VideoIcon,
+  MapPinIcon,
 } from "lucide-react";
 
 interface Plant {
@@ -75,11 +71,12 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
   const [total, setTotal] = useState(0);
   const [activeFilter, setActiveFilter] = useState("For You");
   const [loading, setLoading] = useState(true);
-  const [showMarketplaceContent, setShowMarketplaceContent] = useState(false); // New state
+  const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
 
-  const currentPage = Number(searchParams?.page || 1);
-  const selectedType = searchParams?.type;
-  const selectedTag = searchParams?.tag;
+  const unwrappedSearchParams = use(searchParams);
+  const currentPage = Number(unwrappedSearchParams?.page || 1);
+  const selectedType = unwrappedSearchParams?.type;
+  const selectedTag = unwrappedSearchParams?.tag;
 
   useEffect(() => {
     let ignore = false;
@@ -87,7 +84,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
     getPaginatedPlants(currentPage, limit).then(
       ({ plants: fetchedPlants, total }) => {
         if (!ignore) {
-          setPlants(fetchedPlants as Plant[]);
+          setPlants(fetchedPlants);
           setTotal(total);
           setLoading(false);
         }
@@ -100,17 +97,11 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
 
   const totalPages = Math.ceil(total / limit);
 
-  const filters = ["For You", "Houseplants", "Succulents", "Trees", "Trading"];
+  const filters = ["For You", "Reels", "Forum"];
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
-    setShowMarketplaceContent(false); // Hide marketplace content when filters change
-    // Here you would normally fetch filtered data based on type/tag
-  };
-
-  const handleMarketplaceClick = () => {
-    setShowMarketplaceContent(true);
-    setActiveFilter(""); // Clear active filter when marketplace is shown
+    setShowMarketplaceContent(false);
   };
 
   return (
@@ -134,15 +125,17 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
               <NavItem
                 icon={<ShoppingCart />}
                 label="Marketplace"
-                onClick={handleMarketplaceClick}
-                active={showMarketplaceContent}
+                href="/marketplace"
               />
             </nav>
 
             {/* Post Button */}
-            <button className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors">
+            <Link
+              href="/forum"
+              className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors block text-center"
+            >
               Start now
-            </button>
+            </Link>
           </div>
         </aside>
 
@@ -158,7 +151,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
 
             {/* Filter Tabs - Only show when not in marketplace */}
             {!showMarketplaceContent && (
-              <div className="flex overflow-x-auto scrollbar-hide">
+              <div className="grid grid-cols-3 gap-4 overflow-x-auto scrollbar-hide">
                 {filters.map((filter) => (
                   <button
                     key={filter}
@@ -179,8 +172,39 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
             )}
           </div>
 
+          {/* Create Post Box -  */}
+          <div className="p-4 border-b border-gray-800">
+            <div className="flex space-x-3">
+              <div className="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0"></div>
+              <div className="flex-1">
+                <input
+                  type="text"
+                  placeholder="What's on your mind?"
+                  className="w-full bg-gray-800 rounded-full px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+            </div>
+            <div className="flex justify-between mt-3 px-2">
+              <button className="flex items-center text-gray-400 hover:text-green-400">
+                <ImageIcon className="w-5 h-5 mr-1" />
+                <span className="text-sm">Photo</span>
+              </button>
+              <button className="flex items-center text-gray-400 hover:text-green-400">
+                <VideoIcon className="w-5 h-5 mr-1" />
+                <span className="text-sm">Video</span>
+              </button>
+              <button className="flex items-center text-gray-400 hover:text-green-400">
+                <MapPinIcon className="w-5 h-5 mr-1" />
+                <span className="text-sm">Location</span>
+              </button>
+              <button className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-green-600">
+                Post
+              </button>
+            </div>
+          </div>
+
           {/* Plant Posts Feed */}
-          {!showMarketplaceContent ? ( // Conditional rendering for main feed
+          {!showMarketplaceContent ? (
             <div className="divide-y divide-gray-800">
               {loading ? (
                 <Loading />
@@ -204,21 +228,19 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
               )}
             </div>
           ) : (
-            <MarketplaceContent /> // Placeholder for marketplace content
+            <MarketplaceContent />
           )}
 
           {/* Pagination */}
-          {!loading &&
-            totalPages > 1 &&
-            !showMarketplaceContent && ( // Hide pagination for marketplace
-              <div className="p-4 border-t border-gray-800">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  maxVisiblePages={5}
-                />
-              </div>
-            )}
+          {!loading && totalPages > 1 && !showMarketplaceContent && (
+            <div className="p-4 border-t border-gray-800">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                maxVisiblePages={5}
+              />
+            </div>
+          )}
         </main>
 
         {/* Right Sidebar - Trending & Suggestions */}
@@ -266,20 +288,39 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
 }
 
 // Navigation Item Component
+
 function NavItem({
   icon,
   label,
   active = false,
-  onClick, // New prop
+  onClick,
+  href,
 }: {
   icon: React.ReactNode;
   label: string;
   active?: boolean;
-  onClick?: () => void; // New prop type
+  onClick?: () => void;
+  href?: string;
 }) {
+  if (href) {
+    // Render as Next.js Link
+    return (
+      <Link
+        href={href}
+        className={`flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-xl w-full text-left ${
+          active ? "font-bold" : "font-normal"
+        }`}
+      >
+        <span className="w-6 h-6">{icon}</span>
+        <span>{label}</span>
+      </Link>
+    );
+  }
+
+  // Render as button
   return (
     <button
-      onClick={onClick} // Use onClick handler
+      onClick={onClick}
       className={`flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-xl w-full text-left ${
         active ? "font-bold" : "font-normal"
       }`}
@@ -300,6 +341,13 @@ function PlantPost({ plant }: { plant: Plant }) {
   );
   const [commentCount] = useState(Math.floor(Math.random() * 30) + 2);
 
+  // Related plants data (placeholder)
+  const relatedPlants = [
+    { id: "1", name: "Monstera", image: "/monstera.jpg" },
+    { id: "2", name: "Pothos", image: "/pothos.jpg" },
+    { id: "3", name: "Philodendron", image: "/philodendron.jpg" },
+  ];
+
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     setLiked(!liked);
@@ -310,13 +358,6 @@ function PlantPost({ plant }: { plant: Plant }) {
     e.stopPropagation();
     setRetweeted(!retweeted);
     setRetweetCount((prev) => (retweeted ? prev - 1 : prev + 1));
-  };
-
-  const handleBuyInterest = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    alert(
-      `Interested in buying ${plant.commonName}! We'll connect you with @${plant.user.username} for negotiation.`
-    );
   };
 
   const timeAgo = (dateString: string) => {
@@ -447,43 +488,28 @@ function PlantPost({ plant }: { plant: Plant }) {
             </div>
           </div>
 
-          {/* Interaction Buttons */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-1">
-              {/* Comment */}
-              <button
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-blue-900/20 transition-colors group"
-              >
-                <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-400" />
-                <span className="text-sm text-gray-400 group-hover:text-blue-400">
-                  {commentCount}
-                </span>
-              </button>
-
-              {/* Retweet */}
-              <button
-                onClick={handleRetweet}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-green-900/20 transition-colors group"
-              >
-                <Repeat2
-                  className={`w-5 h-5 transition-colors ${
-                    retweeted
-                      ? "text-green-500"
-                      : "text-gray-400 group-hover:text-green-400"
-                  }`}
-                />
-                <span
-                  className={`text-sm transition-colors ${
-                    retweeted
-                      ? "text-green-500"
-                      : "text-gray-400 group-hover:text-green-400"
-                  }`}
+          {/* Related Plants Section */}
+          <div className="mt-4">
+            <h4 className="text-white font-semibold mb-2">Related Plants</h4>
+            <div className="flex space-x-2 overflow-x-auto pb-2">
+              {relatedPlants.map((relatedPlant) => (
+                <div
+                  key={relatedPlant.id}
+                  className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border border-gray-700"
                 >
-                  {retweetCount}
-                </span>
-              </button>
+                  <img
+                    src={relatedPlant.image}
+                    alt={relatedPlant.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
+          {/* Interaction Buttons */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center space-x-1">
               {/* Like */}
               <button
                 onClick={handleLike}
@@ -507,6 +533,40 @@ function PlantPost({ plant }: { plant: Plant }) {
                 </span>
               </button>
 
+              {/* Comment */}
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center space-x-2 p-2 rounded-full hover:bg-blue-900/20 transition-colors group"
+              >
+                <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-400" />
+                <span className="text-sm text-gray-400 group-hover:text-blue-400">
+                  {commentCount}
+                </span>
+              </button>
+
+              {/* Repost */}
+              <button
+                onClick={handleRetweet}
+                className="flex items-center space-x-2 p-2 rounded-full hover:bg-green-900/20 transition-colors group"
+              >
+                <Repeat2
+                  className={`w-5 h-5 transition-colors ${
+                    retweeted
+                      ? "text-green-500"
+                      : "text-gray-400 group-hover:text-green-400"
+                  }`}
+                />
+                <span
+                  className={`text-sm transition-colors ${
+                    retweeted
+                      ? "text-green-500"
+                      : "text-gray-400 group-hover:text-green-400"
+                  }`}
+                >
+                  {retweetCount}
+                </span>
+              </button>
+
               {/* Share */}
               <button
                 onClick={(e) => e.stopPropagation()}
@@ -515,15 +575,6 @@ function PlantPost({ plant }: { plant: Plant }) {
                 <Share className="w-5 h-5 text-gray-400 group-hover:text-gray-300" />
               </button>
             </div>
-
-            {/* Buy Interest Button */}
-            <button
-              onClick={handleBuyInterest}
-              className="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-1.5 rounded-full transition-colors duration-200 text-sm flex items-center space-x-1"
-            >
-              <DollarSign className="w-4 h-4" />
-              <span>Buy</span>
-            </button>
           </div>
         </div>
       </div>
@@ -565,7 +616,7 @@ function MarketplaceContent() {
       </div>
 
       {/* Marketplace Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2   gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {marketplacePlants.map((plant) => (
           <div
             key={plant.id}
