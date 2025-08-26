@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { User } from "@/types/users";
 import { getUserByUsername, getUserCollections } from "@/lib/utils";
 import Link from "next/link";
@@ -80,6 +80,7 @@ const DEMO_COMMENTS: NestedComment[] = [
 const ProfilePage = () => {
   const { user } = useAuth();
   const { username } = useParams();
+  const router = useRouter();
   const safeUsername = Array.isArray(username) ? username[0] : username || "";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
@@ -192,7 +193,7 @@ const ProfilePage = () => {
               <NavItem icon={<Mail />} label="Messages" />
               <NavItem icon={<Bookmark />} label="Bookmarks" />
               <NavItem icon={<UserIcon />} label="Profile" active={true} />
-              <NavItem icon={<ShoppingCart />} label="Marketplace" />
+              <NavItem icon={<ShoppingCart />} label="Marketplace" href="/marketplace" />
             </nav>
 
             <button className="w-full bg-[#81a308] text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors">
@@ -554,22 +555,24 @@ function NavItem({
   label,
   active = false,
   onClick,
+  href,
 }: {
   icon: React.ReactNode;
   label: string;
   active?: boolean;
   onClick?: () => void;
+  href?: string;
 }) {
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={href || "#"}
       className={`flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-xl w-full text-left ${
         active ? "font-bold" : "font-normal"
       }`}
     >
       <span className="w-6 h-6">{icon}</span>
       <span>{label}</span>
-    </button>
+    </Link>
   );
 }
 
