@@ -129,7 +129,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
                       Contributor
                     </h3>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#81a308] rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-sm">
                           {username.charAt(0).toUpperCase()}
                         </span>
