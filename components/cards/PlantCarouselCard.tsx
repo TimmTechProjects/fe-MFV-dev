@@ -19,15 +19,15 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
       {/* Main Card Container */}
       <div className="relative overflow-hidden rounded-2xl bg-black/20 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full flex flex-col">
         {/* Image Container */}
-        <Link
-          href={
-            plant.user?.username
-              ? `/profiles/${plant.user.username}/collections/${plant.collectionId}/${plant.slug}`
-              : "#"
-          }
-          className="block relative"
-        >
-          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+        <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+          <Link
+            href={
+              plant.user?.username
+                ? `/profiles/${plant.user.username}/collections/${plant.collectionId}/${plant.slug}`
+                : "#"
+            }
+            className="block relative"
+          >
             <Image
               src={imgSrc}
               alt={plant.commonName || plant.botanicalName}
@@ -39,38 +39,38 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
 
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </Link>
 
-            {/* Tags Overlay on Image */}
-            {plant?.tags?.length > 0 && (
-              <div className="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[calc(100%-1.5rem)]">
-                {plant.tags.slice(0, 2).map((tag, i) => (
-                  <Link
-                    key={i}
-                    href={`/the-vault/results?tag=${encodeURIComponent(
-                      tag.name
-                    )}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Badge
-                      variant="secondary"
-                      className="text-xs px-2 py-1 bg-white/90 text-gray-800 backdrop-blur-sm hover:bg-[#81a308] hover:text-white transition-all duration-200 border-0 shadow-sm max-w-[100px] truncate"
-                    >
-                      {tag.name}
-                    </Badge>
-                  </Link>
-                ))}
-                {plant.tags.length > 2 && (
+          {/* Tags Overlay on Image */}
+          {plant?.tags?.length > 0 && (
+            <div className="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[calc(100%-1.5rem)]">
+              {plant.tags.slice(0, 2).map((tag, i) => (
+                <Link
+                  key={i}
+                  href={`/the-vault/results?tag=${encodeURIComponent(
+                    tag.name
+                  )}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Badge
                     variant="secondary"
-                    className="text-xs px-2 py-1 bg-white/90 text-gray-600 backdrop-blur-sm border-0 shadow-sm"
+                    className="text-xs px-2 py-1 bg-white/90 text-gray-800 backdrop-blur-sm hover:bg-[#81a308] hover:text-white transition-all duration-200 border-0 shadow-sm max-w-[100px] truncate"
                   >
-                    +{plant.tags.length - 2}
+                    {tag.name}
                   </Badge>
-                )}
-              </div>
-            )}
-          </div>
-        </Link>
+                </Link>
+              ))}
+              {plant.tags.length > 2 && (
+                <Badge
+                  variant="secondary"
+                  className="text-xs px-2 py-1 bg-white/90 text-gray-600 backdrop-blur-sm border-0 shadow-sm"
+                >
+                  +{plant.tags.length - 2}
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Content Section */}
         <div className="p-4 space-y-2 flex-1 flex flex-col">

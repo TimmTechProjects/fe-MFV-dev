@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Hero = () => {
   return (
-    <div className="relative w-full h-[70vh] md:h-[80vh]  max-w-full mx-auto overflow-hidden">
+    <div className="relative w-full h-[70vh] md:h-[70vh]  max-w-full mx-auto overflow-hidden">
       {/* Background Image */}
       <Image
         src="/images/herbs-in-jars.jpg"

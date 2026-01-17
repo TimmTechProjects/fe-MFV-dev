@@ -16,20 +16,19 @@ export default function useAppInit() {
 
     try {
       setLoading(true);
-      const result = await apiget("api/auth/authenticate");
+      if (!token) {
+        setInitialized(true);
+        return;
+      }
 
-      if (result?.data?.user) {
-        dispatch(setUser(result.data.user));
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        dispatch(setUser(parsedUser));
         dispatch(setIsLoggedIn(true));
-
-        // if (
-        //   window.location.pathname.includes("login") ||
-        //   window.location.pathname.includes("signup")
-        // ) {
-        //   router.push("/");
-        // }
       } else {
-        console.error("Authentication error");
+        console.warn("Token found but no user stored locally.");
       }
     } catch (error) {
       console.error("Authentication error:", error);

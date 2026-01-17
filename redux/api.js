@@ -2,12 +2,31 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-export const constant = () => {
-  if (window.location.hostname === "localhost") {
-    return { baseUrl: "http://localhost:5000/" };
+const resolveApiBaseUrl = () => {
+  const publicUrl = process.env.NEXT_PUBLIC_FLORAL_VAULT_API_URL;
+  const devUrl = process.env.NEXT_PUBLIC_FLORAL_VAULT_DEV_API_URL;
+
+  if (publicUrl) {
+    return publicUrl.endsWith("/") ? publicUrl : `${publicUrl}/`;
   }
 
-  return { baseUrl: "http://localhost:5000/" };
+  if (process.env.NODE_ENV !== "production" && devUrl) {
+    return devUrl.endsWith("/") ? devUrl : `${devUrl}/`;
+  }
+
+  if (devUrl) {
+    return devUrl.endsWith("/") ? devUrl : `${devUrl}/`;
+  }
+
+  const fallbackUrl = "https://floral-vault-api.onrender.com/";
+  console.warn(
+    "Missing API base URL. Falling back to live API. Set NEXT_PUBLIC_FLORAL_VAULT_API_URL (and optionally NEXT_PUBLIC_FLORAL_VAULT_DEV_API_URL)."
+  );
+  return fallbackUrl;
+};
+
+export const constant = () => {
+  return { baseUrl: resolveApiBaseUrl() };
 };
 
 const logoutUser = () => {

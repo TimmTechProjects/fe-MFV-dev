@@ -40,12 +40,17 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
   const [relatedPlants, setRelatedPlants] = useState<RelatedPlant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const baseUrl =
+    process.env.NEXT_PUBLIC_FLORAL_VAULT_API_URL ||
+    process.env.NEXT_PUBLIC_FLORAL_VAULT_DEV_API_URL
 
   useEffect(() => {
     const fetchRelatedPlants = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_FLORAL_VAULT_API_URL}/api/plants/related/${plantId}?limit=6`);
+        const response = await fetch(
+          `${baseUrl}/api/plants/related/${plantId}?limit=6`
+        );
         
         if (!response.ok) {
           throw new Error('Failed to fetch related plants');
