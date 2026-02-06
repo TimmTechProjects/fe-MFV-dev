@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import useAuth from "@/redux/hooks/useAuth";
+import { CollectionsPageSkeleton } from "@/components/skeletons/CollectionCardSkeleton";
 
 interface CollectionsPageProps {
   params: Promise<{
@@ -62,14 +63,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
   }, [username]);
 
   if (loading) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center text-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81a308] mx-auto mb-4"></div>
-          <p>Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <CollectionsPageSkeleton />;
   }
 
   if (error) {

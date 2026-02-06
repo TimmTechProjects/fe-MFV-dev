@@ -35,6 +35,7 @@ import { Collection } from "@/types/collections";
 import { DUMMY_POSTS } from "@/mock/posts";
 import { PostSidePanel, NestedComment } from "@/components/PostSidePanel";
 import useAuth from "@/redux/hooks/useAuth";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 const COVER_PHOTO =
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80";
@@ -152,18 +153,7 @@ const ProfilePage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <div className="max-w-6xl mx-auto flex">
-          <div className="flex-1 flex items-center justify-center h-screen">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81a308] mx-auto mb-4"></div>
-              <p>Loading profile...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!profileUser) {
