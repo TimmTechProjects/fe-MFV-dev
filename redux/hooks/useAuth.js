@@ -46,6 +46,7 @@ const useAuth = () => {
           60 * 60 * 24 * 7
         }; sameSite=lax`;
         localStorage.setItem("token", storedUser?.data?.token);
+        localStorage.setItem("user", JSON.stringify(storedUser?.data?.user));
         dispatch(setUser(storedUser?.data?.user));
         dispatch(setIsLoggedIn(true));
         return storedUser;
@@ -62,6 +63,7 @@ const useAuth = () => {
     dispatch(setIsLoggedIn(false));
     router.push("/login");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     document.cookie = "token=; path=/; max-age=0; sameSite=lax";
   };
 

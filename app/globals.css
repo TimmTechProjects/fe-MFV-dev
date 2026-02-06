@@ -41,6 +41,18 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Botanical Color Palette - Dark mode friendly */
+  --color-botanical-sage: #10b981;
+  --color-botanical-fern: #059669;
+  --color-botanical-moss: #047857;
+  --color-botanical-forest: #18181b;
+  --color-botanical-cream: #fafafa;
+  --color-botanical-parchment: #f4f4f5;
+  --color-botanical-bark: #8b7355;
+  --color-botanical-soil: #5c4033;
+  --color-botanical-terracotta: #c67d4e;
+  --color-botanical-gold: #fbbf24;
 }
 
 :root {
@@ -55,6 +67,18 @@
 
   --border: oklch(0.8 0 0);
   --ring: oklch(0.6 0.2 120);
+
+  /* Botanical Theme Colors - Dark mode friendly */
+  --botanical-sage: #10b981;
+  --botanical-fern: #059669;
+  --botanical-moss: #047857;
+  --botanical-forest: #18181b;
+  --botanical-cream: #fafafa;
+  --botanical-parchment: #f4f4f5;
+  --botanical-bark: #8b7355;
+  --botanical-soil: #5c4033;
+  --botanical-terracotta: #c67d4e;
+  --botanical-gold: #fbbf24;
 }
 
 .dark {
@@ -89,6 +113,18 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Dark Mode Botanical Theme - Zinc base with emerald accents */
+  --botanical-sage: #10b981;
+  --botanical-fern: #059669;
+  --botanical-moss: #047857;
+  --botanical-forest: #09090b;
+  --botanical-cream: #fafafa;
+  --botanical-parchment: #f4f4f5;
+  --botanical-bark: #6b5a45;
+  --botanical-soil: #3d2e24;
+  --botanical-terracotta: #a5684a;
+  --botanical-gold: #fbbf24;
 }
 
 @layer base {
@@ -180,4 +216,344 @@
   list-style-type: decimal;
   padding-left: 1.25rem;
   margin: 1rem 0;
+}
+
+/* ========================================
+   BOTANICAL DESIGN SYSTEM
+   Dark theme with subtle botanical accents
+   ======================================== */
+
+/* Botanical Background Patterns - Very subtle green accents on dark bg */
+.botanical-pattern {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.015) 0%, transparent 40%);
+}
+
+.botanical-gradient {
+  background: linear-gradient(
+    135deg,
+    #09090b 0%,
+    #18181b 50%,
+    #09090b 100%
+  );
+}
+
+.botanical-gradient-light {
+  background: linear-gradient(
+    135deg,
+    var(--botanical-cream) 0%,
+    var(--botanical-parchment) 100%
+  );
+}
+
+/* Leaf Pattern Overlay - Very subtle */
+.leaf-pattern {
+  position: relative;
+}
+
+.leaf-pattern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5c-8 10-15 18-10 30 3 7 10 10 10 10s7-3 10-10c5-12-2-20-10-30z' fill='%2310b981' fill-opacity='0.015'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Garden Card Styles - Dark zinc with subtle green border */
+.garden-card {
+  background: linear-gradient(145deg, rgba(39, 39, 42, 0.9), rgba(24, 24, 27, 0.95));
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.garden-card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+
+/* Plant Card Grid */
+.plant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Collection Bed Cards - Dark bg with subtle green accents */
+.collection-bed {
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.6) 0%, rgba(24, 24, 27, 0.8) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-bed::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.5), rgba(5, 150, 105, 0.3), rgba(16, 185, 129, 0.5));
+}
+
+/* Garden Header Mosaic - Dark zinc base */
+.garden-header {
+  position: relative;
+  background: linear-gradient(180deg, #09090b 0%, #18181b 100%);
+  overflow: hidden;
+}
+
+.garden-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, #18181b, transparent);
+  pointer-events: none;
+}
+
+/* Botanical Form Inputs - Dark zinc with green border accent */
+.botanical-input {
+  background: rgba(39, 39, 42, 0.6);
+  border: 1px solid rgba(113, 113, 122, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  color: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.botanical-input:focus {
+  outline: none;
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  background: rgba(39, 39, 42, 0.8);
+}
+
+.botanical-input::placeholder {
+  color: rgba(161, 161, 170, 0.6);
+}
+
+/* Botanical Button - Muted emerald, not saturated */
+.botanical-btn {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
+.botanical-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.botanical-btn:active {
+  transform: translateY(0);
+}
+
+.botanical-btn-outline {
+  background: transparent;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  box-shadow: none;
+}
+
+.botanical-btn-outline:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+/* Sidebar Navigation - Zinc with emerald accents */
+.botanical-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  color: #a1a1aa;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.botanical-nav-item:hover {
+  background: rgba(63, 63, 70, 0.5);
+  color: #fafafa;
+}
+
+.botanical-nav-item.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-left-color: #10b981;
+}
+
+/* Tag Chips - Subtle emerald on dark */
+.botanical-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  transition: all 0.2s ease;
+}
+
+.botanical-tag:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Decorative Elements */
+.leaf-decoration {
+  position: absolute;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.leaf-decoration.top-right {
+  top: -20px;
+  right: -20px;
+  transform: rotate(45deg);
+}
+
+.leaf-decoration.bottom-left {
+  bottom: -20px;
+  left: -20px;
+  transform: rotate(-135deg);
+}
+
+/* Stats Badge - Dark zinc with emerald accent */
+.botanical-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(39, 39, 42, 0.5);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(63, 63, 70, 0.5);
+}
+
+.botanical-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fafafa;
+}
+
+.botanical-stat-label {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Wizard Steps - Dark with emerald highlights */
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(39, 39, 42, 0.5);
+  border-radius: 0.5rem;
+  color: #71717a;
+}
+
+.wizard-step.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.wizard-step.completed {
+  background: rgba(5, 150, 105, 0.15);
+  color: #059669;
+}
+
+.wizard-step-number {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: currentColor;
+  color: #18181b;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Divider with leaf */
+.botanical-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: rgba(16, 185, 129, 0.3);
+}
+
+.botanical-divider::before,
+.botanical-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(63, 63, 70, 0.5), transparent);
+}
+
+/* Scrollbar - Dark zinc */
+.botanical-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.botanical-scrollbar::-webkit-scrollbar-track {
+  background: rgba(39, 39, 42, 0.5);
+  border-radius: 4px;
+}
+
+.botanical-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(63, 63, 70, 0.8);
+  border-radius: 4px;
+}
+
+.botanical-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(82, 82, 91, 1);
+}
+
+/* Animations */
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-sway {
+  animation: gentle-sway 4s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
 }

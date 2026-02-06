@@ -12,6 +12,7 @@ export const _getLogin = (data, successCallBack, failCallBack) => {
       if (req.data) {
         successCallBack?.(req?.data);
         localStorage.setItem("token", req?.data?.token);
+        localStorage.setItem("user", JSON.stringify(req?.data?.user));
         document.cookie = `token=${req?.data?.token}; path=/; max-age=${
           60 * 60 * 24 * 7
         }; sameSite=lax`;
@@ -37,6 +38,7 @@ export const _getSignup = (data, successCallBack, failCallBack) => {
       if (req.data) {
         successCallBack?.(req?.data);
         localStorage.setItem("token", req?.data?.token);
+        localStorage.setItem("user", JSON.stringify(req?.data?.user));
         document.cookie = `token=${req?.data?.token}; path=/; max-age=${
           60 * 60 * 24 * 7
         }; sameSite=lax`;
