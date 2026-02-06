@@ -73,12 +73,12 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
         className={cn(
           "flex items-center gap-2 px-3 py-1 rounded border transition cursor-pointer",
           liked
-            ? "bg-[#81a308]/20 border-[#81a308] text-[#81a308]"
-            : "bg-transparent border-gray-500 text-gray-300 hover:bg-white/10"
+            ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+            : "bg-transparent border-zinc-600 text-zinc-300 hover:bg-white/10"
         )}
       >
         {liked ? (
-          <Heart className="w-4 h-4 fill-current text-[#81a308]" />
+          <Heart className="w-4 h-4 fill-current text-emerald-400" />
         ) : (
           <Heart className="w-4 h-4" />
         )}
@@ -87,19 +87,19 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
 
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex items-center gap-2 text-sm text-gray-200 hover:text-white border border-gray-500 px-3 py-1 rounded hover:bg-white/10 transition cursor-pointer">
+          <button className="flex items-center gap-2 text-sm text-zinc-200 hover:text-white border border-zinc-600 px-3 py-1 rounded hover:bg-white/10 transition cursor-pointer">
             <Plus className="w-4 h-4" />
             Save
           </button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-64 bg-zinc-900 border border-gray-700 p-4 text-sm text-white rounded">
-          <p className="mb-2 text-xs text-gray-400">Add to album</p>
+        <PopoverContent className="w-64 bg-zinc-900 border border-zinc-700 p-4 text-sm text-white rounded">
+          <p className="mb-2 text-xs text-zinc-400">Add to album</p>
 
           {loading ? (
-            <p className="text-xs text-gray-500">Loading...</p>
+            <p className="text-xs text-zinc-500">Loading...</p>
           ) : collections.length === 0 ? (
-            <p className="text-xs text-gray-500">No albums found</p>
+            <p className="text-xs text-zinc-500">No albums found</p>
           ) : (
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {collections.map((album) => {
@@ -111,9 +111,9 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
                     onClick={() => handleTogglePlant(album.id)}
                     className="w-full flex items-center justify-start gap-2 text-left hover:bg-zinc-800 px-2 py-1 rounded cursor-pointer"
                   >
-                    <div className="w-4 h-4 border border-gray-400 rounded-sm flex items-center justify-center">
+                    <div className="w-4 h-4 border border-zinc-500 rounded-sm flex items-center justify-center">
                       {isInAlbum && (
-                        <Check className="w-3 h-3 text-[#81a308]" />
+                        <Check className="w-3 h-3 text-emerald-400" />
                       )}
                     </div>
                     <span>{album.name}</span>
@@ -129,7 +129,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
                 window.location.pathname
               )}`}
             >
-              <button className="mt-3 text-xs text-[#81a308] hover:underline cursor-pointer">
+              <button className="mt-3 text-xs text-emerald-400 hover:underline cursor-pointer">
                 + Create New Album
               </button>
             </Link>

@@ -5,16 +5,26 @@ import PlantImageGallery from "@/components/PlantImageGallery";
 import Link from "next/link";
 import PlantActions from "@/components/PlantActions";
 import RelatedPlants from "@/components/RelatedPlants";
+import { LeafIcon } from "@/components/ui/botanical";
+import {
+  ArrowLeft,
+  Globe,
+  TreesIcon,
+  Sprout,
+  Eye,
+  Calendar,
+} from "lucide-react";
 
 type PageProps = {
   params: Promise<{
     username: string;
+    collectionSlug: string;
     slug: string;
   }>;
 };
 
 export default async function PlantDetailPage({ params }: PageProps) {
-  const { username, slug } = await params;
+  const { username, collectionSlug, slug } = await params;
 
   const plant = await getPlantBySlug(slug, username);
   if (!plant || !plant.slug) return notFound();
@@ -26,28 +36,63 @@ export default async function PlantDetailPage({ params }: PageProps) {
     );
   }
 
+  const infoItems = [
+    { icon: Globe, label: "Origin", value: plant.origin || "Unknown" },
+    { icon: TreesIcon, label: "Family", value: plant.family || "Unknown" },
+    { icon: Sprout, label: "Type", value: plant.type || "Unknown" },
+    { icon: Eye, label: "Views", value: plant.views.toLocaleString() },
+    {
+      icon: Calendar,
+      label: "Added",
+      value: new Date(plant.createdAt).toLocaleDateString(),
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-black via-black/95 to-black">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-zinc-950 text-white relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-br from-emerald-950/40 via-zinc-950 to-zinc-950" />
+        <div className="absolute top-20 right-10 opacity-[0.03]">
+          <LeafIcon className="w-64 h-64 text-emerald-500 rotate-12" />
+        </div>
+        <div className="absolute top-96 left-5 opacity-[0.02]">
+          <LeafIcon className="w-48 h-48 text-emerald-500 -rotate-45" />
+        </div>
+        <div className="absolute bottom-40 right-20 opacity-[0.02]">
+          <LeafIcon className="w-56 h-56 text-emerald-400 rotate-[135deg]" />
+        </div>
+      </div>
+
+      <div className="relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-4">
+          <Link
+            href={`/profiles/${username}/collections/${collectionSlug}`}
+            className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors duration-200 group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
+            Back to Collection
+          </Link>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-6">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4">
+              <LeafIcon className="w-3 h-3" />
+              Plant Details
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 bg-gradient-to-r from-white via-emerald-50 to-emerald-200 bg-clip-text text-transparent">
               {plant.commonName || plant.botanicalName}
             </h1>
             {plant.commonName && plant.botanicalName && (
-              <h2 className="text-xl md:text-2xl italic text-gray-400 font-light">
+              <h2 className="text-lg sm:text-xl md:text-2xl italic text-emerald-400/70 font-light">
                 {plant.botanicalName}
               </h2>
             )}
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Image Gallery - Large Column */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
             <div className="xl:col-span-2">
-              <div className="bg-gray-900/50 rounded-3xl p-4 border border-gray-800">
+              <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-emerald-500/10 hover:border-emerald-500/20 transition-colors duration-300">
                 <PlantImageGallery
                   images={plant.images}
                   alt={plant.commonName || plant.botanicalName}
@@ -55,127 +100,110 @@ export default async function PlantDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Sidebar Information */}
             <div className="space-y-6">
-              {/* Combined Info and Contributor Card */}
-              <div className="bg-gray-900/50 rounded-3xl p-6 border border-gray-800">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-6">
-                  {/* Plant Info Section */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2 text-white">
-                      Plant Information
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                        <span className="text-gray-400 text-sm">Origin</span>
-                        <span className="text-white font-medium text-sm">
-                          {plant.origin || "Unknown"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                        <span className="text-gray-400 text-sm">Family</span>
-                        <span className="text-white font-medium text-sm">
-                          {plant.family || "Unknown"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                        <span className="text-gray-400 text-sm">Type</span>
-                        <span className="text-white font-medium text-sm">
-                          {plant.type || "Unknown"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                        <span className="text-gray-400 text-sm">Views</span>
-                        <span className="text-white font-medium text-sm">
-                          {plant.views.toLocaleString()}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between py-1">
-                        <span className="text-gray-400 text-sm">Added</span>
-                        <span className="text-white font-medium text-sm">
-                          {new Date(plant.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      {plant.tags && plant.tags.length > 0 && (
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2 text-white">
-                            Tags
-                          </h3>
-                          <div className="flex flex-wrap gap-x-2 gap-y-1">
-                            {plant.tags.map((tag, i) => (
-                              <Link
-                                href={`/the-vault/results?tag=${encodeURIComponent(
-                                  tag.name
-                                )}`}
-                                key={i}
-                              >
-                                <Badge className="px-3 py-1 bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-full text-xs">
-                                  {tag.name}
-                                </Badge>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Contributor Section */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2 text-white">
-                      Contributor
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#81a308] rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">
-                          {username.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <div>
-                        <Link
-                          href={`/profiles/${username}`}
-                          className="text-white font-semibold hover:text-green-400 transition-colors text-sm"
-                        >
-                          @{username}
-                        </Link>
-                        <p className="text-xs text-gray-400">
-                          Plant Enthusiast
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <PlantActions plantId={plant.id} />
+              <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-4">
+                  <LeafIcon className="w-5 h-5 text-emerald-500" />
+                  <h3 className="text-lg font-semibold text-white">
+                    Plant Information
+                  </h3>
                 </div>
+
+                <div className="space-y-1">
+                  {infoItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-between py-2.5 border-b border-zinc-800/80 last:border-0 group/item hover:bg-emerald-500/5 rounded-lg px-2 -mx-2 transition-colors duration-200"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <item.icon className="w-4 h-4 text-emerald-500/70" />
+                        <span className="text-zinc-400 text-sm">
+                          {item.label}
+                        </span>
+                      </div>
+                      <span className="text-white font-medium text-sm">
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {plant.tags && plant.tags.length > 0 && (
+                  <div className="mt-5 pt-4 border-t border-zinc-800/80">
+                    <h4 className="text-sm font-medium text-zinc-400 mb-3">
+                      Tags
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {plant.tags.map((tag, i) => (
+                        <Link
+                          href={`/the-vault/results?tag=${encodeURIComponent(
+                            tag.name
+                          )}`}
+                          key={i}
+                        >
+                          <Badge className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all duration-200 rounded-full text-xs cursor-pointer">
+                            {tag.name}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-emerald-500/10">
+                <h3 className="text-sm font-medium text-zinc-400 mb-3">
+                  Contributor
+                </h3>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-emerald-500/20">
+                    <span className="text-white font-bold text-sm">
+                      {username.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <Link
+                      href={`/profiles/${username}`}
+                      className="text-white font-semibold hover:text-emerald-400 transition-colors duration-200 text-sm"
+                    >
+                      @{username}
+                    </Link>
+                    <p className="text-xs text-zinc-500">Plant Enthusiast</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-emerald-500/10">
+                <PlantActions plantId={plant.id} />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Description Section */}
-      <div className="max-w-7xl mx-auto px-6 pt-0 pb-10">
-        <div className="bg-gray-900/30 rounded-3xl p-8 border border-gray-800">
-          <h3 className="text-2xl font-bold mb-6 text-white">
-            About This Plant
-          </h3>
-          <div className="prose prose-invert prose-lg max-w-none">
-            <div
-              dangerouslySetInnerHTML={{ __html: plant.description }}
-              className="text-gray-300 leading-relaxed"
-            />
+        {plant.description && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-10">
+            <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-emerald-500/10">
+              <div className="flex items-center gap-2 mb-6">
+                <LeafIcon className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-2xl font-bold text-white">
+                  About This Plant
+                </h3>
+              </div>
+              <div className="prose prose-invert prose-lg max-w-none prose-a:text-emerald-400 prose-strong:text-white">
+                <div
+                  dangerouslySetInnerHTML={{ __html: plant.description }}
+                  className="text-zinc-300 leading-relaxed"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Related Plants Section */}
-      <RelatedPlants 
-        plantId={plant.id} 
-        currentPlantName={plant.commonName || plant.botanicalName} 
-      />
+        <RelatedPlants
+          plantId={plant.id}
+          currentPlantName={plant.commonName || plant.botanicalName}
+        />
+      </div>
     </div>
   );
 }
