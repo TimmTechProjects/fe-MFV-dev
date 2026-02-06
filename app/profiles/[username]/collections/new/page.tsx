@@ -139,16 +139,16 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
         <div className="flex items-center gap-4 mb-8">
           <Link
             href={username ? `/profiles/${username}` : "/"}
-            className="p-2 rounded-xl bg-[rgba(135,169,107,0.1)] hover:bg-[rgba(135,169,107,0.2)] transition-colors"
+            className="p-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-[var(--botanical-sage)]" />
+            <ArrowLeft className="w-5 h-5 text-emerald-500" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-[var(--botanical-cream)] flex items-center gap-2">
-              <TreeDeciduous className="w-6 h-6 text-[var(--botanical-sage)]" />
+            <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+              <TreeDeciduous className="w-6 h-6 text-emerald-500" />
               Create New Garden Bed
             </h1>
-            <p className="text-sm text-[rgba(135,169,107,0.6)]">
+            <p className="text-sm text-zinc-400">
               Organize your plants into a themed collection
             </p>
           </div>
@@ -162,7 +162,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
             <form onSubmit={handleCreateCollection} className="space-y-6 relative z-10">
               {/* Collection Name */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-[var(--botanical-sage)]">
+                <label className="flex items-center gap-2 text-sm font-medium text-emerald-500">
                   <LeafIcon className="w-4 h-4" />
                   Collection Name
                 </label>
@@ -175,17 +175,17 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                   autoFocus
                   className="botanical-input w-full text-lg"
                 />
-                <p className="text-xs text-[rgba(135,169,107,0.5)]">
+                <p className="text-xs text-zinc-500">
                   Choose a descriptive name that reflects the theme of your collection
                 </p>
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-[var(--botanical-sage)]">
+                <label className="flex items-center gap-2 text-sm font-medium text-emerald-500">
                   <Sparkles className="w-4 h-4" />
                   Description
-                  <span className="text-[rgba(135,169,107,0.4)] font-normal">(optional)</span>
+                  <span className="text-zinc-500 font-normal">(optional)</span>
                 </label>
                 <textarea
                   placeholder="Describe your collection... What makes it special? What types of plants will it contain?"
@@ -198,10 +198,10 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 
               {/* Thumbnail Upload */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-[var(--botanical-sage)]">
+                <label className="flex items-center gap-2 text-sm font-medium text-emerald-500">
                   <ImageIcon className="w-4 h-4" />
                   Cover Image
-                  <span className="text-[rgba(135,169,107,0.4)] font-normal">(optional)</span>
+                  <span className="text-zinc-500 font-normal">(optional)</span>
                 </label>
 
                 {!previewUrl ? (
@@ -215,27 +215,27 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                       transition-all duration-200
                       ${
                         isDragActive
-                          ? "border-[var(--botanical-sage)] bg-[rgba(135,169,107,0.1)]"
-                          : "border-[rgba(135,169,107,0.3)] hover:border-[var(--botanical-sage)] hover:bg-[rgba(135,169,107,0.05)]"
+                          ? "border-emerald-500 bg-emerald-500/10"
+                          : "border-zinc-700 hover:border-emerald-500/50 hover:bg-zinc-800/50"
                       }
                     `}
                   >
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-16 h-16 rounded-full bg-[rgba(135,169,107,0.1)] flex items-center justify-center">
-                        <Upload className="w-8 h-8 text-[var(--botanical-sage)]" />
+                      <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-emerald-500" />
                       </div>
                       <div>
-                        <p className="text-[var(--botanical-cream)] font-medium">
+                        <p className="text-zinc-100 font-medium">
                           {isDragActive ? "Drop your image here" : "Click to upload or drag and drop"}
                         </p>
-                        <p className="text-sm text-[rgba(135,169,107,0.5)] mt-1">
+                        <p className="text-sm text-zinc-500 mt-1">
                           PNG, JPG, WebP up to 5MB
                         </p>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="relative rounded-xl overflow-hidden border border-[rgba(135,169,107,0.3)]">
+                  <div className="relative rounded-xl overflow-hidden border border-zinc-700">
                     <img
                       src={previewUrl}
                       alt="Thumbnail Preview"
@@ -274,7 +274,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 
               {/* Submit Button */}
               <div className="flex items-center justify-between">
-                <p className="text-sm text-[rgba(135,169,107,0.5)]">
+                <p className="text-sm text-zinc-500">
                   You can add plants after creating the collection
                 </p>
                 <BotanicalButton
@@ -299,7 +299,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 
           {/* Preview Section */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 text-[var(--botanical-sage)]">
+            <div className="flex items-center gap-2 text-emerald-500">
               <Eye className="w-5 h-5" />
               <h2 className="font-medium">Live Preview</h2>
             </div>
@@ -309,7 +309,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               <LeafDecoration position="top-right" size="lg" />
               
               {/* Cover Image Preview */}
-              <div className="relative h-40 rounded-xl overflow-hidden mb-4 bg-[rgba(26,58,26,0.5)]">
+              <div className="relative h-40 rounded-xl overflow-hidden mb-4 bg-zinc-800/50">
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -319,39 +319,39 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="text-center">
-                      <TreeDeciduous className="w-12 h-12 text-[rgba(135,169,107,0.2)] mx-auto mb-2" />
-                      <p className="text-sm text-[rgba(135,169,107,0.3)]">
+                      <TreeDeciduous className="w-12 h-12 text-zinc-700 mx-auto mb-2" />
+                      <p className="text-sm text-zinc-600">
                         Cover image preview
                       </p>
                     </div>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--botanical-forest)] via-transparent to-transparent opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-50" />
               </div>
 
               {/* Content Preview */}
               <div className="relative z-10">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-[var(--botanical-cream)]">
+                  <h3 className="text-lg font-semibold text-zinc-100">
                     {name || "Untitled Collection"}
                   </h3>
-                  <span className="px-2 py-1 text-xs rounded-full bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]">
+                  <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
                     0 plants
                   </span>
                 </div>
                 
-                <p className="text-sm text-[rgba(135,169,107,0.6)] line-clamp-2">
+                <p className="text-sm text-zinc-400 line-clamp-2">
                   {description || "No description yet..."}
                 </p>
               </div>
 
               {/* Bottom accent */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--botanical-sage)] to-[var(--botanical-fern)]" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600" />
             </div>
 
             {/* Tips Card */}
             <BotanicalCard className="p-5">
-              <h3 className="flex items-center gap-2 text-[var(--botanical-sage)] font-medium mb-4">
+              <h3 className="flex items-center gap-2 text-emerald-500 font-medium mb-4">
                 <Leaf className="w-5 h-5" />
                 Tips for Great Collections
               </h3>
@@ -373,9 +373,9 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 
             {/* Inspiration */}
             <div className="text-center py-4">
-              <p className="text-sm text-[rgba(135,169,107,0.4)]">
+              <p className="text-sm text-zinc-500">
                 Need inspiration? Browse{" "}
-                <Link href="/newly-added" className="text-[var(--botanical-sage)] hover:underline">
+                <Link href="/newly-added" className="text-emerald-500 hover:underline">
                   popular collections
                 </Link>
               </p>
@@ -390,8 +390,8 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 // Tip Item Component
 function TipItem({ children }: { children: React.ReactNode }) {
   return (
-    <li className="flex items-start gap-2 text-sm text-[rgba(135,169,107,0.7)]">
-      <span className="w-1.5 h-1.5 rounded-full bg-[var(--botanical-sage)] mt-1.5 flex-shrink-0" />
+    <li className="flex items-start gap-2 text-sm text-zinc-400">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
       <span>{children}</span>
     </li>
   );

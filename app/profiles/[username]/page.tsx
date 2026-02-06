@@ -172,14 +172,14 @@ const ProfilePage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
-          {/* Cover Image with Botanical Overlay */}
+          {/* Cover Image with Dark Overlay */}
           <div className="relative h-64 md:h-80">
             <img
               src={coverImage}
               alt="Garden cover"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(15,31,15,0.3)] to-[var(--botanical-forest)]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(9,9,11,0.4)] to-[#18181b]" />
             
             {/* Decorative leaf patterns */}
             <div className="absolute top-4 left-4 opacity-20">
@@ -250,7 +250,7 @@ const ProfilePage = () => {
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-4 text-sm text-[rgba(135,169,107,0.7)]">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     Joined{" "}
@@ -333,7 +333,7 @@ const ProfilePage = () => {
               {/* Quick Actions */}
               {isOwnProfile && (
                 <div className="pt-6 space-y-2">
-                  <p className="text-xs uppercase tracking-wider text-[rgba(135,169,107,0.5)] px-3">
+                  <p className="text-xs uppercase tracking-wider text-zinc-500 px-3">
                     Quick Actions
                   </p>
                   <Link
@@ -355,14 +355,14 @@ const ProfilePage = () => {
               <section className="animate-fade-in-up">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <Sprout className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <Sprout className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-xl font-semibold text-zinc-100">
                         {isOwnProfile ? "My Garden" : `${profileUser.username}'s Garden`}
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         All plants across collections
                       </p>
                     </div>
@@ -373,8 +373,8 @@ const ProfilePage = () => {
                       onClick={() => setViewMode("grid")}
                       className={`p-2 rounded-lg transition-colors ${
                         viewMode === "grid"
-                          ? "bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]"
-                          : "text-[rgba(135,169,107,0.5)] hover:text-[var(--botanical-sage)]"
+                          ? "bg-emerald-500/15 text-emerald-500"
+                          : "text-zinc-500 hover:text-emerald-500"
                       }`}
                     >
                       <Grid3X3 className="w-5 h-5" />
@@ -383,8 +383,8 @@ const ProfilePage = () => {
                       onClick={() => setViewMode("list")}
                       className={`p-2 rounded-lg transition-colors ${
                         viewMode === "list"
-                          ? "bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]"
-                          : "text-[rgba(135,169,107,0.5)] hover:text-[var(--botanical-sage)]"
+                          ? "bg-emerald-500/15 text-emerald-500"
+                          : "text-zinc-500 hover:text-emerald-500"
                       }`}
                     >
                       <LayoutList className="w-5 h-5" />
@@ -455,14 +455,14 @@ const ProfilePage = () => {
               <section className="animate-fade-in-up">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <TreeDeciduous className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <TreeDeciduous className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-xl font-semibold text-zinc-100">
                         Garden Beds
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         Organized plant collections
                       </p>
                     </div>
@@ -517,14 +517,14 @@ const ProfilePage = () => {
             {activeSection === "posts" && (
               <section className="animate-fade-in-up">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                    <LayoutList className="w-6 h-6 text-[var(--botanical-sage)]" />
+                  <div className="p-2 rounded-lg bg-emerald-500/10">
+                    <LayoutList className="w-6 h-6 text-emerald-500" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-[var(--botanical-cream)]">
+                    <h2 className="text-xl font-semibold text-zinc-100">
                       Garden Journal
                     </h2>
-                    <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                    <p className="text-sm text-zinc-400">
                       Updates and stories from the garden
                     </p>
                   </div>
@@ -538,7 +538,7 @@ const ProfilePage = () => {
                           src={profileUser.avatarUrl}
                           alt={profileUser.username}
                         />
-                        <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)]">
+                        <AvatarFallback className="bg-emerald-600 text-white">
                           {profileUser.username?.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -550,11 +550,11 @@ const ProfilePage = () => {
                         />
                         <div className="flex justify-between items-center mt-3">
                           <div className="flex items-center gap-2">
-                            <button className="p-2 rounded-lg hover:bg-[rgba(135,169,107,0.1)] transition-colors">
-                              <ImageIcon className="w-5 h-5 text-[var(--botanical-sage)]" />
+                            <button className="p-2 rounded-lg hover:bg-zinc-800 transition-colors">
+                              <ImageIcon className="w-5 h-5 text-emerald-500" />
                             </button>
-                            <button className="p-2 rounded-lg hover:bg-[rgba(135,169,107,0.1)] transition-colors">
-                              <Leaf className="w-5 h-5 text-[var(--botanical-sage)]" />
+                            <button className="p-2 rounded-lg hover:bg-zinc-800 transition-colors">
+                              <Leaf className="w-5 h-5 text-emerald-500" />
                             </button>
                           </div>
                           <BotanicalButton size="sm">Post</BotanicalButton>
@@ -582,14 +582,14 @@ const ProfilePage = () => {
             {activeSection === "marketplace" && (
               <section className="animate-fade-in-up">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                    <ShoppingCart className="w-6 h-6 text-[var(--botanical-sage)]" />
+                  <div className="p-2 rounded-lg bg-emerald-500/10">
+                    <ShoppingCart className="w-6 h-6 text-emerald-500" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-[var(--botanical-cream)]">
+                    <h2 className="text-xl font-semibold text-zinc-100">
                       Plant Market
                     </h2>
-                    <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                    <p className="text-sm text-zinc-400">
                       Plants and cuttings for sale or trade
                     </p>
                   </div>
@@ -639,7 +639,7 @@ function SidebarNavItem({
       {icon}
       <span className="flex-1">{label}</span>
       {badge !== undefined && (
-        <span className="px-2 py-0.5 text-xs rounded-full bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]">
+        <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
           {badge}
         </span>
       )}
@@ -683,7 +683,7 @@ function PlantCard({
           alt="Plant"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--botanical-forest)] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
         
         {/* Quick actions overlay */}
         <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -711,7 +711,7 @@ function PlantCard({
       {/* Content */}
       <div className="p-4">
         {post.text && (
-          <p className="text-[var(--botanical-cream)] text-sm line-clamp-2 mb-3">
+          <p className="text-zinc-100 text-sm line-clamp-2 mb-3">
             {post.text}
           </p>
         )}
@@ -720,16 +720,16 @@ function PlantCard({
           <div className="flex items-center gap-2">
             <Avatar className="w-6 h-6">
               <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-              <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)] text-xs">
+              <AvatarFallback className="bg-emerald-600 text-white text-xs">
                 {profileUser.username?.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm text-[rgba(135,169,107,0.7)]">
+            <span className="text-sm text-zinc-400">
               @{profileUser.username}
             </span>
           </div>
           
-          <div className="flex items-center gap-3 text-sm text-[rgba(135,169,107,0.6)]">
+          <div className="flex items-center gap-3 text-sm text-zinc-500">
             <span className="flex items-center gap-1">
               <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
               {likeCount}
@@ -781,34 +781,34 @@ function PlantListItem({
         <div className="flex items-center gap-2 mb-2">
           <Avatar className="w-6 h-6">
             <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-            <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)] text-xs">
+            <AvatarFallback className="bg-emerald-600 text-white text-xs">
               {profileUser.username?.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm text-[var(--botanical-sage)]">
+          <span className="text-sm text-emerald-500">
             @{profileUser.username}
           </span>
-          <span className="text-[rgba(135,169,107,0.4)]">·</span>
-          <span className="text-sm text-[rgba(135,169,107,0.5)]">
+          <span className="text-zinc-600">·</span>
+          <span className="text-sm text-zinc-500">
             {timeAgo(post.createdAt)}
           </span>
         </div>
         {post.text && (
-          <p className="text-[var(--botanical-cream)] mb-3">{post.text}</p>
+          <p className="text-zinc-100 mb-3">{post.text}</p>
         )}
         <div className="flex items-center gap-4">
           <button
             onClick={handleLike}
-            className="flex items-center gap-1 text-sm text-[rgba(135,169,107,0.6)] hover:text-red-400 transition-colors"
+            className="flex items-center gap-1 text-sm text-zinc-500 hover:text-red-400 transition-colors"
           >
             <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
             {likeCount}
           </button>
-          <button className="flex items-center gap-1 text-sm text-[rgba(135,169,107,0.6)] hover:text-[var(--botanical-sage)] transition-colors">
+          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
             <MessageCircle className="w-4 h-4" />
             {post.comments?.length || 0}
           </button>
-          <button className="flex items-center gap-1 text-sm text-[rgba(135,169,107,0.6)] hover:text-[var(--botanical-sage)] transition-colors">
+          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
             <Share className="w-4 h-4" />
           </button>
         </div>
@@ -839,29 +839,29 @@ function CollectionBedCard({
           alt={collection.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--botanical-forest)] via-transparent to-transparent opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-50" />
       </div>
 
       {/* Content */}
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-[var(--botanical-cream)] group-hover:text-[var(--botanical-sage)] transition-colors">
+          <h3 className="text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors">
             {collection.name}
           </h3>
-          <span className="px-2 py-1 text-xs rounded-full bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]">
+          <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
             {collection.plants?.length || 0} plants
           </span>
         </div>
         
         {collection.description && (
-          <p className="text-sm text-[rgba(135,169,107,0.6)] line-clamp-2">
+          <p className="text-sm text-zinc-400 line-clamp-2">
             {collection.description}
           </p>
         )}
       </div>
 
       {/* Hover indicator */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--botanical-sage)] to-[var(--botanical-fern)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
     </Link>
   );
 }
@@ -892,38 +892,38 @@ function PostCard({
       <div className="flex gap-4">
         <Avatar className="w-10 h-10 flex-shrink-0">
           <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-          <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)]">
+          <AvatarFallback className="bg-emerald-600 text-white">
             {profileUser.username?.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-medium text-[var(--botanical-cream)]">
+            <span className="font-medium text-zinc-100">
               {profileUser.firstName && profileUser.lastName
                 ? `${profileUser.firstName} ${profileUser.lastName}`
                 : profileUser.username}
             </span>
-            <span className="text-sm text-[rgba(135,169,107,0.5)]">
+            <span className="text-sm text-zinc-500">
               @{profileUser.username}
             </span>
-            <span className="text-[rgba(135,169,107,0.4)]">·</span>
-            <span className="text-sm text-[rgba(135,169,107,0.5)]">
+            <span className="text-zinc-600">·</span>
+            <span className="text-sm text-zinc-500">
               {timeAgo(post.createdAt)}
             </span>
-            <button className="ml-auto p-1 rounded-lg hover:bg-[rgba(135,169,107,0.1)] transition-colors">
-              <MoreHorizontal className="w-4 h-4 text-[rgba(135,169,107,0.5)]" />
+            <button className="ml-auto p-1 rounded-lg hover:bg-zinc-800 transition-colors">
+              <MoreHorizontal className="w-4 h-4 text-zinc-500" />
             </button>
           </div>
 
           {post.text && (
-            <p className="text-[var(--botanical-cream)] mb-3 leading-relaxed">
+            <p className="text-zinc-100 mb-3 leading-relaxed">
               {post.text}
             </p>
           )}
 
           {post.image && (
-            <div className="rounded-xl overflow-hidden mb-3 border border-[rgba(135,169,107,0.2)]">
+            <div className="rounded-xl overflow-hidden mb-3 border border-zinc-700/50">
               <img
                 src={post.image}
                 alt="Post media"
@@ -935,21 +935,21 @@ function PostCard({
           <div className="flex items-center gap-6">
             <button
               onClick={handleLike}
-              className="flex items-center gap-2 text-sm text-[rgba(135,169,107,0.6)] hover:text-red-400 transition-colors group"
+              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-red-400 transition-colors group"
             >
               <div className="p-2 rounded-full group-hover:bg-red-500/10 transition-colors">
                 <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
               </div>
               {likeCount}
             </button>
-            <button className="flex items-center gap-2 text-sm text-[rgba(135,169,107,0.6)] hover:text-[var(--botanical-sage)] transition-colors group">
-              <div className="p-2 rounded-full group-hover:bg-[rgba(135,169,107,0.1)] transition-colors">
+            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
+              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
                 <MessageCircle className="w-4 h-4" />
               </div>
               {post.comments?.length || 0}
             </button>
-            <button className="flex items-center gap-2 text-sm text-[rgba(135,169,107,0.6)] hover:text-[var(--botanical-sage)] transition-colors group">
-              <div className="p-2 rounded-full group-hover:bg-[rgba(135,169,107,0.1)] transition-colors">
+            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
+              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
                 <Share className="w-4 h-4" />
               </div>
             </button>

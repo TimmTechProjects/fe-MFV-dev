@@ -106,13 +106,13 @@ export const BotanicalInput = React.forwardRef<HTMLInputElement, BotanicalInputP
     return (
       <div className="space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-[var(--botanical-sage)]">
+          <label className="block text-sm font-medium text-emerald-500">
             {label}
           </label>
         )}
         <div className="relative">
           {Icon && (
-            <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgba(135,169,107,0.5)]" />
+            <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
           )}
           <input
             ref={ref}
@@ -143,7 +143,7 @@ export const BotanicalTextarea = React.forwardRef<HTMLTextAreaElement, Botanical
     return (
       <div className="space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-[var(--botanical-sage)]">
+          <label className="block text-sm font-medium text-emerald-500">
             {label}
           </label>
         )}
@@ -177,8 +177,8 @@ export const BotanicalTag = ({
 }: BotanicalTagProps) => {
   const variants = {
     default: "botanical-tag",
-    success: "botanical-tag bg-[rgba(79,121,66,0.3)] border-[rgba(79,121,66,0.4)]",
-    warning: "botanical-tag bg-[rgba(201,169,89,0.2)] border-[rgba(201,169,89,0.3)] text-[var(--botanical-gold)]",
+    success: "botanical-tag bg-emerald-600/20 border-emerald-600/30",
+    warning: "botanical-tag bg-amber-500/15 border-amber-500/25 text-amber-500",
   };
 
   return (
@@ -206,7 +206,7 @@ interface BotanicalStatProps {
 
 export const BotanicalStat = ({ value, label, icon: Icon }: BotanicalStatProps) => (
   <div className="botanical-stat">
-    {Icon && <Icon className="w-5 h-5 text-[var(--botanical-sage)] mb-1" />}
+    {Icon && <Icon className="w-5 h-5 text-emerald-500 mb-1" />}
     <span className="botanical-stat-value">{value}</span>
     <span className="botanical-stat-label">{label}</span>
   </div>
@@ -226,12 +226,12 @@ export const BotanicalSectionHeader = ({
 }: BotanicalSectionHeaderProps) => (
   <div className="flex items-center justify-between mb-6">
     <div>
-      <h2 className="text-xl font-semibold text-[var(--botanical-cream)] flex items-center gap-2">
-        <LeafIcon className="w-5 h-5 text-[var(--botanical-sage)]" />
+      <h2 className="text-xl font-semibold text-zinc-100 flex items-center gap-2">
+        <LeafIcon className="w-5 h-5 text-emerald-500" />
         {title}
       </h2>
       {subtitle && (
-        <p className="text-sm text-[rgba(135,169,107,0.6)] mt-1">{subtitle}</p>
+        <p className="text-sm text-zinc-400 mt-1">{subtitle}</p>
       )}
     </div>
     {action}
@@ -277,7 +277,7 @@ export const BotanicalSteps = ({ steps, currentStep }: BotanicalStepsProps) => (
             <span className="text-sm font-medium">{step.label}</span>
           </div>
           {index < steps.length - 1 && (
-            <div className="w-8 h-px bg-[rgba(135,169,107,0.2)]" />
+            <div className="w-8 h-px bg-zinc-700" />
           )}
         </React.Fragment>
       );
@@ -300,13 +300,13 @@ export const BotanicalEmptyState = ({
   action,
 }: BotanicalEmptyStateProps) => (
   <div className="flex flex-col items-center justify-center py-16 text-center">
-    <div className="w-20 h-20 rounded-full bg-[rgba(135,169,107,0.1)] flex items-center justify-center mb-4">
-      {icon || <SproutIcon className="w-10 h-10 text-[var(--botanical-sage)]" />}
+    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
+      {icon || <SproutIcon className="w-10 h-10 text-emerald-500" />}
     </div>
-    <h3 className="text-lg font-semibold text-[var(--botanical-cream)] mb-2">
+    <h3 className="text-lg font-semibold text-zinc-100 mb-2">
       {title}
     </h3>
-    <p className="text-[rgba(135,169,107,0.6)] max-w-sm mb-6">{description}</p>
+    <p className="text-zinc-400 max-w-sm mb-6">{description}</p>
     {action}
   </div>
 );
@@ -335,14 +335,14 @@ export const BotanicalAvatar = ({
   return (
     <div
       className={cn(
-        "rounded-full overflow-hidden border-2 border-[var(--botanical-sage)] flex items-center justify-center bg-[var(--botanical-forest)]",
+        "rounded-full overflow-hidden border-2 border-emerald-600 flex items-center justify-center bg-zinc-900",
         sizes[size]
       )}
     >
       {src ? (
         <img src={src} alt={alt} className="w-full h-full object-cover" />
       ) : (
-        <span className="font-semibold text-[var(--botanical-sage)]">{fallback}</span>
+        <span className="font-semibold text-emerald-500">{fallback}</span>
       )}
     </div>
   );
@@ -371,7 +371,7 @@ export const LeafDecoration = ({ position, size = "md" }: LeafDecorationProps) =
   return (
     <LeafIcon
       className={cn(
-        "absolute opacity-5 text-[var(--botanical-sage)] pointer-events-none",
+        "absolute opacity-[0.03] text-emerald-500 pointer-events-none",
         positions[position],
         sizes[size]
       )}

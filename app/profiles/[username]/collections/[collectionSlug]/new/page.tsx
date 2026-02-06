@@ -348,17 +348,17 @@ const NewPlantPage = () => {
         <div className="flex items-center gap-4 mb-8">
           <Link
             href={`/profiles/${username}/collections/${collectionSlug}`}
-            className="p-2 rounded-xl bg-[rgba(135,169,107,0.1)] hover:bg-[rgba(135,169,107,0.2)] transition-colors"
+            className="p-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-[var(--botanical-sage)]" />
+            <ArrowLeft className="w-5 h-5 text-emerald-500" />
           </Link>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-[var(--botanical-cream)] flex items-center gap-2">
-              <Sprout className="w-6 h-6 text-[var(--botanical-sage)]" />
+            <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+              <Sprout className="w-6 h-6 text-emerald-500" />
               Add New Plant
             </h1>
-            <p className="text-sm text-[rgba(135,169,107,0.6)]">
-              Adding to <span className="text-[var(--botanical-sage)]">{collectionName}</span>
+            <p className="text-sm text-zinc-400">
+              Adding to <span className="text-emerald-500">{collectionName}</span>
             </p>
           </div>
         </div>
@@ -378,14 +378,14 @@ const NewPlantPage = () => {
               {currentStep === 0 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <ImageIcon className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <ImageIcon className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-lg font-semibold text-zinc-100">
                         Plant Photos
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         Upload up to 10 photos of your plant
                       </p>
                     </div>
@@ -409,10 +409,10 @@ const NewPlantPage = () => {
                     )}
                   />
 
-                  <div className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(135,169,107,0.1)] border border-[rgba(135,169,107,0.2)]">
-                    <Info className="w-5 h-5 text-[var(--botanical-sage)] flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-[rgba(135,169,107,0.7)]">
-                      <p className="font-medium text-[var(--botanical-sage)] mb-1">Photo tips:</p>
+                  <div className="flex items-start gap-3 p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+                    <Info className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-zinc-400">
+                      <p className="font-medium text-emerald-500 mb-1">Photo tips:</p>
                       <ul className="space-y-1 list-disc list-inside">
                         <li>The first photo will be used as the cover image</li>
                         <li>Include close-ups of leaves, flowers, and stems</li>
@@ -427,14 +427,14 @@ const NewPlantPage = () => {
               {currentStep === 1 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <Leaf className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <Leaf className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-lg font-semibold text-zinc-100">
                         Basic Information
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         Tell us about your plant
                       </p>
                     </div>
@@ -446,7 +446,7 @@ const NewPlantPage = () => {
                       name="commonName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[var(--botanical-sage)]">
+                          <FormLabel className="text-emerald-500">
                             Common Name *
                           </FormLabel>
                           <FormControl>
@@ -466,7 +466,7 @@ const NewPlantPage = () => {
                       name="botanicalName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[var(--botanical-sage)]">
+                          <FormLabel className="text-emerald-500">
                             Botanical Name
                           </FormLabel>
                           <FormControl>
@@ -487,11 +487,11 @@ const NewPlantPage = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[var(--botanical-sage)]">
+                        <FormLabel className="text-emerald-500">
                           Description
                         </FormLabel>
                         <FormControl>
-                          <div className="rounded-xl border border-[rgba(135,169,107,0.3)] bg-[rgba(26,58,26,0.4)] overflow-hidden">
+                          <div className="rounded-xl border border-zinc-700 bg-zinc-800/50 overflow-hidden">
                             <PlantEditor
                               content={field.value}
                               onChange={field.onChange}
@@ -509,14 +509,14 @@ const NewPlantPage = () => {
               {currentStep === 2 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <FileText className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <FileText className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-lg font-semibold text-zinc-100">
                         Plant Details
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         Optional botanical classification
                       </p>
                     </div>
@@ -528,7 +528,7 @@ const NewPlantPage = () => {
                       name="type"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[var(--botanical-sage)]">
+                          <FormLabel className="text-emerald-500">
                             Plant Type
                           </FormLabel>
                           <Select
@@ -538,12 +538,12 @@ const NewPlantPage = () => {
                             <SelectTrigger className="botanical-input">
                               <SelectValue placeholder="Select type" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[var(--botanical-forest)] border-[rgba(135,169,107,0.3)]">
+                            <SelectContent className="bg-zinc-900 border-zinc-700">
                               {Object.entries(PLANT_TYPE_ICONS).map(([type, icon]) => (
                                 <SelectItem
                                   key={type}
                                   value={type}
-                                  className="text-[var(--botanical-cream)] focus:bg-[rgba(135,169,107,0.2)] focus:text-[var(--botanical-sage)]"
+                                  className="text-zinc-100 focus:bg-emerald-500/15 focus:text-emerald-500"
                                 >
                                   <span className="flex items-center gap-2 capitalize">
                                     {icon} {type}
@@ -562,7 +562,7 @@ const NewPlantPage = () => {
                       name="origin"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[var(--botanical-sage)] flex items-center gap-1">
+                          <FormLabel className="text-emerald-500 flex items-center gap-1">
                             <MapPin className="w-3 h-3" /> Origin
                           </FormLabel>
                           <FormControl>
@@ -582,7 +582,7 @@ const NewPlantPage = () => {
                       name="family"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[var(--botanical-sage)]">
+                          <FormLabel className="text-emerald-500">
                             Plant Family
                           </FormLabel>
                           <FormControl>
@@ -600,16 +600,16 @@ const NewPlantPage = () => {
 
                   {/* Selected Type Preview */}
                   {form.watch("type") && (
-                    <div className="p-4 rounded-xl bg-[rgba(135,169,107,0.1)] border border-[rgba(135,169,107,0.2)]">
+                    <div className="p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.2)]">
+                        <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-500">
                           {(form.watch("type") && PLANT_TYPE_ICONS[form.watch("type") as string]) || <Leaf className="w-5 h-5" />}
                         </div>
                         <div>
-                          <p className="text-sm text-[var(--botanical-sage)] capitalize font-medium">
+                          <p className="text-sm text-emerald-500 capitalize font-medium">
                             {form.watch("type")}
                           </p>
-                          <p className="text-xs text-[rgba(135,169,107,0.5)]">
+                          <p className="text-xs text-zinc-500">
                             Plant type selected
                           </p>
                         </div>
@@ -623,14 +623,14 @@ const NewPlantPage = () => {
               {currentStep === 3 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[rgba(135,169,107,0.1)]">
-                      <TagIcon className="w-6 h-6 text-[var(--botanical-sage)]" />
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <TagIcon className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-[var(--botanical-cream)]">
+                      <h2 className="text-lg font-semibold text-zinc-100">
                         Tags & Visibility
                       </h2>
-                      <p className="text-sm text-[rgba(135,169,107,0.6)]">
+                      <p className="text-sm text-zinc-400">
                         Help others discover your plant
                       </p>
                     </div>
@@ -638,7 +638,7 @@ const NewPlantPage = () => {
 
                   {/* Tags Input */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-[var(--botanical-sage)]">
+                    <label className="text-sm font-medium text-emerald-500">
                       Tags (up to 10)
                     </label>
                     <div className="relative">
@@ -667,7 +667,7 @@ const NewPlantPage = () => {
                         className="botanical-input"
                       />
                       {isPopoverOpen && suggestions.length > 0 && (
-                        <div className="absolute top-full mt-2 z-50 w-full bg-[var(--botanical-forest)] border border-[rgba(135,169,107,0.3)] rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                        <div className="absolute top-full mt-2 z-50 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-lg max-h-48 overflow-y-auto">
                           {suggestions.map((tag, idx) => (
                             <button
                               key={tag.id}
@@ -675,8 +675,8 @@ const NewPlantPage = () => {
                               onClick={() => handleAddTag(tag.name)}
                               className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                                 selectedIndex === idx
-                                  ? "bg-[rgba(135,169,107,0.2)] text-[var(--botanical-sage)]"
-                                  : "text-[var(--botanical-cream)] hover:bg-[rgba(135,169,107,0.1)]"
+                                  ? "bg-emerald-500/15 text-emerald-500"
+                                  : "text-zinc-100 hover:bg-zinc-800"
                               }`}
                             >
                               {tag.name}
@@ -694,7 +694,7 @@ const NewPlantPage = () => {
                         </BotanicalTag>
                       ))}
                       {(form.watch("tags") || []).length === 0 && (
-                        <p className="text-sm text-[rgba(135,169,107,0.4)]">
+                        <p className="text-sm text-zinc-500">
                           No tags added yet
                         </p>
                       )}
@@ -702,7 +702,7 @@ const NewPlantPage = () => {
                   </div>
 
                   {/* Visibility Toggle */}
-                  <div className="pt-6 border-t border-[rgba(135,169,107,0.2)]">
+                  <div className="pt-6 border-t border-zinc-700/50">
                     <FormField
                       control={form.control}
                       name="isPublic"
@@ -712,25 +712,25 @@ const NewPlantPage = () => {
                             <div className="flex items-center gap-3">
                               <div className={`p-2 rounded-lg transition-colors ${
                                 field.value
-                                  ? "bg-[rgba(135,169,107,0.2)]"
-                                  : "bg-[rgba(135,169,107,0.1)]"
+                                  ? "bg-emerald-500/15"
+                                  : "bg-zinc-800/50"
                               }`}>
                                 {field.value ? (
-                                  <Globe className="w-5 h-5 text-[var(--botanical-sage)]" />
+                                  <Globe className="w-5 h-5 text-emerald-500" />
                                 ) : (
-                                  <Lock className="w-5 h-5 text-[rgba(135,169,107,0.5)]" />
+                                  <Lock className="w-5 h-5 text-zinc-500" />
                                 )}
                               </div>
                               <div>
-                                <FormLabel className="text-[var(--botanical-cream)] font-medium cursor-pointer">
+                                <FormLabel className="text-zinc-100 font-medium cursor-pointer">
                                   {field.value ? "Public" : "Private"}
                                   {isFreeUser && (
-                                    <span className="ml-2 text-xs text-[var(--botanical-gold)]">
+                                    <span className="ml-2 text-xs text-amber-500">
                                       🔒 Upgrade to unlock
                                     </span>
                                   )}
                                 </FormLabel>
-                                <p className="text-sm text-[rgba(135,169,107,0.5)]">
+                                <p className="text-sm text-zinc-500">
                                   {field.value
                                     ? "Anyone can discover this plant"
                                     : "Only you can see this plant"}
@@ -742,7 +742,7 @@ const NewPlantPage = () => {
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                                 disabled={isFreeUser}
-                                className="data-[state=checked]:bg-[var(--botanical-sage)]"
+                                className="data-[state=checked]:bg-emerald-600"
                               />
                             </FormControl>
                           </div>
@@ -754,7 +754,7 @@ const NewPlantPage = () => {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-[rgba(135,169,107,0.2)]">
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-zinc-700/50">
                 <BotanicalButton
                   type="button"
                   variant="ghost"
@@ -774,10 +774,10 @@ const NewPlantPage = () => {
                       onClick={() => setCurrentStep(index)}
                       className={`w-2 h-2 rounded-full transition-all ${
                         index === currentStep
-                          ? "w-6 bg-[var(--botanical-sage)]"
+                          ? "w-6 bg-emerald-500"
                           : index < currentStep
-                          ? "bg-[var(--botanical-fern)]"
-                          : "bg-[rgba(135,169,107,0.3)]"
+                          ? "bg-emerald-600"
+                          : "bg-zinc-700"
                       }`}
                     />
                   ))}
@@ -819,7 +819,7 @@ const NewPlantPage = () => {
         {form.watch("images").length > 0 && (
           <BotanicalCard className="mt-6 p-4">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-[rgba(26,58,26,0.5)]">
+              <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800/50">
                 {form.watch("images")[0]?.previewUrl ? (
                   <img
                     src={form.watch("images")[0].previewUrl}
@@ -828,42 +828,42 @@ const NewPlantPage = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-8 h-8 text-[rgba(135,169,107,0.3)]" />
+                    <ImageIcon className="w-8 h-8 text-zinc-700" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-[var(--botanical-cream)] truncate">
+                <h3 className="font-medium text-zinc-100 truncate">
                   {form.watch("commonName") || "Untitled Plant"}
                 </h3>
                 {form.watch("botanicalName") && (
-                  <p className="text-sm text-[rgba(135,169,107,0.6)] italic truncate">
+                  <p className="text-sm text-zinc-400 italic truncate">
                     {form.watch("botanicalName")}
                   </p>
                 )}
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-[rgba(135,169,107,0.5)]">
+                  <span className="text-xs text-zinc-500">
                     {form.watch("images").length} photo{form.watch("images").length !== 1 ? "s" : ""}
                   </span>
                   {form.watch("type") && (
                     <>
-                      <span className="text-[rgba(135,169,107,0.3)]">•</span>
-                      <span className="text-xs text-[rgba(135,169,107,0.5)] capitalize">
+                      <span className="text-zinc-700">•</span>
+                      <span className="text-xs text-zinc-500 capitalize">
                         {form.watch("type")}
                       </span>
                     </>
                   )}
                   {(form.watch("tags") || []).length > 0 && (
                     <>
-                      <span className="text-[rgba(135,169,107,0.3)]">•</span>
-                      <span className="text-xs text-[rgba(135,169,107,0.5)]">
+                      <span className="text-zinc-700">•</span>
+                      <span className="text-xs text-zinc-500">
                         {form.watch("tags")?.length} tag{form.watch("tags")?.length !== 1 ? "s" : ""}
                       </span>
                     </>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-sm text-[rgba(135,169,107,0.5)]">
+              <div className="flex items-center gap-1 text-sm text-zinc-500">
                 {form.watch("isPublic") ? (
                   <>
                     <Globe className="w-4 h-4" />
