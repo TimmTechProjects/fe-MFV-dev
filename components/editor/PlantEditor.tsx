@@ -145,27 +145,24 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
 
   return (
     <div className="w-full space-y-3">
-      <div
-        className="flex flex-wrap gap-1 items-center justify-center rounded-4xl p-2 bg-zinc-800/40 backdrop-blur-sm
-"
-      >
+      <div className="flex flex-wrap gap-1.5 items-center justify-start rounded-xl p-3 bg-zinc-900 border border-zinc-700">
         {buttons.map(({ label, command, active }) => (
           <button
             key={label}
             onClick={command}
             type="button"
             className={cn(
-              "text-xs font-medium px-3 py-1 rounded-4xl transition-all",
+              "text-xs font-medium px-3 py-1.5 rounded-lg transition-all",
               active
-                ? "bg-purple-600 text-white"
-                : "bg-transparent dark:bg-zinc-800 dark:text-white hover:bg-purple-500 cursor-pointer"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "bg-zinc-800 text-zinc-300 hover:bg-emerald-500/20 hover:text-emerald-400 border border-zinc-700"
             )}
           >
             {label}
           </button>
         ))}
       </div>
-      <div className="text-black rounded-md bg-transparent dark:bg-zinc-900 shadow-sm">
+      <div className="text-white rounded-xl bg-zinc-900/50 border border-zinc-700 shadow-sm">
         <EditorContent editor={editor} />
       </div>
     </div>

@@ -107,13 +107,13 @@ const ImageUploadField = ({ value, onChange }: ImageUploadFieldProps) => {
 
             <div
               {...getRootProps()}
-              className="w-32 h-32 flex items-center justify-center rounded-lg border border-dashed border-muted p-2 text-center text-xs cursor-pointer hover:bg-muted/50 bg-muted/20 backdrop-blur"
+              className="w-32 h-32 flex items-center justify-center rounded-xl border-2 border-dashed border-emerald-500/50 p-2 text-center text-xs cursor-pointer hover:bg-emerald-500/10 hover:border-emerald-500 bg-zinc-800/50 backdrop-blur transition-all"
             >
               <input {...getInputProps()} />
               {isDragActive ? (
-                <p>Drop files...</p>
+                <p className="text-emerald-400">Drop files...</p>
               ) : (
-                <p>Click or drag to upload (max 10)</p>
+                <p className="text-zinc-400">Click or drag to upload (max 10)</p>
               )}
             </div>
           </div>

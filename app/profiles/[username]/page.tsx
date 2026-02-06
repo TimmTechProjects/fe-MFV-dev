@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { User } from "@/types/users";
 import { getUserByUsername, getUserCollections } from "@/lib/utils";
 import Link from "next/link";
@@ -81,7 +81,14 @@ const ProfilePage = () => {
   const { user } = useAuth();
   const { username } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const safeUsername = Array.isArray(username) ? username[0] : username || "";
+
+  // Read initial section from URL param
+  const sectionParam = searchParams.get("section");
+  const initialSection = (["garden", "collections", "posts", "marketplace"].includes(sectionParam || "") 
+    ? sectionParam 
+    : "garden") as "garden" | "collections" | "posts" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
   const [posts, setPosts] = useState(DUMMY_POSTS);
@@ -89,7 +96,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<
     "garden" | "collections" | "posts" | "marketplace"
-  >("garden");
+  >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
