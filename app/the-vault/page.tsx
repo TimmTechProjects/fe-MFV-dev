@@ -18,20 +18,25 @@ import {
 
 interface Plant {
   id: string;
-  commonName: string;
+  commonName?: string;
   botanicalName: string;
   description: string;
-  likes: number;
+  likes?: number;
   slug: string;
   origin?: string;
   family?: string;
   type?: string;
   views: number;
   isPublic: boolean;
-  userId: string;
-  collectionId: string;
-  createdAt: string;
-  updatedAt: string;
+  userId?: string;
+  collectionId?: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  collection?: {
+    id: string;
+    slug: string;
+    name?: string;
+  } | null;
   user: {
     username: string;
     firstName?: string;
@@ -57,11 +62,11 @@ import Link from "next/link";
 import { marketplacePlants } from "@/mock/marketplaceData";
 
 interface Props {
-  searchParams?: {
+  searchParams?: Promise<{
     page?: string;
     type?: string;
     tag?: string;
-  };
+  }>;
 }
 
 const limit = 10;
@@ -73,7 +78,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
   const [loading, setLoading] = useState(true);
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
 
-  const unwrappedSearchParams = use(searchParams);
+  const unwrappedSearchParams = searchParams ? use(searchParams) : {};
   const currentPage = Number(unwrappedSearchParams?.page || 1);
   const selectedType = unwrappedSearchParams?.type;
   const selectedTag = unwrappedSearchParams?.tag;
@@ -334,7 +339,7 @@ function NavItem({
 // Plant Post Component
 function PlantPost({ plant }: { plant: Plant }) {
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(plant.likes);
+  const [likeCount, setLikeCount] = useState(plant.likes ?? 0);
   const [retweeted, setRetweeted] = useState(false);
   const [retweetCount, setRetweetCount] = useState(
     Math.floor(Math.random() * 50) + 5
@@ -360,8 +365,8 @@ function PlantPost({ plant }: { plant: Plant }) {
     setRetweetCount((prev) => (retweeted ? prev - 1 : prev + 1));
   };
 
-  const timeAgo = (dateString: string) => {
-    const date = new Date(dateString);
+  const timeAgo = (dateInput: string | Date) => {
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
     const now = new Date();
     const diffInHours = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60 * 60)
