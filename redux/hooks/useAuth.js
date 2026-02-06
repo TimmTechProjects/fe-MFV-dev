@@ -8,13 +8,13 @@ import { apiget, apipost, apiput } from "../api";
 import { useRouter } from "next/navigation";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAVuw-y3QBUExrYQVcyOXKPSlpsddqJ_K4",
-  authDomain: "potential-641e8.firebaseapp.com",
-  projectId: "potential-641e8",
-  storageBucket: "potential-641e8.firebasestorage.app",
-  messagingSenderId: "241521864207",
-  appId: "1:241521864207:web:3f8bfa1b81e8e680d8fd7a",
-  measurementId: "G-C7WGHXBZY2",
+  apiKey: "AIzaSyDtanVFKcLDjJVDg8qrlqbFtqXCOOt_SSk",
+  authDomain: "my-floralvault.firebaseapp.com",
+  projectId: "my-floralvault",
+  storageBucket: "my-floralvault.firebasestorage.app",
+  messagingSenderId: "442347102317",
+  appId: "1:442347102317:web:0788bfc66083203de4df64",
+  measurementId: "G-7NBK5V4M47",
 };
 
 const useAuth = () => {
