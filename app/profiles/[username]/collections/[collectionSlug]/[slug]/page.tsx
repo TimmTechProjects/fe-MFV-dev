@@ -52,12 +52,16 @@ export default async function PlantDetailPage({ params }: PageProps) {
               Albums
             </Link>
             <span className="text-zinc-600">/</span>
-            <Link 
-              href={`/profiles/${username}/collections/${collectionSlug}`} 
-              className="text-zinc-400 hover:text-emerald-400 transition"
-            >
-              {plant.collection?.name || collectionSlug}
-            </Link>
+            {plant.collection?.slug ? (
+              <Link 
+                href={`/profiles/${username}/collections/${plant.collection.slug}`} 
+                className="text-zinc-400 hover:text-emerald-400 transition"
+              >
+                {plant.collection.name || plant.collection.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </Link>
+            ) : (
+              <span className="text-zinc-500">Collection</span>
+            )}
             <span className="text-zinc-600">/</span>
             <span className="text-emerald-400">{plant.commonName || plant.slug}</span>
           </nav>
