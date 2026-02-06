@@ -101,18 +101,28 @@ export async function createNewCollection(
   username: string,
   data: { name: string; description?: string }
 ) {
+  const token = localStorage.getItem("token");
+  
+  if (!token) {
+    console.error("No token found. User must be logged in to create collections.");
+    return new Response(JSON.stringify({ message: "Authentication required" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
   const response = await fetch(
     `${baseUrl}/api/collections/${username}/collections`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({
         username,
         name: data.name,
         description: data.description,
-        // Note: handle thumbnail separately via FormData if needed
       }),
     }
   );
