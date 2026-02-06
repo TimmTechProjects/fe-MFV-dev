@@ -73,14 +73,14 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 pb-12">
-        <div className="bg-gray-900/30 rounded-3xl p-8 border border-gray-800">
+        <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-8 border border-emerald-500/10">
           <h3 className="text-2xl font-bold mb-6 text-white">Related Plants</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-gray-800 h-48 rounded-lg mb-3"></div>
-                <div className="bg-gray-800 h-4 rounded mb-2"></div>
-                <div className="bg-gray-800 h-3 rounded w-3/4"></div>
+                <div className="bg-zinc-800 h-48 rounded-lg mb-3"></div>
+                <div className="bg-zinc-800 h-4 rounded mb-2"></div>
+                <div className="bg-zinc-800 h-3 rounded w-3/4"></div>
               </div>
             ))}
           </div>
@@ -95,11 +95,11 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-12">
-      <div className="bg-gray-900/30 rounded-3xl p-8 border border-gray-800">
+      <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-8 border border-emerald-500/10">
         <h3 className="text-2xl font-bold mb-6 text-white">
           Related Plants
         </h3>
-        <p className="text-gray-400 mb-8">
+        <p className="text-zinc-400 mb-8">
           Discover similar plants and other contributions from our community
         </p>
         
@@ -110,7 +110,7 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
               href={`/profiles/${plant.user.username}/collections/${plant.collection.slug}/${plant.slug}`}
               className="group"
             >
-              <Card className="bg-gray-800/50 border-gray-700 hover:border-gray-600 transition-all duration-200 hover:bg-gray-800/70 overflow-hidden">
+              <Card className="bg-zinc-900/60 border-emerald-500/10 hover:border-emerald-500/20 transition-all duration-300 hover:bg-zinc-900/80 overflow-hidden">
                 <CardContent className="p-0">
                   {/* Plant Image */}
                   <div className="relative h-48 overflow-hidden">
@@ -119,7 +119,7 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
                       alt={plant.commonName || plant.botanicalName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                     />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-200" />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
                   </div>
                   
                   {/* Plant Info */}
@@ -128,7 +128,7 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
                       {plant.commonName || plant.botanicalName}
                     </h4>
                     {plant.commonName && plant.botanicalName && (
-                      <p className="text-sm text-gray-400 italic mb-2 truncate">
+                      <p className="text-sm text-zinc-400 italic mb-2 truncate">
                         {plant.botanicalName}
                       </p>
                     )}
@@ -136,16 +136,16 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
                     {/* Plant Details */}
                     <div className="space-y-1 mb-3">
                       {plant.family && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-zinc-500">
                           Family: {plant.family}
                         </p>
                       )}
                       {plant.origin && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-zinc-500">
                           Origin: {plant.origin}
                         </p>
                       )}
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-zinc-500">
                         Views: {plant.views.toLocaleString()}
                       </p>
                     </div>
@@ -156,13 +156,13 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
                         {plant.tags.slice(0, 3).map((tag) => (
                           <Badge
                             key={tag.id}
-                            className="px-2 py-1 bg-gray-700 text-gray-300 border border-gray-600 text-xs"
+                            className="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs"
                           >
                             {tag.name}
                           </Badge>
                         ))}
                         {plant.tags.length > 3 && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-zinc-500">
                             +{plant.tags.length - 3} more
                           </span>
                         )}
@@ -170,13 +170,13 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
                     )}
                     
                     {/* Contributor */}
-                    <div className="flex items-center gap-2 pt-2 border-t border-gray-700">
-                      <div className="w-6 h-6 bg-[#81a308] rounded-full flex items-center justify-center">
+                    <div className="flex items-center gap-2 pt-2 border-t border-zinc-800">
+                      <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-xs">
                           {plant.user.username.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-zinc-400">
                         @{plant.user.username}
                       </span>
                     </div>
@@ -191,7 +191,7 @@ export default function RelatedPlants({ plantId, currentPlantName }: RelatedPlan
         <div className="text-center mt-8">
           <Link
             href="/the-vault"
-            className="inline-block px-6 py-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors font-medium"
+            className="inline-block px-6 py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full hover:bg-emerald-500/20 transition-all duration-200 font-medium"
           >
             Explore All Plants
           </Link>
