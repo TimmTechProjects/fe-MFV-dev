@@ -75,15 +75,28 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
   }
 
   return (
-    <div className="text-white px-10 py-10">
-      <h2 className="text-2xl font-bold mb-10 ml-4">
-        <Link href={`/profiles/${username}`}>
-          <span className="text-white hover:text-[#81a308]">
-            {isOwner ? "My" : <div className="capitalize inline-block">{username}&apos;s</div>}
-          </span>
-        </Link>{" "}
-        <span className="text-white">Albums</span>
-      </h2>
+    <div className="min-h-screen botanical-gradient botanical-pattern text-white px-10 py-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-2xl font-bold ml-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-emerald-500/10">
+              <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div>
+              <Link href={`/profiles/${username}`}>
+                <span className="text-white hover:text-emerald-500 transition-colors">
+                  {isOwner ? "My" : <span className="capitalize">{username}&apos;s</span>}
+                </span>
+              </Link>{" "}
+              <span className="text-white">Albums</span>
+              <p className="text-sm text-zinc-400 font-normal mt-1">
+                {collections.length} collection{collections.length !== 1 ? 's' : ''} • Organized plant collections
+              </p>
+            </div>
+          </h2>
+        </div>
 
       {collections.length === 0 ? (
         <div className="flex flex-col justify-center mt-28 pl-10">
@@ -91,12 +104,12 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
             <div className="w-56 h-72 sm:w-60 sm:h-80 flex group items-center justify-center">
               <Link
                 href={`/profiles/${username}/collections/new`}
-                className="flex flex-col items-center justify-center gap-2 text-gray-300 group hover:text-[#81a308] transition duration-200 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 text-zinc-400 group hover:text-emerald-500 transition duration-200 cursor-pointer"
               >
-                <div className="flex items-center justify-center w-16 h-16 border-2 border-gray-300 rounded-full group-hover:border-[#81a308] transition duration-200">
+                <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition duration-200">
                   <Plus className="w-8 h-8" />
                 </div>
-                <span className="text-sm font-semibold text-center mt-2 text-gray-300">
+                <span className="text-sm font-semibold text-center mt-2">
                   Add New Album
                 </span>
               </Link>
@@ -159,12 +172,12 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
             <div className="w-56 h-72 sm:w-60 sm:h-80 flex items-center justify-center">
               <Link
                 href={`/profiles/${username}/collections/new`}
-                className="flex flex-col items-center justify-center gap-2 text-gray-300 group hover:text-[#81a308] transition duration-200 cursor-pointer"
+                className="flex flex-col items-center justify-center gap-2 text-zinc-400 group hover:text-emerald-500 transition duration-200 cursor-pointer"
               >
-                <div className="flex items-center justify-center w-16 h-16 border-2 border-gray-300 rounded-full transition duration-200">
+                <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition duration-200">
                   <Plus className="w-8 h-8" />
                 </div>
-                <span className="text-sm font-semibold text-center mt-2 text-gray-300">
+                <span className="text-sm font-semibold text-center mt-2">
                   Add New Album
                 </span>
               </Link>
@@ -172,6 +185,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

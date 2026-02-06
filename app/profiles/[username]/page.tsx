@@ -326,7 +326,7 @@ const ProfilePage = () => {
               />
               <SidebarNavItem
                 icon={<TreeDeciduous className="w-5 h-5" />}
-                label="Collections"
+                label={isOwnProfile ? "My Collection" : "Collection"}
                 active={activeSection === "collections"}
                 onClick={() => setActiveSection("collections")}
                 badge={usersCollections.length}
@@ -482,17 +482,26 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   
-                  {isOwnProfile && (
-                    <BotanicalButton
-                      onClick={() =>
-                        router.push(`/profiles/${profileUser.username}/collections/new`)
-                      }
-                      size="sm"
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/profiles/${profileUser.username}/collections`}
+                      className="text-sm text-zinc-400 hover:text-emerald-500 transition-colors flex items-center gap-1"
                     >
-                      <Plus className="w-4 h-4" />
-                      New Bed
-                    </BotanicalButton>
-                  )}
+                      View All
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                    {isOwnProfile && (
+                      <BotanicalButton
+                        onClick={() =>
+                          router.push(`/profiles/${profileUser.username}/collections/new`)
+                        }
+                        size="sm"
+                      >
+                        <Plus className="w-4 h-4" />
+                        New Bed
+                      </BotanicalButton>
+                    )}
+                  </div>
                 </div>
 
                 {usersCollections.length === 0 ? (
@@ -522,6 +531,20 @@ const ProfilePage = () => {
                         username={profileUser.username}
                       />
                     ))}
+                    {/* Add New Collection Card */}
+                    {isOwnProfile && (
+                      <Link
+                        href={`/profiles/${profileUser.username}/collections/new`}
+                        className="collection-bed group cursor-pointer flex items-center justify-center min-h-[200px] hover:border-emerald-500/40 transition-colors"
+                      >
+                        <div className="flex flex-col items-center justify-center gap-3 text-zinc-400 group-hover:text-emerald-500 transition-colors">
+                          <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
+                            <Plus className="w-8 h-8" />
+                          </div>
+                          <span className="text-sm font-medium">Add New Collection</span>
+                        </div>
+                      </Link>
+                    )}
                   </div>
                 )}
               </section>
