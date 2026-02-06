@@ -99,6 +99,13 @@ const ProfilePage = () => {
   >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  // Update active section when URL param changes (e.g., back navigation)
+  useEffect(() => {
+    if (sectionParam && ["garden", "collections", "posts", "marketplace"].includes(sectionParam)) {
+      setActiveSection(sectionParam as typeof activeSection);
+    }
+  }, [sectionParam]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (user?.username === safeUsername) {
