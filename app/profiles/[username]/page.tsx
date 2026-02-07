@@ -317,7 +317,7 @@ const ProfilePage = () => {
         <div className="flex flex-col lg:flex-row gap-6 p-6">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-2">
+            <nav className="space-y-1 sticky top-6 lg:top-8">
               <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
