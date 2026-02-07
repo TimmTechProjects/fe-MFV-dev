@@ -34,6 +34,9 @@ interface ImageUploadFieldProps {
   onChange: (images: UploadedImage[]) => void;
 }
 
+const MAX_FILE_SIZE_MB = 16;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const ImageUploadField = ({ value, onChange }: ImageUploadFieldProps) => {
   const [selectedImage, setSelectedImage] = useState<UploadedImage | null>(
     null
@@ -46,9 +49,17 @@ const ImageUploadField = ({ value, onChange }: ImageUploadFieldProps) => {
         return;
       }
 
-      // console.log("Form values.images", value);
+      const oversized = acceptedFiles.filter((f) => f.size > MAX_FILE_SIZE_BYTES);
+      if (oversized.length > 0) {
+        toast.error(
+          `${oversized.length} file(s) exceed the ${MAX_FILE_SIZE_MB}MB limit and were skipped.`
+        );
+      }
 
-      const newImages: UploadedImage[] = acceptedFiles.map((file) => ({
+      const validFiles = acceptedFiles.filter((f) => f.size <= MAX_FILE_SIZE_BYTES);
+      if (validFiles.length === 0) return;
+
+      const newImages: UploadedImage[] = validFiles.map((file) => ({
         file,
         previewUrl: URL.createObjectURL(file),
       }));
@@ -113,7 +124,7 @@ const ImageUploadField = ({ value, onChange }: ImageUploadFieldProps) => {
               {isDragActive ? (
                 <p className="text-emerald-400">Drop files...</p>
               ) : (
-                <p className="text-zinc-400">Click or drag to upload (max 10)</p>
+                <p className="text-zinc-400">Click or drag to upload (max 10, {MAX_FILE_SIZE_MB}MB each)</p>
               )}
             </div>
           </div>
