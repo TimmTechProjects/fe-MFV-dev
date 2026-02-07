@@ -22,7 +22,7 @@ export const navLinks = [
     href: "/marketplace",
   },
   {
-    label: "My Album",
+    label: "Albums",
     href: "/my-collection",
     protected: true,
   },

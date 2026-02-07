@@ -183,7 +183,7 @@ const Header = () => {
         {navLinks.map((link) => {
           if (link.protected && !user) return null;
           const href =
-            link.label === "My Album" && user
+            link.label === "Albums" && user
               ? `/profiles/${user.username}/collections`
               : link.href;
 
@@ -228,7 +228,6 @@ const Header = () => {
                   </p>
                   <p className="text-xs text-zinc-400 truncate">@{user?.username}</p>
                 </div>
-                <Link href="/settings" className="ml-auto text-xs text-emerald-400 hover:text-emerald-300">Change</Link>
               </div>
 
               <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
@@ -338,7 +337,7 @@ const Header = () => {
             <div className="">
               {navLinks.map((link) => {
                 const href =
-                  link.label === "My Album" && user
+                  link.label === "Albums" && user
                     ? `/profiles/${user.username}/collections`
                     : link.href;
 
