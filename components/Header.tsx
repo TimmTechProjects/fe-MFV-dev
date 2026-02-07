@@ -21,6 +21,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -209,7 +210,27 @@ const Header = () => {
               </Avatar>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-52 mt-1 mr-5 border border-zinc-800 p-1 scrollbar-none">
+            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-64 mt-1 mr-5 border border-zinc-800 p-1 scrollbar-none">
+              {/* Dropdown header with avatar */}
+              <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.avatarUrl || "/default-avatar.png"} />
+                  <AvatarFallback className="bg-white text-[#2b2a2a]">
+                    {user?.firstName?.slice(0, 1).toLocaleUpperCase()}
+                    {user?.lastName?.slice(0, 1).toLocaleUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-zinc-100 truncate">
+                    {user?.firstName && user?.lastName
+                      ? `${user.firstName} ${user.lastName}`
+                      : user?.username}
+                  </p>
+                  <p className="text-xs text-zinc-400 truncate">@{user?.username}</p>
+                </div>
+                <Link href="/settings" className="ml-auto text-xs text-emerald-400 hover:text-emerald-300">Change</Link>
+              </div>
+
               <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href={`/profiles/${user.username}`}
