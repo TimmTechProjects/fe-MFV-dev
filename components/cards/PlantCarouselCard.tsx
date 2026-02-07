@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Plant } from "@/types/plants";
 import fallback from "../../public/fallback.png";
+import { decodeHtmlEntities } from "@/lib/utils";
 
 interface PlantCarouselCardProps {
   plant: Plant;
@@ -97,8 +98,8 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
             {/* Description */}
             {plant.description && (
               <p className="text-sm text-gray-400 line-clamp-2 mt-2 leading-relaxed">
-                {plant.description.replace(/<[^>]*>/g, "").slice(0, 120)}
-                {plant.description.replace(/<[^>]*>/g, "").length > 120 &&
+                {decodeHtmlEntities(plant.description).replace(/<[^>]*>/g, "").slice(0, 120)}
+                {decodeHtmlEntities(plant.description).replace(/<[^>]*>/g, "").length > 120 &&
                   "..."}
               </p>
             )}

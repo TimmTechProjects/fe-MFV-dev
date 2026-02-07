@@ -1,12 +1,11 @@
 import { notFound, redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { getPlantBySlug } from "@/lib/utils";
+import { getPlantBySlug, decodeHtmlEntities } from "@/lib/utils";
 import PlantImageGallery from "@/components/PlantImageGallery";
 import Link from "next/link";
 import PlantActions from "@/components/PlantActions";
 import RelatedPlants from "@/components/RelatedPlants";
 import { Leaf, Calendar, Eye, MapPin, Tag, Users } from "lucide-react";
-import { decode } from "html-entities";
 
 type PageProps = {
   params: Promise<{
@@ -224,7 +223,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
             </h3>
             <div className="prose prose-invert prose-lg max-w-none">
               <div
-                dangerouslySetInnerHTML={{ __html: decode(plant.description) }}
+                dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(plant.description) }}
                 className="text-zinc-300 leading-relaxed prose-headings:text-white prose-headings:font-semibold prose-headings:mb-3 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:mb-4 prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-li:mb-1 prose-a:text-emerald-400 prose-a:no-underline hover:prose-a:text-emerald-300 prose-strong:text-white prose-em:text-zinc-200"
               />
             </div>

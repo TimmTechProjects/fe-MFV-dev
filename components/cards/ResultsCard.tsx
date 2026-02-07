@@ -7,6 +7,7 @@ import { Plant } from "@/types/plants";
 import { UserResult } from "@/types/users";
 import { Collection } from "@/types/collections";
 import { Badge } from "../ui/badge";
+import { decodeHtmlEntities } from "@/lib/utils";
 
 interface ResultsCardProps {
   plant?: Plant;
@@ -102,7 +103,7 @@ const ResultsCard = ({
               {!compact && (
                 <div
                   className="text-sm mt-2 prose prose-invert max-w-none line-clamp-3 pointer-events-none"
-                  dangerouslySetInnerHTML={{ __html: plant!.description }}
+                  dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(plant!.description) }}
                 ></div>
               )}
 

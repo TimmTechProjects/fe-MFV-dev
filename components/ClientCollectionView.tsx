@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Plant } from "@/types/plants";
 import { Plus, Leaf, Sparkles, ArrowLeft } from "lucide-react";
 import useAuth from "@/redux/hooks/useAuth";
+import { decodeHtmlEntities } from "@/lib/utils";
 
 interface CollectionsPageProps {
   username: string;
@@ -208,10 +209,10 @@ const ClientCollectionView = ({
 
                       <p className="text-zinc-400 text-sm line-clamp-3 leading-relaxed">
                         {plant.description
-                          ? plant.description
+                          ? decodeHtmlEntities(plant.description)
                               .replace(/<[^>]+>/g, "")
                               .slice(0, 150) +
-                            (plant.description.length > 150 ? "..." : "")
+                            (decodeHtmlEntities(plant.description).replace(/<[^>]+>/g, "").length > 150 ? "..." : "")
                           : "No description provided."}
                       </p>
 
