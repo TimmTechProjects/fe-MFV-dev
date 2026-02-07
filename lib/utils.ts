@@ -560,14 +560,14 @@ export async function deleteCollectionCover(
 
   try {
     const res = await fetch(
-      `${baseUrl}/api/collections/${collectionId}/upload-cover`,
+      `${baseUrl}/api/collections/${collectionId}/set-thumbnail`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ imageUrl: null, imageKey: null }),
+        body: JSON.stringify({ imageId: null }),
       }
     );
 
