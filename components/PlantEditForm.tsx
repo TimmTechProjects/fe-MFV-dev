@@ -10,7 +10,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { UploadButton } from "@/lib/uploadthing";
-import { updatePlant } from "@/lib/utils";
+import { updatePlant, decodeHtmlEntities } from "@/lib/utils";
 
 const TiptapEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
   ssr: false,
@@ -28,7 +28,7 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
     defaultValues: {
       commonName: plant.commonName || "",
       botanicalName: plant.botanicalName || "",
-      description: plant.description || "",
+      description: decodeHtmlEntities(plant.description),
       type: plant.type || "",
       origin: plant.origin || "",
       family: plant.family || "",
@@ -39,7 +39,7 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
   });
 
   const { register, handleSubmit, watch, setValue } = form;
-  const [editorContent, setEditorContent] = useState(plant.description || "");
+  const [editorContent, setEditorContent] = useState(decodeHtmlEntities(plant.description));
 
   const onSubmit = async (values: PlantSchema) => {
     try {
@@ -74,7 +74,7 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
         <TiptapEditor content={editorContent} onChange={setEditorContent} />
         <div className="mt-4 p-3 border rounded text-sm prose prose-invert bg-[#111]">
           <h3 className="text-muted-foreground mb-2">Live Preview</h3>
-          <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+          <div dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(editorContent) }} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
