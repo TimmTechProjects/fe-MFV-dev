@@ -36,6 +36,7 @@ const Header = () => {
   const [userSuggestions, setUserSuggestions] = useState<UserResult[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const { user, LogoutUser } = useAuth();
   const router = useRouter();
@@ -197,8 +198,8 @@ const Header = () => {
         })}
 
         {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+            <DropdownMenuTrigger asChild onClick={() => setUserMenuOpen((o) => !o)}>
               <Avatar className="cursor-pointer hover:group">
                 <AvatarImage
                   src={user.avatarUrl || "https://github.com/shadcn.png"}
@@ -230,7 +231,7 @@ const Header = () => {
                 </div>
               </div>
 
-              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href={`/profiles/${user.username}`}
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -239,7 +240,7 @@ const Header = () => {
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href="/notifications"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -248,7 +249,7 @@ const Header = () => {
                   Notifications
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href="/messages"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -257,7 +258,7 @@ const Header = () => {
                   Messages
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href="/membership"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -266,7 +267,7 @@ const Header = () => {
                   Membership
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href="/settings"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -277,7 +278,7 @@ const Header = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="px-4 py-2 rounded-lg hover:bg-red-500/10 focus:bg-red-500/10 text-red-400 hover:text-red-300 focus:text-red-300 cursor-pointer transition-colors"
-                onClick={LogoutUser}
+                onClick={() => { setUserMenuOpen(false); LogoutUser(); }}
               >
                 <LogOut className="w-4 h-4" />
                 Logout
