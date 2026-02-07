@@ -86,9 +86,9 @@ const ProfilePage = () => {
 
   // Read initial section from URL param
   const sectionParam = searchParams.get("section");
-  const initialSection = (["garden", "posts", "collections", "marketplace"].includes(sectionParam || "") 
+  const initialSection = (["posts", "garden", "collections", "marketplace"].includes(sectionParam || "") 
     ? sectionParam 
-    : "garden") as "garden" | "posts" | "collections" | "marketplace";
+    : "posts") as "garden" | "posts" | "collections" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
   const [posts, setPosts] = useState(DUMMY_POSTS);
@@ -317,7 +317,7 @@ const ProfilePage = () => {
         <div className="flex flex-col lg:flex-row gap-6 p-6">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-6">
+            <nav className="space-y-1 sticky top-0">
               <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
@@ -474,7 +474,7 @@ const ProfilePage = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-zinc-100">
-                        Garden Beds
+                        Albums
                       </h2>
                       <p className="text-sm text-zinc-400">
                         Organized plant collections
@@ -854,40 +854,32 @@ function CollectionBedCard({
   return (
     <Link
       href={`/profiles/${username}/collections/${collection.slug}`}
-      className="collection-bed group cursor-pointer relative overflow-hidden"
+      className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer"
     >
-      <LeafDecoration position="top-right" size="lg" />
       
-      {/* Cover Image */}
-      <div className="relative h-40 rounded-xl overflow-hidden mb-4">
-        <img
-          src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
-          alt={collection.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-50" />
-      </div>
+      <img
+        src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
+        alt={collection.name}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+      <div className="absolute inset-x-0 bottom-0 h-2/5 group-hover:h-2/3 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-all duration-300" />
 
-      {/* Content */}
-      <div className="relative z-10">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors">
-            {collection.name}
-          </h3>
-          <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
-            {collection.plants?.length || 0} plants
-          </span>
-        </div>
-        
+      {/* Overlay Content */}
+      <div className="absolute inset-x-0 bottom-0 p-4">
+        <h3 className="font-semibold text-white text-lg truncate">
+          {collection.name}
+        </h3>
         {collection.description && (
-          <p className="text-sm text-zinc-400 line-clamp-2">
+          <p className="text-zinc-300 text-sm line-clamp-1 mt-0.5">
             {collection.description}
           </p>
         )}
+        <div className="max-h-0 group-hover:max-h-20 overflow-hidden transition-all duration-300 ease-in-out">
+          <p className="text-zinc-400 text-xs mt-2">
+            {(collection.plants?.length || 0)} {collection.plants?.length === 1 ? "plant" : "plants"}
+          </p>
+        </div>
       </div>
-
-      {/* Hover indicator */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
     </Link>
   );
 }
