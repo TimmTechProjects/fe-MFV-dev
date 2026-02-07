@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import EditCollectionWrapper from "@/components/EditCollectionButton";
+import CoverImageUploadModal from "@/components/CoverImageUploadModal";
 import { useRouter } from "next/navigation";
 import { Plant } from "@/types/plants";
 import { Plus, Leaf, Sparkles, ArrowLeft } from "lucide-react";
@@ -14,9 +15,11 @@ interface CollectionsPageProps {
   username: string;
   collectionSlug: string;
   collectionData: {
+    id: string;
     name: string;
     description?: string;
     thumbnailImage?: { url: string } | null;
+    coverImageUrl?: string | null;
     plants: (Plant & {
       user?: {
         username: string;
@@ -37,7 +40,16 @@ const ClientCollectionView = ({
   const router = useRouter();
 
   const isOwner = user?.username === username;
-  const { name, description, thumbnailImage, plants } = collectionData;
+  const { id: collectionId, name, description, thumbnailImage, coverImageUrl, plants } = collectionData;
+  const displayCoverUrl = coverImageUrl || thumbnailImage?.url || null;
+
+  const plantImages = plants.flatMap((plant) =>
+    plant.images.map((img) => ({
+      id: img.id,
+      url: img.url,
+      plantName: plant.commonName || plant.botanicalName,
+    }))
+  );
 
   return (
     <div className="min-h-screen">
@@ -65,10 +77,10 @@ const ClientCollectionView = ({
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex items-start gap-4">
               {/* Collection thumbnail */}
-              {thumbnailImage?.url && (
+              {displayCoverUrl && (
                 <div className="hidden sm:block w-20 h-20 rounded-xl overflow-hidden border-2 border-emerald-500/30 shadow-lg shadow-emerald-500/10 flex-shrink-0">
                   <Image
-                    src={thumbnailImage.url}
+                    src={displayCoverUrl}
                     alt={name}
                     width={80}
                     height={80}
@@ -106,11 +118,16 @@ const ClientCollectionView = ({
 
             {isOwner && (
               <div className="flex gap-3 sm:self-start">
+                <CoverImageUploadModal
+                  collectionId={collectionId}
+                  currentCoverUrl={coverImageUrl}
+                  plantImages={plantImages}
+                />
                 <EditCollectionWrapper
                   collection={{
                     name,
                     description: description || "",
-                    thumbnailUrl: thumbnailImage?.url || "",
+                    thumbnailUrl: displayCoverUrl || "",
                     slug: collectionSlug,
                   }}
                 />

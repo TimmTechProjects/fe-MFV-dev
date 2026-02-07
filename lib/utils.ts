@@ -521,6 +521,86 @@ export async function updateCollectionThumbnail(
   }
 }
 
+export async function uploadCollectionCover(
+  collectionId: string,
+  imageUrl: string,
+  imageKey: string
+): Promise<{ success: boolean; message: string; coverImageUrl?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "No token found" };
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/collections/${collectionId}/upload-cover`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ imageUrl, imageKey }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to upload cover image",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Cover image uploaded successfully",
+      coverImageUrl: data.coverImageUrl,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function deleteCollectionCover(
+  collectionId: string
+): Promise<{ success: boolean; message: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "No token found" };
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/collections/${collectionId}/set-thumbnail`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ imageId: null }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to remove cover image",
+      };
+    }
+
+    return { success: true, message: "Cover image removed successfully" };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
 export function formatRelativeTime(dateString: string) {
   const now = new Date();
   const date = new Date(dateString);
