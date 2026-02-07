@@ -20,7 +20,7 @@ const UserCollectionPage = async ({ params }: UserCollectionPageProps) => {
   if (!collectionData) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-10 text-center text-gray-400">
-        <p>Collection not found.</p>
+        <p>Album not found.</p>
       </div>
     );
   }

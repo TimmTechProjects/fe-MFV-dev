@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ResultsCard from "./cards/ResultsCard";
@@ -182,7 +182,7 @@ const Header = () => {
         {navLinks.map((link) => {
           if (link.protected && !user) return null;
           const href =
-            link.label === "My Collection" && user
+            link.label === "My Album" && user
               ? `/profiles/${user.username}/collections`
               : link.href;
 
@@ -209,51 +209,57 @@ const Header = () => {
               </Avatar>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="flex flex-col bg-[#2b2a2a] text-white justify-center cursor-pointer rounded-2xl w-48 mt-1 mr-5 scrollbar-none">
-              <DropdownMenuItem>
+            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-52 mt-1 mr-5 border border-zinc-800 p-1 scrollbar-none">
+              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
                 <Link
                   href={`/profiles/${user.username}`}
-                  className="cursor-pointer"
+                  className="flex items-center gap-3 w-full cursor-pointer"
                 >
+                  <UserIcon className="w-4 h-4" />
                   Profile
                 </Link>
               </DropdownMenuItem>
-              {user &&
-                authUserLinks.map((link) => (
-                  <DropdownMenuItem key={link.href}>
-                    <Link href={link.href} className="hover:text-[#dab9df]">
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 flex items-center justify-center">
-                          {link.icon && (
-                            <Image
-                              src={link.icon}
-                              alt={link.label}
-                              width={16}
-                              height={16}
-                              className="invert"
-                            />
-                          )}
-                        </div>
-
-                        <span>{link.label}</span>
-                      </div>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              <DropdownMenuItem>
-                <Link href="/membership" className="hover:text-[#dab9df]">
+              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+                <Link
+                  href="/notifications"
+                  className="flex items-center gap-3 w-full cursor-pointer"
+                >
+                  <Bell className="w-4 h-4" />
+                  Notifications
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+                <Link
+                  href="/messages"
+                  className="flex items-center gap-3 w-full cursor-pointer"
+                >
+                  <Mail className="w-4 h-4" />
+                  Messages
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+                <Link
+                  href="/membership"
+                  className="flex items-center gap-3 w-full cursor-pointer"
+                >
+                  <Crown className="w-4 h-4" />
                   Membership
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/settings" className="hover:text-[#dab9df]">
+              <DropdownMenuItem className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+                <Link
+                  href="/settings"
+                  className="flex items-center gap-3 w-full cursor-pointer"
+                >
+                  <Settings className="w-4 h-4" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="cursor-pointer hover:text-red-400"
+                className="px-4 py-2 rounded-lg hover:bg-red-500/10 focus:bg-red-500/10 text-red-400 hover:text-red-300 focus:text-red-300 cursor-pointer transition-colors"
                 onClick={LogoutUser}
               >
+                <LogOut className="w-4 h-4" />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -311,7 +317,7 @@ const Header = () => {
             <div className="">
               {navLinks.map((link) => {
                 const href =
-                  link.label === "My Collection" && user
+                  link.label === "My Album" && user
                     ? `/profiles/${user.username}/collections`
                     : link.href;
 

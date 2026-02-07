@@ -79,7 +79,7 @@ const ClientCollectionView = ({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Leaf className="w-5 h-5 text-emerald-400" />
-                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Collection</span>
+                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Album</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {name}
@@ -141,7 +141,7 @@ const ClientCollectionView = ({
               Your garden awaits!
             </h2>
             <p className="text-zinc-400 text-center max-w-md mb-8 leading-relaxed">
-              This collection is ready for its first plant. Start documenting your botanical journey by adding your first entry.
+              This album is ready for its first plant. Start documenting your botanical journey by adding your first entry.
             </p>
 
             {isOwner && (
@@ -161,7 +161,7 @@ const ClientCollectionView = ({
 
             {!isOwner && (
               <p className="text-zinc-500 text-sm italic">
-                This collection doesn't have any plants yet.
+                This album doesn't have any plants yet.
               </p>
             )}
           </div>
@@ -266,7 +266,7 @@ const ClientCollectionView = ({
                       Add New Plant
                     </p>
                     <p className="text-sm text-zinc-600 group-hover:text-zinc-500 transition-colors">
-                      Expand your collection
+                      Expand your album
                     </p>
                   </div>
                 </div>

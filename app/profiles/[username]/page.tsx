@@ -31,6 +31,7 @@ import {
   Grid3X3,
   LayoutList,
   ExternalLink,
+  Camera,
 } from "lucide-react";
 import Image from "next/image";
 import { Collection } from "@/types/collections";
@@ -187,7 +188,7 @@ const ProfilePage = () => {
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
           {/* Cover Image with Dark Overlay */}
-          <div className="relative h-64 md:h-80">
+          <div className="relative h-64 md:h-80 group/banner">
             <img
               src={coverImage}
               alt="Garden cover"
@@ -195,6 +196,16 @@ const ProfilePage = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(9,9,11,0.4)] to-[#18181b]" />
             
+            {/* Banner edit overlay (own profile only) */}
+            {isOwnProfile && (
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 flex items-center justify-center cursor-pointer z-[5]">
+                <div className="flex items-center gap-2 bg-black/60 px-4 py-2 rounded-full">
+                  <Camera className="w-5 h-5 text-white" />
+                  <span className="text-white text-sm font-medium">Edit Cover Photo</span>
+                </div>
+              </div>
+            )}
+
             {/* Decorative leaf patterns */}
             <div className="absolute top-4 left-4 opacity-20">
               <LeafIcon className="w-16 h-16 text-[var(--botanical-sage)] animate-sway" />
@@ -208,7 +219,7 @@ const ProfilePage = () => {
           <div className="relative px-6 pb-6 -mt-20 z-10">
             <div className="flex flex-col md:flex-row md:items-end gap-6">
               {/* Avatar */}
-              <div className="relative">
+              <div className="relative group/avatar cursor-pointer">
                 <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-[var(--botanical-forest)] shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
@@ -218,6 +229,12 @@ const ProfilePage = () => {
                     {profileUser?.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+                {/* Profile picture edit overlay (own profile only) */}
+                {isOwnProfile && (
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 flex items-center justify-center rounded-full">
+                    <Camera className="w-6 h-6 text-white" />
+                  </div>
+                )}
                 {/* Online indicator */}
                 <div className="absolute bottom-2 right-2 w-5 h-5 bg-[var(--botanical-sage)] border-2 border-[var(--botanical-forest)] rounded-full" />
               </div>
@@ -276,8 +293,8 @@ const ProfilePage = () => {
                       : "Unknown"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <TreeDeciduous className="w-4 h-4" />
-                    {usersCollections.length} Collections
+                      <TreeDeciduous className="w-4 h-4" />
+                      {usersCollections.length} Albums
                   </span>
                   <span className="flex items-center gap-1">
                     <Leaf className="w-4 h-4" />
@@ -291,7 +308,7 @@ const ProfilePage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
               <BotanicalStat
                 value={usersCollections.length}
-                label="Collections"
+                label="Albums"
                 icon={TreeDeciduous}
               />
               <BotanicalStat
@@ -326,7 +343,7 @@ const ProfilePage = () => {
               />
               <SidebarNavItem
                 icon={<TreeDeciduous className="w-5 h-5" />}
-                label={isOwnProfile ? "My Collection" : "Collection"}
+                label={isOwnProfile ? "My Album" : "Album"}
                 active={activeSection === "collections"}
                 onClick={() => setActiveSection("collections")}
                 badge={usersCollections.length}
@@ -355,7 +372,7 @@ const ProfilePage = () => {
                     className="botanical-nav-item w-full text-left"
                   >
                     <Plus className="w-5 h-5" />
-                    <span>New Collection</span>
+                    <span>New Album</span>
                   </Link>
                 </div>
               )}
@@ -430,7 +447,7 @@ const ProfilePage = () => {
                           }
                         >
                           <Plus className="w-4 h-4" />
-                          Create Collection First
+                          Create Album First
                         </BotanicalButton>
                       ) : null
                     }
@@ -477,7 +494,7 @@ const ProfilePage = () => {
                         Garden Beds
                       </h2>
                       <p className="text-sm text-zinc-400">
-                        Organized plant collections
+                        Organized plant albums
                       </p>
                     </div>
                   </div>
@@ -508,7 +525,7 @@ const ProfilePage = () => {
                   <BotanicalEmptyState
                     icon={<TreeDeciduous className="w-10 h-10 text-[var(--botanical-sage)]" />}
                     title="No garden beds yet"
-                    description="Create collections to organize your plants into themed garden beds."
+                    description="Create albums to organize your plants into themed garden beds."
                     action={
                       isOwnProfile && (
                         <BotanicalButton
@@ -541,7 +558,7 @@ const ProfilePage = () => {
                           <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
                             <Plus className="w-8 h-8" />
                           </div>
-                          <span className="text-sm font-medium">Add New Collection</span>
+                          <span className="text-sm font-medium">Add New Album</span>
                         </div>
                       </Link>
                     )}

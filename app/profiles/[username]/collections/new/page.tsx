@@ -122,10 +122,10 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
           router.push(`/profiles/${username}`);
         }
       } else {
-        alert("Failed to create collection. Please try again.");
+        alert("Failed to create album. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating collection:", error);
+      console.error("Error creating album:", error);
       alert("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -149,7 +149,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               Create New Garden Bed
             </h1>
             <p className="text-sm text-zinc-400">
-              Organize your plants into a themed collection
+              Organize your plants into a themed album
             </p>
           </div>
         </div>
@@ -164,7 +164,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-emerald-500">
                   <LeafIcon className="w-4 h-4" />
-                  Collection Name
+                  Album Name
                 </label>
                 <input
                   type="text"
@@ -176,7 +176,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                   className="botanical-input w-full text-lg"
                 />
                 <p className="text-xs text-zinc-500">
-                  Choose a descriptive name that reflects the theme of your collection
+                  Choose a descriptive name that reflects the theme of your album
                 </p>
               </div>
 
@@ -275,7 +275,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               {/* Submit Button */}
               <div className="flex items-center justify-between">
                 <p className="text-sm text-zinc-500">
-                  You can add plants after creating the collection
+                  You can add plants after creating the album
                 </p>
                 <BotanicalButton
                   type="submit"
@@ -333,7 +333,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               <div className="relative z-10">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-lg font-semibold text-zinc-100">
-                    {name || "Untitled Collection"}
+                    {name || "Untitled Album"}
                   </h3>
                   <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
                     0 plants
@@ -353,20 +353,20 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
             <BotanicalCard className="p-5">
               <h3 className="flex items-center gap-2 text-emerald-500 font-medium mb-4">
                 <Leaf className="w-5 h-5" />
-                Tips for Great Collections
+                Tips for Great Albums
               </h3>
               <ul className="space-y-3">
                 <TipItem>
                   <strong>Theme it:</strong> Group plants by type, color, care needs, or growing conditions
                 </TipItem>
                 <TipItem>
-                  <strong>Name wisely:</strong> Descriptive names help others discover your collection
+                  <strong>Name wisely:</strong> Descriptive names help others discover your album
                 </TipItem>
                 <TipItem>
-                  <strong>Add context:</strong> Use the description to share what makes your collection special
+                  <strong>Add context:</strong> Use the description to share what makes your album special
                 </TipItem>
                 <TipItem>
-                  <strong>Cover image:</strong> A good cover photo makes your collection stand out
+                  <strong>Cover image:</strong> A good cover photo makes your album stand out
                 </TipItem>
               </ul>
             </BotanicalCard>
@@ -376,7 +376,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               <p className="text-sm text-zinc-500">
                 Need inspiration? Browse{" "}
                 <Link href="/newly-added" className="text-emerald-500 hover:underline">
-                  popular collections
+                  popular albums
                 </Link>
               </p>
             </div>
