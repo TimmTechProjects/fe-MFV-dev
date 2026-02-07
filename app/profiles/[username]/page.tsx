@@ -317,7 +317,7 @@ const ProfilePage = () => {
         <div className="flex flex-col lg:flex-row gap-6 p-6">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-0">
+            <nav className="space-y-1 sticky top-2">
               <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
@@ -660,7 +660,7 @@ function SidebarNavItem({
   return (
     <button
       onClick={onClick}
-      className={`botanical-nav-item w-full text-left ${active ? "active" : ""}`}
+      className={`botanical-nav-item w-full text-left cursor-pointer ${active ? "active" : ""}`}
     >
       {icon}
       <span className="flex-1">{label}</span>
@@ -870,7 +870,7 @@ function CollectionBedCard({
           {collection.name}
         </h3>
         {collection.description && (
-          <p className="text-zinc-300 text-sm line-clamp-1 mt-0.5">
+          <p className="text-zinc-300 text-sm line-clamp-1 group-hover:line-clamp-none mt-0.5 transition-all duration-300">
             {collection.description}
           </p>
         )}
