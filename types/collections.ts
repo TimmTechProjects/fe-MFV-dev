@@ -7,11 +7,13 @@ export type Collection = {
   createdAt: string;
   updatedAt: string;
   thumbnailImage?: { url: string } | null;
+  coverImageUrl?: string | null;
+  coverImageKey?: string | null;
   plants?: Plant[];
   _count?: {
     plants: number;
   };
-  user: { username: string }; // ✅ Add this
+  user: { username: string };
   coverImage?: string;
   slug: string;
 };

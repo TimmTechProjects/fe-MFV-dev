@@ -19,6 +19,7 @@ interface Collection {
   name: string;
   slug: string;
   description: string;
+  coverImageUrl?: string | null;
   thumbnailImage?: {
     url: string;
   } | null;
@@ -128,6 +129,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
           {/* Existing collections */}
           {collections.map((collection) => {
             const imgUrl =
+              collection.coverImageUrl ??
               collection.thumbnailImage?.url ??
               collection.plants?.[0]?.images?.[0]?.url ??
               "/fallback.png";
