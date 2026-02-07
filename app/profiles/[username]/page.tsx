@@ -319,12 +319,6 @@ const ProfilePage = () => {
           <aside className="lg:w-64 flex-shrink-0">
             <nav className="space-y-1 sticky top-6">
               <SidebarNavItem
-                icon={<Sprout className="w-5 h-5" />}
-                label="My Garden"
-                active={activeSection === "garden"}
-                onClick={() => setActiveSection("garden")}
-              />
-              <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
                 active={activeSection === "posts"}
@@ -342,6 +336,12 @@ const ProfilePage = () => {
                 label="Marketplace"
                 active={activeSection === "marketplace"}
                 onClick={() => setActiveSection("marketplace")}
+              />
+              <SidebarNavItem
+                icon={<Sprout className="w-5 h-5" />}
+                label={isOwnProfile ? "My Garden" : "Garden"}
+                active={activeSection === "garden"}
+                onClick={() => setActiveSection("garden")}
               />
 
               {/* Quick Actions */}
@@ -485,21 +485,10 @@ const ProfilePage = () => {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/profiles/${profileUser.username}/collections`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-full transition-colors"
                     >
                       View All
                     </Link>
-                    {isOwnProfile && (
-                      <BotanicalButton
-                        onClick={() =>
-                          router.push(`/profiles/${profileUser.username}/collections/new`)
-                        }
-                        size="sm"
-                      >
-                        <Plus className="w-4 h-4" />
-                        New Album
-                      </BotanicalButton>
-                    )}
                   </div>
                 </div>
 
@@ -530,21 +519,20 @@ const ProfilePage = () => {
                         username={profileUser.username}
                       />
                     ))}
-                    {/* Add New Collection Card */}
-                    {isOwnProfile && (
-                      <Link
-                        href={`/profiles/${profileUser.username}/collections/new`}
-                        className="collection-bed group cursor-pointer flex items-center justify-center min-h-[200px] hover:border-emerald-500/40 transition-colors"
-                      >
-                        <div className="flex flex-col items-center justify-center gap-3 text-zinc-400 group-hover:text-emerald-500 transition-colors">
-                          <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
-                            <Plus className="w-8 h-8" />
-                          </div>
-                          <span className="text-sm font-medium">Add New Album</span>
-                        </div>
-                      </Link>
-                    )}
                   </div>
+                  {isOwnProfile && (
+                    <div className="flex justify-center mt-6">
+                      <BotanicalButton
+                        onClick={() =>
+                          router.push(`/profiles/${profileUser.username}/collections/new`)
+                        }
+                        size="sm"
+                      >
+                        <Plus className="w-4 h-4" />
+                        New Album
+                      </BotanicalButton>
+                    </div>
+                  )}
                 )}
               </section>
             )}
