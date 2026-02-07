@@ -4,6 +4,7 @@ import { Plant } from "@/types/plants";
 import { RegisterUser, User, UserCredentials, UserResult } from "@/types/users";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { decode } from "html-entities";
 
 const resolveApiBaseUrl = () => {
   const publicUrl = process.env.NEXT_PUBLIC_FLORAL_VAULT_API_URL;
@@ -32,6 +33,17 @@ const baseUrl = resolveApiBaseUrl();
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function decodeHtmlEntities(html: string | undefined | null): string {
+  if (!html) return "";
+  let result = html;
+  let prev = "";
+  while (result !== prev) {
+    prev = result;
+    result = decode(result);
+  }
+  return result;
 }
 
 export async function loginUser({

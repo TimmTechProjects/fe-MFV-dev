@@ -870,12 +870,12 @@ function CollectionBedCard({
           {collection.name}
         </h3>
         {collection.description && (
-          <p className="text-zinc-300 text-sm line-clamp-1 group-hover:line-clamp-none mt-0.5 transition-all duration-300">
+          <p className="text-white/90 text-sm line-clamp-1 group-hover:line-clamp-none mt-0.5 transition-all duration-300">
             {collection.description}
           </p>
         )}
         <div className="max-h-0 group-hover:max-h-20 overflow-hidden transition-all duration-300 ease-in-out">
-          <p className="text-zinc-400 text-xs mt-2">
+          <p className="text-white/80 text-xs mt-2">
             {(collection.plants?.length || 0)} {collection.plants?.length === 1 ? "plant" : "plants"}
           </p>
         </div>
