@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import EditCollectionWrapper from "@/components/EditCollectionButton";
@@ -38,6 +38,7 @@ const ClientCollectionView = ({
 
   const isOwner = user?.username === username;
   const { name, description, thumbnailImage, plants } = collectionData;
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -97,9 +98,22 @@ const ClientCollectionView = ({
                   <span>{plants.length} {plants.length === 1 ? 'plant' : 'plants'}</span>
                 </p>
                 {description && (
-                  <p className="mt-3 text-zinc-300 max-w-xl leading-relaxed">
-                    {description}
-                  </p>
+                  <div className="mt-3 max-w-xl relative">
+                    <div className={descriptionExpanded ? "" : "relative"}>
+                      <p className={`text-zinc-300 leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                        {description}
+                      </p>
+                      {!descriptionExpanded && (
+                        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-zinc-950/80 to-transparent pointer-events-none" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setDescriptionExpanded(!descriptionExpanded)}
+                      className="text-emerald-400 hover:text-emerald-300 text-sm mt-1 transition-colors"
+                    >
+                      {descriptionExpanded ? "Show less" : "Show more"}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

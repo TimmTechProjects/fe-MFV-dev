@@ -86,22 +86,22 @@ const ProfilePage = () => {
 
   // Read initial section from URL param
   const sectionParam = searchParams.get("section");
-  const initialSection = (["garden", "collections", "posts", "marketplace"].includes(sectionParam || "") 
+  const initialSection = (["garden", "posts", "collections", "marketplace"].includes(sectionParam || "") 
     ? sectionParam 
-    : "garden") as "garden" | "collections" | "posts" | "marketplace";
+    : "garden") as "garden" | "posts" | "collections" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
   const [posts, setPosts] = useState(DUMMY_POSTS);
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<
-    "garden" | "collections" | "posts" | "marketplace"
+    "garden" | "posts" | "collections" | "marketplace"
   >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Update active section when URL param changes (e.g., back navigation)
   useEffect(() => {
-    if (sectionParam && ["garden", "collections", "posts", "marketplace"].includes(sectionParam)) {
+    if (sectionParam && ["garden", "posts", "collections", "marketplace"].includes(sectionParam)) {
       setActiveSection(sectionParam as typeof activeSection);
     }
   }, [sectionParam]);
@@ -277,7 +277,7 @@ const ProfilePage = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <TreeDeciduous className="w-4 h-4" />
-                    {usersCollections.length} Collections
+                    {usersCollections.length} Albums
                   </span>
                   <span className="flex items-center gap-1">
                     <Leaf className="w-4 h-4" />
@@ -291,7 +291,7 @@ const ProfilePage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
               <BotanicalStat
                 value={usersCollections.length}
-                label="Collections"
+                label="Albums"
                 icon={TreeDeciduous}
               />
               <BotanicalStat
@@ -325,17 +325,17 @@ const ProfilePage = () => {
                 onClick={() => setActiveSection("garden")}
               />
               <SidebarNavItem
-                icon={<TreeDeciduous className="w-5 h-5" />}
-                label={isOwnProfile ? "My Collection" : "Collection"}
-                active={activeSection === "collections"}
-                onClick={() => setActiveSection("collections")}
-                badge={usersCollections.length}
-              />
-              <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
                 active={activeSection === "posts"}
                 onClick={() => setActiveSection("posts")}
+              />
+              <SidebarNavItem
+                icon={<TreeDeciduous className="w-5 h-5" />}
+                label={isOwnProfile ? "My Albums" : "Albums"}
+                active={activeSection === "collections"}
+                onClick={() => setActiveSection("collections")}
+                badge={usersCollections.length}
               />
               <SidebarNavItem
                 icon={<ShoppingCart className="w-5 h-5" />}
@@ -355,7 +355,7 @@ const ProfilePage = () => {
                     className="botanical-nav-item w-full text-left"
                   >
                     <Plus className="w-5 h-5" />
-                    <span>New Collection</span>
+                    <span>New Album</span>
                   </Link>
                 </div>
               )}
@@ -485,10 +485,9 @@ const ProfilePage = () => {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/profiles/${profileUser.username}/collections`}
-                      className="text-sm text-zinc-400 hover:text-emerald-500 transition-colors flex items-center gap-1"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-lg transition-colors"
                     >
                       View All
-                      <ExternalLink className="w-3 h-3" />
                     </Link>
                     {isOwnProfile && (
                       <BotanicalButton
@@ -498,7 +497,7 @@ const ProfilePage = () => {
                         size="sm"
                       >
                         <Plus className="w-4 h-4" />
-                        New Bed
+                        New Album
                       </BotanicalButton>
                     )}
                   </div>
@@ -523,7 +522,7 @@ const ProfilePage = () => {
                     }
                   />
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {usersCollections.map((collection) => (
                       <CollectionBedCard
                         key={collection.id}
@@ -541,7 +540,7 @@ const ProfilePage = () => {
                           <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
                             <Plus className="w-8 h-8" />
                           </div>
-                          <span className="text-sm font-medium">Add New Collection</span>
+                          <span className="text-sm font-medium">Add New Album</span>
                         </div>
                       </Link>
                     )}
