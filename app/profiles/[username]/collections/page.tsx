@@ -92,7 +92,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
               </Link>{" "}
               <span className="text-white">Albums</span>
               <p className="text-sm text-zinc-400 font-normal mt-1">
-                {collections.length} collection{collections.length !== 1 ? 's' : ''} • Organized plant collections
+                {collections.length} album{collections.length !== 1 ? 's' : ''} • Organized plant albums
               </p>
             </div>
           </h2>
@@ -117,7 +117,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
           ) : (
             <div className="flex flex-col justify-center mt-28">
               <p className="text-lg justify-center text-center">
-                {username} hasn&apos;t added any collections yet. Check back
+                {username} hasn&apos;t added any albums yet. Check back
                 later!
               </p>
             </div>

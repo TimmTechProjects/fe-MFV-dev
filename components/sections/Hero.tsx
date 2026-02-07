@@ -35,7 +35,7 @@ const Hero = () => {
           speedSegment={0.15}
           className="text-base sm:text-lg md:text-xl lg:text-2xl"
         >
-          Your collection of Eden
+          Your album of Eden
         </TextEffect>
       </div>
     </div>
