@@ -510,30 +510,32 @@ const ProfilePage = () => {
                       )
                     }
                   />
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {usersCollections.map((collection) => (
-                      <CollectionBedCard
-                        key={collection.id}
-                        collection={collection}
-                        username={profileUser.username}
-                      />
-                    ))}
-                  </div>
-                  {isOwnProfile && (
-                    <div className="flex justify-center mt-6">
-                      <BotanicalButton
-                        onClick={() =>
-                          router.push(`/profiles/${profileUser.username}/collections/new`)
-                        }
-                        size="sm"
-                      >
-                        <Plus className="w-4 h-4" />
-                        New Album
-                      </BotanicalButton>
-                    </div>
-                  )}
-                )}
+                                ) : (
+                                  <>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                      {usersCollections.map((collection) => (
+                                        <CollectionBedCard
+                                          key={collection.id}
+                                          collection={collection}
+                                          username={profileUser.username}
+                                        />
+                                      ))}
+                                    </div>
+                                    {isOwnProfile && (
+                                      <div className="flex justify-center mt-6">
+                                        <BotanicalButton
+                                          onClick={() =>
+                                            router.push(`/profiles/${profileUser.username}/collections/new`)
+                                          }
+                                          size="sm"
+                                        >
+                                          <Plus className="w-4 h-4" />
+                                          New Album
+                                        </BotanicalButton>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
               </section>
             )}
 
