@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       "static.myfigurecollection.net",
       "i.pravatar.cc",
       "yarchpsb6b.ufs.sh",
+      "lh3.googleusercontent.com",
     ],
   },
   typescript: {
