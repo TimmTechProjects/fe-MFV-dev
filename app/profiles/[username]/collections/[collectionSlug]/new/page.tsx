@@ -240,11 +240,11 @@ const NewPlantPage = () => {
         return;
       }
 
-      const MAX_SIZE = 24 * 1024 * 1024;
+      const MAX_SIZE = 32 * 1024 * 1024;
       const tooBig = filesToUpload.filter((f) => f.size > MAX_SIZE);
       if (tooBig.length > 0) {
         toast.error(
-          `${tooBig.length} file(s) exceed the 24MB limit: ${tooBig.map((f) => f.name).join(", ")}. Please remove them and try again.`
+          `${tooBig.length} file(s) exceed the 32MB limit: ${tooBig.map((f) => f.name).join(", ")}. Please remove them and try again.`
         );
         return;
       }
