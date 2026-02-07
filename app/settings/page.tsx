@@ -224,6 +224,9 @@ const SettingsPage = () => {
 
   const currentTier = user.subscriptionTier || "free";
   const isPremium = currentTier === "premium";
+  const isGoogleUser =
+    user.authProvider === "google" ||
+    (user.avatarUrl?.includes("googleusercontent.com") ?? false);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-100">
@@ -339,9 +342,15 @@ const SettingsPage = () => {
                         <Input
                           type="email"
                           {...field}
-                          className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                          disabled={isGoogleUser}
+                          className="botanical-input border-zinc-700 focus:border-emerald-500/50 disabled:opacity-60 disabled:cursor-not-allowed"
                         />
                       </FormControl>
+                      {isGoogleUser && (
+                        <p className="text-xs text-zinc-500">
+                          Email is managed by your Google account
+                        </p>
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -390,91 +399,101 @@ const SettingsPage = () => {
               <h2 className="text-lg font-semibold text-zinc-100">Security</h2>
             </div>
 
-            <Form {...passwordForm}>
-              <form
-                onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
-                className="space-y-5"
-              >
-                <FormField
-                  control={passwordForm.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-zinc-300">
-                        Current Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                          <Input
-                            type="password"
-                            {...field}
-                            className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="flex flex-col md:flex-row gap-4">
-                  <FormField
-                    control={passwordForm.control}
-                    name="newPassword"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-zinc-300">
-                          New Password
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            {...field}
-                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={passwordForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-zinc-300">
-                          Confirm Password
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            {...field}
-                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isPasswordSaving}
-                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-2.5"
+            {isGoogleUser ? (
+              <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+                <p className="text-sm text-zinc-400">
+                  You signed in with Google. Your password and email are managed
+                  through your Google account. You can update your name, bio,
+                  and avatar here.
+                </p>
+              </div>
+            ) : (
+              <Form {...passwordForm}>
+                <form
+                  onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+                  className="space-y-5"
                 >
-                  {isPasswordSaving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Updating...
-                    </>
-                  ) : (
-                    "Change Password"
-                  )}
-                </Button>
-              </form>
-            </Form>
+                  <FormField
+                    control={passwordForm.control}
+                    name="currentPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-zinc-300">
+                          Current Password
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                            <Input
+                              type="password"
+                              {...field}
+                              className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <FormField
+                      control={passwordForm.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel className="text-zinc-300">
+                            New Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              {...field}
+                              className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={passwordForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel className="text-zinc-300">
+                            Confirm Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              {...field}
+                              className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isPasswordSaving}
+                    className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-2.5"
+                  >
+                    {isPasswordSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      "Change Password"
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            )}
           </section>
 
           <section className="garden-card p-6 space-y-6">

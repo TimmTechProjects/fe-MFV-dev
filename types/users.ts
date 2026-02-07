@@ -11,6 +11,7 @@ export interface User {
   subscriptionTier?: "free" | "premium";
   subscriptionId?: string;
   subscriptionEndsAt?: string | Date;
+  authProvider?: string;
 }
 
 export interface UserCredentials extends Pick<User, "id" | "username"> {
