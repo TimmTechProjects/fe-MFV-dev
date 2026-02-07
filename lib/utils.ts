@@ -161,23 +161,26 @@ export async function getUserByUsername(
 }
 
 export async function getSuggestedTags(debouncedQuery: string) {
+  // Don't call API for queries shorter than 2 characters
+  if (!debouncedQuery || debouncedQuery.length < 2) {
+    return [];
+  }
+
   try {
     const response = await fetch(
-      baseUrl + `/api/tags/suggest?query=${debouncedQuery}`
-      // {
-      //   method: "GET",
-      //   headers: {
-      //     "content-type": "application/json",
-      //   },
-      //   body: JSON.stringify({}),
-      // }
+      baseUrl + `/api/tags/suggest?query=${encodeURIComponent(debouncedQuery)}`
     );
+
+    // Handle non-2xx responses gracefully (400 = too short, 404 = no matches)
+    if (!response.ok) {
+      return [];
+    }
 
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error("Error getting suggested tags:", error);
-    return null;
+    return [];
   }
 }
 
