@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,24 +14,66 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import useAuth from "@/redux/hooks/useAuth";
+import Image from "next/image";
+import { useDropzone } from "react-dropzone";
+import { useUploadThing } from "@/lib/uploadthingClient";
+import {
+  Camera,
+  Lock,
+  User,
+  Crown,
+  Loader2,
+  Check,
+  Leaf,
+  Shield,
+  CreditCard,
+  ExternalLink,
+} from "lucide-react";
 
-const settingsSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-  email: z.string().email(),
+const profileSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email"),
   bio: z.string().optional(),
-  avatarUrl: z.string().url().optional(),
 });
 
+const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+type PasswordFormValues = z.infer<typeof passwordSchema>;
+
 const SettingsPage = () => {
-  const { user, getLogin } = useAuth();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const {
+    user,
+    EditProfile,
+    ChangePassword,
+    CreateCheckoutSession,
+    ManageSubscription,
+  } = useAuth();
+  const [isProfileSaving, setIsProfileSaving] = useState(false);
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isPortalLoading, setIsPortalLoading] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
+
+  const { startUpload } = useUploadThing("imageUploader");
 
   useEffect(() => {
     if (!user) {
@@ -44,115 +86,533 @@ const SettingsPage = () => {
     }
   }, [user, router, pathname]);
 
-  const form = useForm<z.infer<typeof settingsSchema>>({
-    resolver: zodResolver(settingsSchema),
+  useEffect(() => {
+    if (user?.avatarUrl) {
+      setAvatarPreview(user.avatarUrl);
+    }
+  }, [user?.avatarUrl]);
+
+  const profileForm = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       email: user?.email || "",
       bio: user?.bio || "",
-      avatarUrl: user?.avatarUrl || "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof settingsSchema>) => {
-    if (!user?.username || !user?.id || !user?.joinedAt) {
-      console.error("Missing critical user fields.");
-      return;
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onAvatarDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (!file) return;
+
+      setAvatarPreview(URL.createObjectURL(file));
+      setIsUploadingAvatar(true);
+
+      try {
+        const uploadResult = await startUpload([file]);
+        if (uploadResult && uploadResult[0]) {
+          const newUrl = uploadResult[0].ufsUrl || uploadResult[0].url;
+          setAvatarPreview(newUrl);
+          const res = await EditProfile({ avatarUrl: newUrl });
+          if (res) {
+            toast.success("Avatar updated!");
+          } else {
+            toast.error("Failed to save avatar.");
+          }
+        }
+      } catch {
+        toast.error("Avatar upload failed.");
+        setAvatarPreview(user?.avatarUrl || null);
+      } finally {
+        setIsUploadingAvatar(false);
+      }
+    },
+    [startUpload, EditProfile, user?.avatarUrl]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: onAvatarDrop,
+    accept: { "image/*": [".png", ".jpg", ".jpeg", ".webp"] },
+    multiple: false,
+    maxSize: 4 * 1024 * 1024,
+  });
+
+  const onProfileSubmit = async (values: ProfileFormValues) => {
+    setIsProfileSaving(true);
+    try {
+      const res = await EditProfile(values);
+      if (res) {
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error("Failed to update profile.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsProfileSaving(false);
     }
+  };
 
-    setIsLoading(true);
-
-    const updatedUser = {
-      ...user,
-      ...values,
-    };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    getLogin(updatedUser);
-    // Optional: Show toast or redirect
-    if (!values.email.includes("@")) {
-      toast.error("Please enter a valid email.");
-      return;
+  const onPasswordSubmit = async (values: PasswordFormValues) => {
+    setIsPasswordSaving(true);
+    try {
+      const res = await ChangePassword({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
+      if (res) {
+        toast.success("Password changed successfully!");
+        passwordForm.reset();
+      } else {
+        toast.error("Failed to change password. Check your current password.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsPasswordSaving(false);
     }
+  };
 
-    toast.success("Your settings have been saved!");
-    setIsLoading(false);
+  const handleUpgrade = async (interval: "month" | "year") => {
+    setIsCheckoutLoading(true);
+    try {
+      const res = await CreateCheckoutSession({
+        priceInterval: interval,
+      });
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Could not start checkout. Please try again.");
+      }
+    } catch {
+      toast.error("Checkout failed.");
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setIsPortalLoading(true);
+    try {
+      const res = await ManageSubscription();
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Could not open subscription portal.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsPortalLoading(false);
+    }
   };
 
   if (!user) {
     return null;
   }
 
-  return (
-    // Protected route, only accessible to logged-in users
+  const currentTier = user.subscriptionTier || "free";
+  const isPremium = currentTier === "premium";
 
-    <div className="min-h-screen px-4 py-10 md:px-12 bg-gradient-to-r from-[#3A3A38] to-[#151512] text-white">
-      <div className="max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Account Settings</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-100">
+      <div className="botanical-pattern leaf-pattern">
+        <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <Leaf className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-zinc-50">
+                Account Settings
+              </h1>
+              <p className="text-sm text-zinc-400 mt-1">
+                Manage your profile, security, and subscription
+              </p>
+            </div>
+          </div>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <User className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-100">Profile</h2>
             </div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-col items-center gap-4">
+              <div
+                {...getRootProps()}
+                className={`relative w-28 h-28 rounded-full cursor-pointer group transition-all ${
+                  isDragActive
+                    ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-zinc-900"
+                    : "hover:ring-2 hover:ring-emerald-500/50 hover:ring-offset-2 hover:ring-offset-zinc-900"
+                }`}
+              >
+                <input {...getInputProps()} />
+                {avatarPreview ? (
+                  <Image
+                    src={avatarPreview}
+                    alt="Avatar"
+                    width={112}
+                    height={112}
+                    className="w-28 h-28 rounded-full object-cover border-2 border-zinc-700 group-hover:border-emerald-500/50 transition-colors"
+                  />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center group-hover:border-emerald-500/50 transition-colors">
+                    <User className="w-10 h-10 text-zinc-500" />
+                  </div>
+                )}
+                <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  {isUploadingAvatar ? (
+                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                  ) : (
+                    <Camera className="w-6 h-6 text-white" />
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-zinc-500">
+                Click or drag to update avatar
+              </p>
+            </div>
 
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Form {...profileForm}>
+              <form
+                onSubmit={profileForm.handleSubmit(onProfileSubmit)}
+                className="space-y-5"
+              >
+                <div className="flex flex-col md:flex-row gap-4">
+                  <FormField
+                    control={profileForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-zinc-300">
+                          First Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={profileForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-zinc-300">
+                          Last Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Changes"}
-            </Button>
-          </form>
-        </Form>
+                <FormField
+                  control={profileForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-zinc-300">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          {...field}
+                          className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={profileForm.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-zinc-300">Bio</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={3}
+                          placeholder="Tell us about yourself and your garden..."
+                          className="botanical-input border-zinc-700 focus:border-emerald-500/50 resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  disabled={isProfileSaving}
+                  className="w-full botanical-btn text-white font-semibold py-2.5"
+                >
+                  {isProfileSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </section>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Shield className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-100">Security</h2>
+            </div>
+
+            <Form {...passwordForm}>
+              <form
+                onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+                className="space-y-5"
+              >
+                <FormField
+                  control={passwordForm.control}
+                  name="currentPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-zinc-300">
+                        Current Password
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                          <Input
+                            type="password"
+                            {...field}
+                            className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <FormField
+                    control={passwordForm.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-zinc-300">
+                          New Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            {...field}
+                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={passwordForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-zinc-300">
+                          Confirm Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            {...field}
+                            className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isPasswordSaving}
+                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-2.5"
+                >
+                  {isPasswordSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Change Password"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </section>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <CreditCard className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-100">
+                Subscription
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+              <div
+                className={`p-2 rounded-lg ${
+                  isPremium
+                    ? "bg-amber-500/10 border border-amber-500/20"
+                    : "bg-zinc-700/50 border border-zinc-600/50"
+                }`}
+              >
+                {isPremium ? (
+                  <Crown className="w-5 h-5 text-amber-400" />
+                ) : (
+                  <Leaf className="w-5 h-5 text-zinc-400" />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-zinc-100">
+                  {isPremium ? "Premium" : "Free"} Plan
+                </p>
+                <p className="text-sm text-zinc-400">
+                  {isPremium
+                    ? user.subscriptionEndsAt
+                      ? `Renews ${new Date(user.subscriptionEndsAt).toLocaleDateString()}`
+                      : "Active subscription"
+                    : "Basic features included"}
+                </p>
+              </div>
+              {isPremium && (
+                <span className="px-3 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  Active
+                </span>
+              )}
+            </div>
+
+            {isPremium ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <h3 className="font-medium text-emerald-300 mb-2">
+                    Premium Benefits
+                  </h3>
+                  <ul className="space-y-2 text-sm text-zinc-300">
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      Unlimited plant saves
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      Sell on marketplace
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      Private collections
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      Custom profile features
+                    </li>
+                  </ul>
+                </div>
+
+                <Button
+                  onClick={handleManageSubscription}
+                  disabled={isPortalLoading}
+                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-2.5"
+                >
+                  {isPortalLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Manage Subscription
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 via-zinc-800/50 to-amber-500/5 border border-emerald-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Crown className="w-5 h-5 text-amber-400" />
+                    <h3 className="font-semibold text-zinc-100">
+                      Upgrade to Premium
+                    </h3>
+                  </div>
+                  <p className="text-sm text-zinc-400 mb-4">
+                    Unlock unlimited plant saves, marketplace selling, private
+                    collections, and more.
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => handleUpgrade("month")}
+                      disabled={isCheckoutLoading}
+                      className="p-4 rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-emerald-500/40 transition-all text-center group"
+                    >
+                      <p className="text-2xl font-bold text-zinc-100 group-hover:text-emerald-300 transition-colors">
+                        $2.99
+                      </p>
+                      <p className="text-xs text-zinc-400">per month</p>
+                    </button>
+                    <button
+                      onClick={() => handleUpgrade("year")}
+                      disabled={isCheckoutLoading}
+                      className="p-4 rounded-xl bg-zinc-800/80 border border-emerald-500/30 hover:border-emerald-500/50 transition-all text-center relative group"
+                    >
+                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500 text-white">
+                        SAVE 72%
+                      </span>
+                      <p className="text-2xl font-bold text-emerald-300 group-hover:text-emerald-200 transition-colors">
+                        $0.99
+                      </p>
+                      <p className="text-xs text-zinc-400">per year</p>
+                    </button>
+                  </div>
+                </div>
+
+                {isCheckoutLoading && (
+                  <div className="flex items-center justify-center gap-2 text-sm text-zinc-400">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Redirecting to checkout...
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
     </div>
   );

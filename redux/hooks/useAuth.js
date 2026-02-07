@@ -82,6 +82,40 @@ const useAuth = () => {
   const EditProfile = async (data) => {
     try {
       const res = await apiput(`api/v1/auth/update-profile`, data);
+      if (res?.data?.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        dispatch(setUser(res.data.user));
+      }
+      return res?.data || null;
+    } catch (error) {
+      console.error("API Error:", error);
+      return null;
+    }
+  };
+
+  const ChangePassword = async (data) => {
+    try {
+      const res = await apiput(`api/v1/auth/change-password`, data);
+      return res?.data || null;
+    } catch (error) {
+      console.error("API Error:", error);
+      return null;
+    }
+  };
+
+  const CreateCheckoutSession = async (data) => {
+    try {
+      const res = await apipost(`api/v1/stripe/create-checkout-session`, data);
+      return res?.data || null;
+    } catch (error) {
+      console.error("API Error:", error);
+      return null;
+    }
+  };
+
+  const ManageSubscription = async () => {
+    try {
+      const res = await apipost(`api/v1/stripe/create-portal-session`, {});
       return res?.data || null;
     } catch (error) {
       console.error("API Error:", error);
@@ -109,6 +143,9 @@ const useAuth = () => {
     isLoggedIn,
     EditProfile,
     GetProfile,
+    ChangePassword,
+    CreateCheckoutSession,
+    ManageSubscription,
   };
 };
 

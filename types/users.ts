@@ -8,6 +8,9 @@ export interface User {
   avatarUrl?: string;
   joinedAt: string | Date;
   plan: string;
+  subscriptionTier?: "free" | "premium";
+  subscriptionId?: string;
+  subscriptionEndsAt?: string | Date;
 }
 
 export interface UserCredentials extends Pick<User, "id" | "username"> {
