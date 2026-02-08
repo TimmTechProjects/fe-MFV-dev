@@ -53,7 +53,7 @@ const EditCollectionWrapper = ({ collection }: EditCollectionWrapperProps) => {
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit Collection</DialogTitle>
+            <DialogTitle>Edit Album</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">

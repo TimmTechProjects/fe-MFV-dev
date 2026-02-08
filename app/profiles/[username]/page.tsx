@@ -31,6 +31,7 @@ import {
   Grid3X3,
   LayoutList,
   ExternalLink,
+  Camera,
 } from "lucide-react";
 import Image from "next/image";
 import { Collection } from "@/types/collections";
@@ -86,22 +87,22 @@ const ProfilePage = () => {
 
   // Read initial section from URL param
   const sectionParam = searchParams.get("section");
-  const initialSection = (["posts", "garden", "collections", "marketplace"].includes(sectionParam || "") 
+  const initialSection = (["garden", "collections", "posts", "marketplace"].includes(sectionParam || "") 
     ? sectionParam 
-    : "posts") as "garden" | "posts" | "collections" | "marketplace";
+    : "garden") as "garden" | "collections" | "posts" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
   const [posts, setPosts] = useState(DUMMY_POSTS);
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<
-    "garden" | "posts" | "collections" | "marketplace"
+    "garden" | "collections" | "posts" | "marketplace"
   >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Update active section when URL param changes (e.g., back navigation)
   useEffect(() => {
-    if (sectionParam && ["garden", "posts", "collections", "marketplace"].includes(sectionParam)) {
+    if (sectionParam && ["garden", "collections", "posts", "marketplace"].includes(sectionParam)) {
       setActiveSection(sectionParam as typeof activeSection);
     }
   }, [sectionParam]);
@@ -187,7 +188,7 @@ const ProfilePage = () => {
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
           {/* Cover Image with Dark Overlay */}
-          <div className="relative h-64 md:h-80">
+          <div className="relative h-64 md:h-80 group/banner">
             <img
               src={coverImage}
               alt="Garden cover"
@@ -195,6 +196,16 @@ const ProfilePage = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(9,9,11,0.4)] to-[#18181b]" />
             
+            {/* Banner edit overlay (own profile only) */}
+            {isOwnProfile && (
+              <div className="absolute bottom-4 right-4 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 z-[5]">
+                <div className="flex items-center gap-2 bg-black/60 px-4 py-2 rounded-full border border-emerald-500/40 shadow-sm">
+                  <Camera className="w-5 h-5 text-emerald-400" />
+                  <span className="text-white text-sm font-medium">Edit Cover Image</span>
+                </div>
+              </div>
+            )}
+
             {/* Decorative leaf patterns */}
             <div className="absolute top-4 left-4 opacity-20">
               <LeafIcon className="w-16 h-16 text-[var(--botanical-sage)] animate-sway" />
@@ -208,7 +219,7 @@ const ProfilePage = () => {
           <div className="relative px-6 pb-6 -mt-20 z-10">
             <div className="flex flex-col md:flex-row md:items-end gap-6">
               {/* Avatar */}
-              <div className="relative">
+              <div className="relative group/avatar cursor-pointer">
                 <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-[var(--botanical-forest)] shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
@@ -218,6 +229,20 @@ const ProfilePage = () => {
                     {profileUser?.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+                  {/* Profile picture edit overlay (own profile only) */}
+                  {isOwnProfile && (
+                    <>
+                      {/* Bottom wave overlay */}
+                      <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[115%] h-[48%] rounded-b-full bg-emerald-600/35 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200" />
+                      {/* Camera pill on right */}
+                      <div className="absolute bottom-2 right-2 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200">
+                        <div className="px-2.5 py-1 rounded-full bg-black/60 border border-emerald-500/40 text-white text-xs flex items-center gap-1 shadow-sm">
+                          <Camera className="w-4 h-4 text-emerald-400" />
+                          <span>Edit</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 {/* Online indicator */}
                 <div className="absolute bottom-2 right-2 w-5 h-5 bg-[var(--botanical-sage)] border-2 border-[var(--botanical-forest)] rounded-full" />
               </div>
@@ -276,8 +301,8 @@ const ProfilePage = () => {
                       : "Unknown"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <TreeDeciduous className="w-4 h-4" />
-                    {usersCollections.length} Albums
+                      <TreeDeciduous className="w-4 h-4" />
+                      {usersCollections.length} Albums
                   </span>
                   <span className="flex items-center gap-1">
                     <Leaf className="w-4 h-4" />
@@ -316,13 +341,13 @@ const ProfilePage = () => {
         {/* Main Content Area - Two Column Layout */}
         <div className="flex flex-col lg:flex-row gap-6 p-6">
           {/* Sidebar Navigation */}
-          <aside className="hidden lg:block lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-24 md:top-28">
+          <aside className="lg:w-64 flex-shrink-0">
+            <nav className="space-y-1 sticky top-6">
               <SidebarNavItem
-                icon={<LayoutList className="w-5 h-5" />}
-                label="Posts"
-                active={activeSection === "posts"}
-                onClick={() => setActiveSection("posts")}
+                icon={<Sprout className="w-5 h-5" />}
+                label="My Garden"
+                active={activeSection === "garden"}
+                onClick={() => setActiveSection("garden")}
               />
               <SidebarNavItem
                 icon={<TreeDeciduous className="w-5 h-5" />}
@@ -332,16 +357,16 @@ const ProfilePage = () => {
                 badge={usersCollections.length}
               />
               <SidebarNavItem
+                icon={<LayoutList className="w-5 h-5" />}
+                label="Posts"
+                active={activeSection === "posts"}
+                onClick={() => setActiveSection("posts")}
+              />
+              <SidebarNavItem
                 icon={<ShoppingCart className="w-5 h-5" />}
                 label="Marketplace"
                 active={activeSection === "marketplace"}
                 onClick={() => setActiveSection("marketplace")}
-              />
-              <SidebarNavItem
-                icon={<Sprout className="w-5 h-5" />}
-                label={isOwnProfile ? "My Garden" : "Garden"}
-                active={activeSection === "garden"}
-                onClick={() => setActiveSection("garden")}
               />
 
               {/* Quick Actions */}
@@ -364,54 +389,6 @@ const ProfilePage = () => {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0">
-            {/* Mobile/Tablet Top Tabs */}
-            <div className="lg:hidden sticky top-24 md:top-28 z-10 -mx-6 px-6 py-3 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <button
-                  onClick={() => setActiveSection("posts")}
-                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
-                    activeSection === "posts"
-                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
-                  }`}
-                >
-                  Posts
-                </button>
-                <button
-                  onClick={() => setActiveSection("collections")}
-                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors flex items-center gap-1.5 ${
-                    activeSection === "collections"
-                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
-                  }`}
-                >
-                  Albums
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    {usersCollections.length}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveSection("marketplace")}
-                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
-                    activeSection === "marketplace"
-                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
-                  }`}
-                >
-                  Marketplace
-                </button>
-                <button
-                  onClick={() => setActiveSection("garden")}
-                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
-                    activeSection === "garden"
-                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
-                  }`}
-                >
-                  {isOwnProfile ? "My Garden" : "Garden"}
-                </button>
-              </div>
-            </div>
             {/* Garden Section - Card Grid */}
             {activeSection === "garden" && (
               <section className="animate-fade-in-up">
@@ -478,7 +455,7 @@ const ProfilePage = () => {
                           }
                         >
                           <Plus className="w-4 h-4" />
-                          Create Collection First
+                          Create Album First
                         </BotanicalButton>
                       ) : null
                     }
@@ -525,18 +502,28 @@ const ProfilePage = () => {
                         Albums
                       </h2>
                       <p className="text-sm text-zinc-400">
-                        Organized plant collections
+                        Organized plant albums
                       </p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Link
-                      href={`/profiles/${profileUser.username}/collections`}
-                      className="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-full transition-colors"
-                    >
-                      View All
+                    <Link href={`/profiles/${profileUser.username}/collections`}>
+                      <BotanicalButton variant="outline" size="sm">
+                        View All
+                      </BotanicalButton>
                     </Link>
+                    {isOwnProfile && (
+                      <BotanicalButton
+                        onClick={() =>
+                          router.push(`/profiles/${profileUser.username}/collections/new`)
+                        }
+                        size="sm"
+                      >
+                        <Plus className="w-4 h-4" />
+                        New Album
+                      </BotanicalButton>
+                    )}
                   </div>
                 </div>
 
@@ -544,7 +531,7 @@ const ProfilePage = () => {
                   <BotanicalEmptyState
                     icon={<TreeDeciduous className="w-10 h-10 text-[var(--botanical-sage)]" />}
                     title="No garden beds yet"
-                    description="Create collections to organize your plants into themed garden beds."
+                    description="Create albums to organize your plants into themed garden beds."
                     action={
                       isOwnProfile && (
                         <BotanicalButton
@@ -558,32 +545,31 @@ const ProfilePage = () => {
                       )
                     }
                   />
-                                ) : (
-                                  <>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                      {usersCollections.map((collection) => (
-                                        <CollectionBedCard
-                                          key={collection.id}
-                                          collection={collection}
-                                          username={profileUser.username}
-                                        />
-                                      ))}
-                                    </div>
-                                    {isOwnProfile && (
-                                      <div className="flex justify-center mt-6">
-                                        <BotanicalButton
-                                          onClick={() =>
-                                            router.push(`/profiles/${profileUser.username}/collections/new`)
-                                          }
-                                          size="sm"
-                                        >
-                                          <Plus className="w-4 h-4" />
-                                          New Album
-                                        </BotanicalButton>
-                                      </div>
-                                    )}
-                                  </>
-                                )}
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {usersCollections.map((collection) => (
+                      <CollectionBedCard
+                        key={collection.id}
+                        collection={collection}
+                        username={profileUser.username}
+                      />
+                    ))}
+                    {/* Add New Collection Card */}
+                    {isOwnProfile && (
+                      <Link
+                        href={`/profiles/${profileUser.username}/collections/new`}
+                        className="collection-bed group cursor-pointer flex items-center justify-center min-h-[200px] hover:border-emerald-500/40 transition-colors"
+                      >
+                        <div className="flex flex-col items-center justify-center gap-3 text-zinc-400 group-hover:text-emerald-500 transition-colors">
+                          <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
+                            <Plus className="w-8 h-8" />
+                          </div>
+                          <span className="text-sm font-medium">Add New Album</span>
+                        </div>
+                      </Link>
+                    )}
+                  </div>
+                )}
               </section>
             )}
 
@@ -708,7 +694,7 @@ function SidebarNavItem({
   return (
     <button
       onClick={onClick}
-      className={`botanical-nav-item w-full text-left cursor-pointer ${active ? "active" : ""}`}
+      className={`botanical-nav-item w-full text-left ${active ? "active" : ""}`}
     >
       {icon}
       <span className="flex-1">{label}</span>
@@ -902,47 +888,40 @@ function CollectionBedCard({
   return (
     <Link
       href={`/profiles/${username}/collections/${collection.slug}`}
-      className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer"
+      className="collection-bed group cursor-pointer relative overflow-hidden"
     >
+      <LeafDecoration position="top-right" size="lg" />
       
-      <img
-        src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
-        alt={collection.name}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 group-hover:h-2/3 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-all duration-300" />
+      {/* Cover Image */}
+      <div className="relative h-40 rounded-xl overflow-hidden mb-4">
+        <img
+          src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
+          alt={collection.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-50" />
+      </div>
 
-      {/* Bottom Content (fades out on hover) */}
-      <div className="absolute inset-x-0 bottom-0 p-4 transition-opacity duration-200 group-hover:opacity-0">
-        <h3 className="font-semibold text-white text-lg truncate">
-          {collection.name}
-        </h3>
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors">
+            {collection.name}
+          </h3>
+          <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
+            {collection.plants?.length || 0} plants
+          </span>
+        </div>
+        
         {collection.description && (
-          <p className="text-white/90 text-sm line-clamp-1 mt-0.5">
+          <p className="text-sm text-zinc-400 line-clamp-2">
             {collection.description}
           </p>
         )}
       </div>
 
-      {/* Slide-up overlay on hover */}
-      <div className="absolute inset-x-0 bottom-0 h-full translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-        <div className="relative flex flex-col h-full p-4">
-          <h3 className="font-semibold text-white text-lg">
-            {collection.name}
-          </h3>
-          {collection.description && (
-            <p className="text-white/90 text-sm mt-2 overflow-hidden">
-              {collection.description}
-            </p>
-          )}
-          <div className="mt-auto">
-            <p className="text-white/80 text-xs">
-              {(collection.plants?.length || 0)} {collection.plants?.length === 1 ? "plant" : "plants"}
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Hover indicator */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
     </Link>
   );
 }

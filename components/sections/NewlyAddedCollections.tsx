@@ -10,7 +10,7 @@ export default function NewCollectionsSection() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4">
           <Link href="/the-vault">
             <h2 className="text-3xl font-bold text-white cursor-pointer">
-              Newly Added Collections
+              Newly Added Albums
             </h2>
           </Link>
 

@@ -60,7 +60,7 @@ export default function PlantCarousel() {
       <div className="max-w-7xl mx-auto">
         {plants.length === 0 ? (
           <div className="text-center py-10 text-gray-400">
-            No collections found
+            No albums found
           </div>
         ) : (
           <div

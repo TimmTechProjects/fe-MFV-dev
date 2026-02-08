@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import EditCollectionWrapper from "@/components/EditCollectionButton";
+import CoverImageUploadModal from "@/components/CoverImageUploadModal";
 import { useRouter } from "next/navigation";
 import { Plant } from "@/types/plants";
 import { Plus, Leaf, Sparkles, ArrowLeft } from "lucide-react";
@@ -14,9 +15,11 @@ interface CollectionsPageProps {
   username: string;
   collectionSlug: string;
   collectionData: {
+    id: string;
     name: string;
     description?: string;
     thumbnailImage?: { url: string } | null;
+    coverImageUrl?: string | null;
     plants: (Plant & {
       user?: {
         username: string;
@@ -37,8 +40,17 @@ const ClientCollectionView = ({
   const router = useRouter();
 
   const isOwner = user?.username === username;
-  const { name, description, thumbnailImage, plants } = collectionData;
+  const { id: collectionId, name, description, thumbnailImage, coverImageUrl, plants } = collectionData;
+  const displayCoverUrl = coverImageUrl || thumbnailImage?.url || null;
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+
+  const plantImages = plants.flatMap((plant) =>
+    plant.images.map((img) => ({
+      id: img.id,
+      url: img.url,
+      plantName: plant.commonName || plant.botanicalName,
+    }))
+  );
 
   return (
     <div className="min-h-screen">
@@ -66,10 +78,10 @@ const ClientCollectionView = ({
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex items-start gap-4">
               {/* Collection thumbnail */}
-              {thumbnailImage?.url && (
+              {displayCoverUrl && (
                 <div className="hidden sm:block w-20 h-20 rounded-xl overflow-hidden border-2 border-emerald-500/30 shadow-lg shadow-emerald-500/10 flex-shrink-0">
                   <Image
-                    src={thumbnailImage.url}
+                    src={displayCoverUrl}
                     alt={name}
                     width={80}
                     height={80}
@@ -81,7 +93,7 @@ const ClientCollectionView = ({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Leaf className="w-5 h-5 text-emerald-400" />
-                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Collection</span>
+                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Album</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {name}
@@ -120,11 +132,16 @@ const ClientCollectionView = ({
 
             {isOwner && (
               <div className="flex gap-3 sm:self-start">
+                <CoverImageUploadModal
+                  collectionId={collectionId}
+                  currentCoverUrl={coverImageUrl}
+                  plantImages={plantImages}
+                />
                 <EditCollectionWrapper
                   collection={{
                     name,
                     description: description || "",
-                    thumbnailUrl: thumbnailImage?.url || "",
+                    thumbnailUrl: displayCoverUrl || "",
                     slug: collectionSlug,
                   }}
                 />
@@ -156,7 +173,7 @@ const ClientCollectionView = ({
               Your garden awaits!
             </h2>
             <p className="text-zinc-400 text-center max-w-md mb-8 leading-relaxed">
-              This collection is ready for its first plant. Start documenting your botanical journey by adding your first entry.
+              This album is ready for its first plant. Start documenting your botanical journey by adding your first entry.
             </p>
 
             {isOwner && (
@@ -176,7 +193,7 @@ const ClientCollectionView = ({
 
             {!isOwner && (
               <p className="text-zinc-500 text-sm italic">
-                This collection doesn't have any plants yet.
+                This album doesn't have any plants yet.
               </p>
             )}
           </div>
@@ -208,8 +225,8 @@ const ClientCollectionView = ({
                     <p className="font-medium text-zinc-400 group-hover:text-emerald-400 transition-colors text-sm">
                       Add New Plant
                     </p>
-                    <p className="text-xs text-zinc-600 group-hover:text-zinc-500 transition-colors mt-0.5">
-                      Expand your collection
+                    <p className="text-sm text-zinc-600 group-hover:text-zinc-500 transition-colors">
+                      Expand your album
                     </p>
                   </div>
                 </div>
