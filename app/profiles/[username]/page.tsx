@@ -365,8 +365,8 @@ const ProfilePage = () => {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             {/* Mobile/Tablet Top Tabs */}
-            <div className="lg:hidden sticky top-24 md:top-28 z-10 -mx-6 px-6 py-2 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            <div className="lg:hidden sticky top-24 md:top-28 z-10 -mx-6 px-6 py-3 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <button
                   onClick={() => setActiveSection("posts")}
                   className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
@@ -924,9 +924,10 @@ function CollectionBedCard({
         )}
       </div>
 
-      {/* Full overlay on hover */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <div className="flex flex-col h-full p-4">
+      {/* Slide-up overlay on hover */}
+      <div className="absolute inset-x-0 bottom-0 h-full translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+        <div className="relative flex flex-col h-full p-4">
           <h3 className="font-semibold text-white text-lg">
             {collection.name}
           </h3>

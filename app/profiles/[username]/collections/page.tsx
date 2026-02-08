@@ -161,18 +161,21 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
                     </h3>
                   </div>
 
-                  {/* Full overlay on hover */}
-                  <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-4 flex flex-col">
-                    <h3 className="text-white text-lg font-semibold">
-                      {collection.name}
-                    </h3>
-                    {collection.description && (
-                      <p className="text-white/90 text-sm mt-2 overflow-hidden">
-                        {collection.description}
-                      </p>
-                    )}
-                    <div className="mt-auto text-white/80 text-xs">
-                      {(collection.plants?.length || 0)} {(collection.plants?.length || 0) === 1 ? "plant" : "plants"}
+                  {/* Slide-up overlay on hover */}
+                  <div className="absolute inset-x-0 bottom-0 h-full translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                    <div className="relative p-4 flex flex-col h-full">
+                      <h3 className="text-white text-lg font-semibold">
+                        {collection.name}
+                      </h3>
+                      {collection.description && (
+                        <p className="text-white/90 text-sm mt-2 overflow-hidden">
+                          {collection.description}
+                        </p>
+                      )}
+                      <div className="mt-auto text-white/80 text-xs">
+                        {(collection.plants?.length || 0)} {(collection.plants?.length || 0) === 1 ? "plant" : "plants"}
+                      </div>
                     </div>
                   </div>
                 </div>
