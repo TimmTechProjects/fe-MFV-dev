@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import EditCollectionWrapper from "@/components/EditCollectionButton";
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { Plant } from "@/types/plants";
 import { Plus, Leaf, Sparkles, ArrowLeft } from "lucide-react";
 import useAuth from "@/redux/hooks/useAuth";
-import { decodeHtmlEntities } from "@/lib/utils";
+import PlantGridCard from "@/components/cards/PlantGridCard";
 
 interface CollectionsPageProps {
   username: string;
@@ -42,6 +42,7 @@ const ClientCollectionView = ({
   const isOwner = user?.username === username;
   const { id: collectionId, name, description, thumbnailImage, coverImageUrl, plants } = collectionData;
   const displayCoverUrl = coverImageUrl || thumbnailImage?.url || null;
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
   const plantImages = plants.flatMap((plant) =>
     plant.images.map((img) => ({
@@ -109,9 +110,22 @@ const ClientCollectionView = ({
                   <span>{plants.length} {plants.length === 1 ? 'plant' : 'plants'}</span>
                 </p>
                 {description && (
-                  <p className="mt-3 text-zinc-300 max-w-xl leading-relaxed">
-                    {description}
-                  </p>
+                  <div className="mt-3 max-w-xl relative">
+                    <div className={descriptionExpanded ? "" : "relative"}>
+                      <p className={`text-zinc-300 leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                        {description}
+                      </p>
+                      {!descriptionExpanded && (
+                        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-zinc-950/80 to-transparent pointer-events-none" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setDescriptionExpanded(!descriptionExpanded)}
+                      className="text-emerald-400 hover:text-emerald-300 text-sm mt-1 transition-colors"
+                    >
+                      {descriptionExpanded ? "Show less" : "Show more"}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -185,87 +199,15 @@ const ClientCollectionView = ({
           </div>
         ) : (
           /* Plants Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
             {plants.map((plant: Plant) => {
-              const mainImage = plant.images?.[0]?.url ?? "/fallback.png";
-              const author = plant.user?.username;
-              const originalSlug = plant.originalCollection?.slug;
-
-              if (!author || !originalSlug) {
+              if (!plant.user?.username || !plant.originalCollection?.slug) {
                 console.warn("Missing plant author or originalSlug:", plant);
               }
 
-              const plantUrl = `/profiles/${author}/collections/${originalSlug}/${plant.slug}`;
-
-              return (
-                <Link
-                  key={plant.id}
-                  href={plantUrl}
-                  className="group relative bg-zinc-900/60 backdrop-blur-sm border border-zinc-800 hover:border-emerald-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10"
-                >
-                  <div className="flex flex-col sm:flex-row">
-                    {/* Image */}
-                    <div className="w-full sm:w-48 h-48 flex-shrink-0 relative overflow-hidden">
-                      <Image
-                        src={mainImage}
-                        alt={plant.commonName || "Plant image"}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/60 via-transparent to-transparent sm:bg-gradient-to-r" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 p-5">
-                      <h3 className="text-xl font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                        {plant.commonName}
-                      </h3>
-                      <p className="text-sm text-emerald-400/70 italic mb-3">
-                        {plant.botanicalName}
-                      </p>
-
-                      <p className="text-zinc-400 text-sm line-clamp-3 leading-relaxed">
-                        {plant.description
-                          ? decodeHtmlEntities(plant.description)
-                              .replace(/<[^>]+>/g, "")
-                              .slice(0, 150) +
-                            (decodeHtmlEntities(plant.description).replace(/<[^>]+>/g, "").length > 150 ? "..." : "")
-                          : "No description provided."}
-                      </p>
-
-                      {plant.tags && plant.tags.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {plant.tags.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag.name}
-                              className="inline-block bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/20"
-                            >
-                              {tag.name}
-                            </span>
-                          ))}
-                          {plant.tags.length > 3 && (
-                            <span className="text-xs text-zinc-500">
-                              +{plant.tags.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hover indicator */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-              );
+              return <PlantGridCard key={plant.id} plant={plant} />;
             })}
 
-            {/* Add New Plant Card (for owners) */}
             {isOwner && (
               <button
                 onClick={() =>
@@ -273,14 +215,14 @@ const ClientCollectionView = ({
                     `/profiles/${username}/collections/${collectionSlug}/new`
                   )
                 }
-                className="group relative bg-zinc-900/30 backdrop-blur-sm border-2 border-dashed border-zinc-700 hover:border-emerald-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:bg-zinc-900/50 min-h-[200px] flex items-center justify-center"
+                className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer border-2 border-dashed border-zinc-700 hover:border-emerald-500/50 bg-zinc-900/30 hover:bg-zinc-900/50 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center"
               >
-                <div className="flex flex-col items-center gap-4 p-8">
-                  <div className="w-16 h-16 rounded-full bg-zinc-800 group-hover:bg-emerald-500/20 border border-zinc-700 group-hover:border-emerald-500/50 flex items-center justify-center transition-all duration-300">
-                    <Plus className="w-8 h-8 text-zinc-500 group-hover:text-emerald-400 transition-colors" />
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-14 h-14 rounded-full bg-zinc-800 group-hover:bg-emerald-500/20 border border-zinc-700 group-hover:border-emerald-500/50 flex items-center justify-center transition-all duration-300">
+                    <Plus className="w-7 h-7 text-zinc-500 group-hover:text-emerald-400 transition-colors" />
                   </div>
                   <div className="text-center">
-                    <p className="font-medium text-zinc-400 group-hover:text-emerald-400 transition-colors">
+                    <p className="font-medium text-zinc-400 group-hover:text-emerald-400 transition-colors text-sm">
                       Add New Plant
                     </p>
                     <p className="text-sm text-zinc-600 group-hover:text-zinc-500 transition-colors">

@@ -2,21 +2,10 @@ import { Skeleton, SkeletonText, SkeletonImage } from "@/components/ui/skeleton"
 
 function PlantCardSkeleton() {
   return (
-    <div className="flex flex-col sm:flex-row gap-6 border-b border-dashed border-[#dab9df] pb-6">
-      <SkeletonImage className="w-full sm:w-48 h-48 flex-shrink-0 rounded-lg" />
-      <div className="flex-1 space-y-3">
-        <div className="flex items-center gap-2">
-          <SkeletonText className="h-6 w-48" />
-          <SkeletonText className="h-4 w-32" />
-        </div>
-        <SkeletonText className="h-4 w-full" />
-        <SkeletonText className="h-4 w-full" />
-        <SkeletonText className="h-4 w-3/4" />
-        <div className="flex gap-2 mt-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-5 w-16 rounded-full" />
-          ))}
-        </div>
+    <div className="relative aspect-square rounded-xl overflow-hidden bg-zinc-900/60">
+      <SkeletonImage className="w-full h-full" />
+      <div className="absolute inset-x-0 bottom-0 p-4 space-y-2">
+        <SkeletonText className="h-5 w-3/4" />
       </div>
     </div>
   );
@@ -35,8 +24,8 @@ function CollectionDetailSkeleton() {
         </div>
       </div>
 
-      <div className="space-y-8">
-        {Array.from({ length: 3 }).map((_, i) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => (
           <PlantCardSkeleton key={i} />
         ))}
       </div>

@@ -155,14 +155,30 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
                     className="object-cover object-center transition-transform duration-300 group-hover:scale-102"
                   />
 
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent" />
-
-                  {/* Title text */}
-                  <div className="absolute bottom-3 left-3 right-3 text-white z-10">
+                  {/* Bottom content (fades out on hover) */}
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-200 group-hover:opacity-0" />
+                  <div className="absolute bottom-3 left-3 right-3 text-white z-10 transition-opacity duration-200 group-hover:opacity-0">
                     <h3 className="text-lg font-semibold truncate">
                       {collection.name}
                     </h3>
+                  </div>
+
+                  {/* Slide-up overlay on hover */}
+                  <div className="absolute inset-x-0 bottom-0 h-full translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                    <div className="relative p-4 flex flex-col h-full">
+                      <h3 className="text-white text-lg font-semibold">
+                        {collection.name}
+                      </h3>
+                      {collection.description && (
+                        <p className="text-white/90 text-sm mt-2 overflow-hidden">
+                          {collection.description}
+                        </p>
+                      )}
+                      <div className="mt-auto text-white/80 text-xs">
+                        {(collection.plants?.length || 0)} {(collection.plants?.length || 0) === 1 ? "plant" : "plants"}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Link>
