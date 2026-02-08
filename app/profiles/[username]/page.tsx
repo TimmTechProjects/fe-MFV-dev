@@ -364,6 +364,54 @@ const ProfilePage = () => {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0">
+            {/* Mobile/Tablet Top Tabs */}
+            <div className="lg:hidden sticky top-20 md:top-24 z-10 -mx-6 px-6 py-2 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
+              <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                <button
+                  onClick={() => setActiveSection("posts")}
+                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
+                    activeSection === "posts"
+                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
+                  }`}
+                >
+                  Posts
+                </button>
+                <button
+                  onClick={() => setActiveSection("collections")}
+                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors flex items-center gap-1.5 ${
+                    activeSection === "collections"
+                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
+                  }`}
+                >
+                  Albums
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    {usersCollections.length}
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActiveSection("marketplace")}
+                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
+                    activeSection === "marketplace"
+                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
+                  }`}
+                >
+                  Marketplace
+                </button>
+                <button
+                  onClick={() => setActiveSection("garden")}
+                  className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap border transition-colors ${
+                    activeSection === "garden"
+                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                      : "text-zinc-400 border-zinc-700 hover:text-emerald-400"
+                  }`}
+                >
+                  {isOwnProfile ? "My Garden" : "Garden"}
+                </button>
+              </div>
+            </div>
             {/* Garden Section - Card Grid */}
             {activeSection === "garden" && (
               <section className="animate-fade-in-up">
@@ -512,7 +560,7 @@ const ProfilePage = () => {
                   />
                                 ) : (
                                   <>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                       {usersCollections.map((collection) => (
                                         <CollectionBedCard
                                           key={collection.id}
