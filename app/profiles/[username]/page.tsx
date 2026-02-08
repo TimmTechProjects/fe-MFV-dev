@@ -316,8 +316,8 @@ const ProfilePage = () => {
         {/* Main Content Area - Two Column Layout */}
         <div className="flex flex-col lg:flex-row gap-6 p-6">
           {/* Sidebar Navigation */}
-          <aside className="lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-6 lg:top-8">
+          <aside className="hidden lg:block lg:w-64 flex-shrink-0">
+            <nav className="space-y-1 sticky top-24 md:top-28">
               <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
@@ -365,7 +365,7 @@ const ProfilePage = () => {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             {/* Mobile/Tablet Top Tabs */}
-            <div className="lg:hidden sticky top-20 md:top-24 z-10 -mx-6 px-6 py-2 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
+            <div className="lg:hidden sticky top-24 md:top-28 z-10 -mx-6 px-6 py-2 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
               <div className="flex gap-2 overflow-x-auto no-scrollbar">
                 <button
                   onClick={() => setActiveSection("posts")}
@@ -912,20 +912,34 @@ function CollectionBedCard({
       />
       <div className="absolute inset-x-0 bottom-0 h-2/5 group-hover:h-2/3 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-all duration-300" />
 
-      {/* Overlay Content */}
-      <div className="absolute inset-x-0 bottom-0 p-4">
+      {/* Bottom Content (fades out on hover) */}
+      <div className="absolute inset-x-0 bottom-0 p-4 transition-opacity duration-200 group-hover:opacity-0">
         <h3 className="font-semibold text-white text-lg truncate">
           {collection.name}
         </h3>
         {collection.description && (
-          <p className="text-white/90 text-sm line-clamp-1 group-hover:line-clamp-none mt-0.5 transition-all duration-300">
+          <p className="text-white/90 text-sm line-clamp-1 mt-0.5">
             {collection.description}
           </p>
         )}
-        <div className="max-h-0 group-hover:max-h-20 overflow-hidden transition-all duration-300 ease-in-out">
-          <p className="text-white/80 text-xs mt-2">
-            {(collection.plants?.length || 0)} {collection.plants?.length === 1 ? "plant" : "plants"}
-          </p>
+      </div>
+
+      {/* Full overlay on hover */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="flex flex-col h-full p-4">
+          <h3 className="font-semibold text-white text-lg">
+            {collection.name}
+          </h3>
+          {collection.description && (
+            <p className="text-white/90 text-sm mt-2 overflow-hidden">
+              {collection.description}
+            </p>
+          )}
+          <div className="mt-auto">
+            <p className="text-white/80 text-xs">
+              {(collection.plants?.length || 0)} {collection.plants?.length === 1 ? "plant" : "plants"}
+            </p>
+          </div>
         </div>
       </div>
     </Link>
