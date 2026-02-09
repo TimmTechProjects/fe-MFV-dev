@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, Filter, X, SlidersHorizontal, Leaf } from "lucide-react";
+import { Search, SlidersHorizontal, Leaf } from "lucide-react";
 import { getPaginatedPlants } from "@/lib/utils";
 import Link from "next/link";
 
