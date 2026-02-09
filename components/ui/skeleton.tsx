@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-gray-800", className)}
+      className={cn("animate-pulse rounded-md bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%]", className)}
+      style={{ animation: 'shimmer 1.5s ease-in-out infinite' }}
       {...props}
     />
   );
