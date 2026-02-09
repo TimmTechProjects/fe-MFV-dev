@@ -276,15 +276,20 @@ const MarketplacePage = () => {
                   {/* Badges */}
                   <div className="absolute top-3 left-3 flex flex-col gap-2">
                     {plant.sale && (
-                      <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                      <span className="bg-red-500/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
                         {plant.sale}
                       </span>
                     )}
                     {plant.freeShipping && (
-                      <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                      <span className="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
                         Free Ship
                       </span>
                     )}
+                  </div>
+
+                  {/* Quick view overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="bg-white/90 text-black px-4 py-2 rounded-full text-sm font-medium">Quick View</span>
                   </div>
                 </div>
 
@@ -296,29 +301,32 @@ const MarketplacePage = () => {
 
                   {/* Rating and Reviews */}
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Star
-                        size={14}
-                        className="text-yellow-400 fill-current"
-                      />
-                      <span className="text-sm text-white">{plant.rating}</span>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          size={12}
+                          className={i < Math.floor(plant.rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-600"}
+                        />
+                      ))}
+                      <span className="text-sm text-gray-300 ml-1">{plant.rating}</span>
                     </div>
-                    <span className="text-xs text-white">
-                      ({plant.reviews} reviews)
+                    <span className="text-xs text-gray-500">
+                      ({plant.reviews})
                     </span>
                   </div>
 
                   {/* Shop Name */}
-                  <p className="text-sm text-white mb-3 hover:text-[#81a308] cursor-pointer transition-colors">
+                  <p className="text-sm text-gray-400 mb-3 hover:text-[#81a308] cursor-pointer transition-colors">
                     by {plant.shop}
                   </p>
 
                   {/* Price */}
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-white">
+                    <span className="text-lg font-bold text-[#81a308]">
                       {plant.price}
                     </span>
-                    <button className="px-3 py-1  text-white text-sm rounded-lg  bg-[#81a308] transition-colors border border-[#81a308]">
+                    <button className="px-4 py-1.5 text-white text-sm rounded-full bg-[#81a308] hover:bg-[#6e8c07] transition-colors">
                       View
                     </button>
                   </div>
