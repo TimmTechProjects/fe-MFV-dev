@@ -151,7 +151,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="max-w-xl mx-auto">
           {/* Form Section */}
           <BotanicalCard className="p-6 relative overflow-hidden">
             <LeafDecoration position="top-right" size="lg" />
