@@ -4,16 +4,19 @@ import { useState, useEffect, use } from "react";
 import {
   Heart,
   MessageCircle,
-  Repeat2,
-  Share,
+  Share2,
+  Bookmark,
   Search,
   MoreHorizontal,
   Home,
-  Mail,
+  Compass,
   ShoppingCart,
   ImageIcon,
   VideoIcon,
-  MapPinIcon,
+  Smile,
+  TrendingUp,
+  Users,
+  Leaf,
 } from "lucide-react";
 
 interface Plant {
@@ -54,7 +57,6 @@ interface Plant {
   }[];
 }
 
-// Add the import for your API function
 import { getPaginatedPlants } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import Loading from "../loading";
@@ -71,10 +73,10 @@ interface Props {
 
 const limit = 10;
 
-export default function TwitterPlantFeed({ searchParams }: Props) {
+export default function PlantVaultFeed({ searchParams }: Props) {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [total, setTotal] = useState(0);
-  const [activeFilter, setActiveFilter] = useState("For You");
+  const [activeFilter, setActiveFilter] = useState("Feed");
   const [loading, setLoading] = useState(true);
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
 
@@ -102,7 +104,7 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
 
   const totalPages = Math.ceil(total / limit);
 
-  const filters = ["For You", "Reels", "Forum"];
+  const filters = ["Feed", "Gallery", "Forum"];
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
@@ -112,21 +114,26 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto flex">
-        {/* Left Sidebar - Navigation (hidden on mobile) */}
-        <aside className="hidden lg:block w-64 flex-shrink-0 p-4 border-r border-gray-800 h-screen sticky top-0">
-          <div className="space-y-2">
+        <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-800/50 h-screen sticky top-0">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 px-3 mb-6">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <Leaf className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-lg">The Vault</span>
+            </div>
             <nav className="space-y-1">
               <NavItem
                 icon={<Home />}
                 label="Home"
-                active={!showMarketplaceContent && activeFilter === "For You"}
+                active={!showMarketplaceContent && activeFilter === "Feed"}
                 onClick={() => {
                   setShowMarketplaceContent(false);
-                  setActiveFilter("For You");
+                  setActiveFilter("Feed");
                 }}
               />
-              <NavItem icon={<Search />} label="Explore" />
-              <NavItem icon={<Mail />} label="Messages" />
+              <NavItem icon={<Compass />} label="Explore" />
+              <NavItem icon={<Bookmark />} label="Saved" />
               <NavItem
                 icon={<ShoppingCart />}
                 label="Marketplace"
@@ -134,42 +141,56 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
               />
             </nav>
 
-            {/* Post Button */}
             <Link
               href="/forum"
-              className="w-full bg-[#81a308] text-black font-bold py-3 px-6 rounded-full mt-8 transition-colors block text-center"
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-purple-500/25 block text-center"
             >
-              Start now
+              Create Post
             </Link>
+
+            <div className="mt-8 p-4 rounded-xl bg-gray-900/50 border border-gray-800/50">
+              <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Your Plants</span>
+                  <span className="text-white font-medium">12</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Collections</span>
+                  <span className="text-white font-medium">3</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Following</span>
+                  <span className="text-white font-medium">24</span>
+                </div>
+              </div>
+            </div>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 border-r border-gray-800">
-          {/* Header */}
-          <div className="sticky top-0 bg-black/80 backdrop-blur-md border-b border-gray-800 z-10">
+        <main className="flex-1 border-r border-gray-800/50">
+          <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-gray-800/50 z-10">
             <div className="p-4">
               <h1 className="text-xl font-bold">
                 {showMarketplaceContent ? "Marketplace" : "Home"}
               </h1>
             </div>
 
-            {/* Filter Tabs - Only show when not in marketplace */}
             {!showMarketplaceContent && (
-              <div className="grid grid-cols-3 gap-4 overflow-x-auto scrollbar-hide">
+              <div className="flex">
                 {filters.map((filter) => (
                   <button
                     key={filter}
                     onClick={() => handleFilterClick(filter)}
-                    className={`px-6 py-4 text-sm font-medium transition-colors relative whitespace-nowrap ${
+                    className={`flex-1 px-6 py-3.5 text-sm font-medium transition-colors relative ${
                       activeFilter === filter
                         ? "text-white"
-                        : "text-gray-400 hover:text-gray-300"
+                        : "text-gray-500 hover:text-gray-300"
                     }`}
                   >
                     {filter}
                     {activeFilter === filter && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#81a308]" />
+                      <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
                     )}
                   </button>
                 ))}
@@ -177,46 +198,48 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
             )}
           </div>
 
-          {/* Create Post Box -  */}
-          <div className="p-4 border-b border-gray-800">
-            <div className="flex space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0"></div>
+          <div className="p-4 border-b border-gray-800/50">
+            <div className="flex gap-3">
+              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex-shrink-0 flex items-center justify-center">
+                <Leaf className="w-5 h-5 text-purple-400" />
+              </div>
               <div className="flex-1">
                 <input
                   type="text"
-                  placeholder="What's on your mind?"
-                  className="w-full bg-gray-800 rounded-full px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Share something with the community..."
+                  className="w-full bg-gray-900/60 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500/30 border border-gray-800/50 transition-all"
                 />
               </div>
             </div>
-            <div className="flex justify-between mt-3 px-2">
-              <button className="flex items-center text-gray-400 hover:text-green-400">
-                <ImageIcon className="w-5 h-5 mr-1" />
-                <span className="text-sm">Photo</span>
-              </button>
-              <button className="flex items-center text-gray-400 hover:text-green-400">
-                <VideoIcon className="w-5 h-5 mr-1" />
-                <span className="text-sm">Video</span>
-              </button>
-              <button className="flex items-center text-gray-400 hover:text-green-400">
-                <MapPinIcon className="w-5 h-5 mr-1" />
-                <span className="text-sm">Location</span>
-              </button>
-              <button className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-green-600">
+            <div className="flex items-center justify-between mt-3 pl-14">
+              <div className="flex gap-1">
+                <button className="flex items-center gap-1.5 text-gray-500 hover:text-purple-400 px-3 py-1.5 rounded-lg hover:bg-purple-500/5 transition-all text-sm">
+                  <ImageIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Photo</span>
+                </button>
+                <button className="flex items-center gap-1.5 text-gray-500 hover:text-pink-400 px-3 py-1.5 rounded-lg hover:bg-pink-500/5 transition-all text-sm">
+                  <VideoIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Video</span>
+                </button>
+                <button className="flex items-center gap-1.5 text-gray-500 hover:text-green-400 px-3 py-1.5 rounded-lg hover:bg-green-500/5 transition-all text-sm">
+                  <Smile className="w-4 h-4" />
+                  <span className="hidden sm:inline">Feeling</span>
+                </button>
+              </div>
+              <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-5 py-1.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-purple-500/20 transition-all">
                 Post
               </button>
             </div>
           </div>
 
-          {/* Plant Posts Feed */}
           {!showMarketplaceContent ? (
-            <div className="divide-y divide-gray-800">
+            <div className="divide-y divide-gray-800/50">
               {loading ? (
                 <Loading />
               ) : plants.length === 0 ? (
                 <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl">🌱</span>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full flex items-center justify-center mb-4">
+                    <Leaf className="w-8 h-8 text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
                     No plants in your feed
@@ -236,9 +259,8 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
             <MarketplaceContent />
           )}
 
-          {/* Pagination */}
           {!loading && totalPages > 1 && !showMarketplaceContent && (
-            <div className="p-4 border-t border-gray-800">
+            <div className="p-4 border-t border-gray-800/50">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -248,24 +270,24 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
           )}
         </main>
 
-        {/* Right Sidebar - Trending & Suggestions (hidden on mobile/tablet) */}
-        <aside className="hidden xl:block w-80 p-4 space-y-4">
-          {/* Search */}
-          <div className="bg-gray-900 rounded-full p-3 flex items-center space-x-2">
-            <Search className="w-5 h-5 text-gray-400" />
+        <aside className="hidden xl:block w-80 p-5 space-y-5">
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
               placeholder="Search plants, people..."
-              className="bg-transparent flex-1 outline-none text-white placeholder-gray-400"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-900/60 border border-gray-800/50 rounded-xl outline-none text-white placeholder-gray-500 focus:border-purple-500/30 transition-all text-sm"
             />
           </div>
 
-          {/* What's happening */}
-          <div className="bg-gray-900 rounded-2xl p-4">
-            <h2 className="text-xl font-bold mb-3">What's happening</h2>
-            <div className="space-y-3">
+          <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-4 h-4 text-purple-400" />
+              <h2 className="font-bold text-base">Trending</h2>
+            </div>
+            <div className="space-y-1">
               <TrendingItem
-                category="Trending in Plants"
+                category="Popular"
                 title="#MonsteraMonday"
                 posts="12.5K posts"
               />
@@ -275,15 +297,40 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
                 posts="8,432 posts"
               />
               <TrendingItem
-                category="Trending"
+                category="Community"
                 title="#PlantSwap"
                 posts="5,234 posts"
               />
               <TrendingItem
-                category="Plant Community"
+                category="Events"
                 title="Rare plants auction"
                 posts="3,128 posts"
               />
+            </div>
+          </div>
+
+          <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="w-4 h-4 text-pink-400" />
+              <h2 className="font-bold text-base">Suggested Growers</h2>
+            </div>
+            <div className="space-y-3">
+              {["PlantMom", "GreenThumb", "UrbanJungle"].map((name) => (
+                <div key={name} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xs font-bold text-purple-400">
+                      {name[0]}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">{name}</p>
+                      <p className="text-xs text-gray-500">@{name.toLowerCase()}</p>
+                    </div>
+                  </div>
+                  <button className="text-xs px-3 py-1 rounded-full border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all">
+                    Follow
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </aside>
@@ -291,8 +338,6 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
     </div>
   );
 }
-
-// Navigation Item Component
 
 function NavItem({
   icon,
@@ -308,50 +353,37 @@ function NavItem({
   href?: string;
 }) {
   if (href) {
-    // Render as Next.js Link
     return (
       <Link
         href={href}
-        className={`flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-xl w-full text-left ${
-          active ? "font-bold" : "font-normal"
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-900/60 transition-all text-sm ${
+          active ? "font-semibold bg-gray-900/40" : "font-normal text-gray-300"
         }`}
       >
-        <span className="w-6 h-6">{icon}</span>
+        <span className="w-5 h-5">{icon}</span>
         <span>{label}</span>
       </Link>
     );
   }
 
-  // Render as button
   return (
     <button
       onClick={onClick}
-      className={`flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-xl w-full text-left ${
-        active ? "font-bold" : "font-normal"
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-900/60 transition-all text-sm w-full text-left ${
+        active ? "font-semibold bg-gray-900/40" : "font-normal text-gray-300"
       }`}
     >
-      <span className="w-6 h-6">{icon}</span>
+      <span className="w-5 h-5">{icon}</span>
       <span>{label}</span>
     </button>
   );
 }
 
-// Plant Post Component
 function PlantPost({ plant }: { plant: Plant }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(plant.likes ?? 0);
-  const [retweeted, setRetweeted] = useState(false);
-  const [retweetCount, setRetweetCount] = useState(
-    Math.floor(Math.random() * 50) + 5
-  );
+  const [saved, setSaved] = useState(false);
   const [commentCount] = useState(Math.floor(Math.random() * 30) + 2);
-
-  // Related plants data (placeholder)
-  const relatedPlants = [
-    { id: "1", name: "Monstera", image: "/monstera.jpg" },
-    { id: "2", name: "Pothos", image: "/pothos.jpg" },
-    { id: "3", name: "Philodendron", image: "/philodendron.jpg" },
-  ];
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -359,10 +391,9 @@ function PlantPost({ plant }: { plant: Plant }) {
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
 
-  const handleRetweet = (e: React.MouseEvent) => {
+  const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setRetweeted(!retweeted);
-    setRetweetCount((prev) => (retweeted ? prev - 1 : prev + 1));
+    setSaved(!saved);
   };
 
   const timeAgo = (dateInput: string | Date) => {
@@ -381,10 +412,9 @@ function PlantPost({ plant }: { plant: Plant }) {
     plant.images?.find((img) => img.isMain) || plant.images?.[0];
 
   return (
-    <article className="border-b border-gray-800 p-4 hover:bg-gray-950/30 transition-colors cursor-pointer">
-      <div className="flex space-x-3">
-        {/* User Avatar */}
-        <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+    <article className="p-4 hover:bg-gray-950/30 transition-colors">
+      <div className="flex gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-gray-800">
           {plant.user.avatarUrl ? (
             <img
               src={plant.user.avatarUrl}
@@ -393,8 +423,8 @@ function PlantPost({ plant }: { plant: Plant }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-[#81a308] flex items-center justify-center">
-              <span className="text-white font-bold text-lg">
+            <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">
                 {plant.user.firstName?.[0] ||
                   plant.user.username[0].toUpperCase()}
               </span>
@@ -402,57 +432,48 @@ function PlantPost({ plant }: { plant: Plant }) {
           )}
         </div>
 
-        {/* Post Content */}
         <div className="flex-1 min-w-0">
-          {/* User Info and Time */}
-          <div className="flex items-center space-x-1 mb-1">
-            <span className="font-bold text-white hover:underline cursor-pointer">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="font-semibold text-white text-sm hover:underline cursor-pointer">
               {plant.user.firstName && plant.user.lastName
                 ? `${plant.user.firstName} ${plant.user.lastName}`
                 : plant.user.username}
             </span>
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-500 text-xs">
               @{plant.user.username}
             </span>
-            <span className="text-gray-400">·</span>
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-600 text-xs">·</span>
+            <span className="text-gray-500 text-xs">
               {timeAgo(plant.createdAt)}
             </span>
             <div className="ml-auto">
-              <button className="p-1 hover:bg-gray-800 rounded-full">
-                <MoreHorizontal className="w-5 h-5 text-gray-400" />
+              <button className="p-1.5 hover:bg-gray-800/60 rounded-lg transition-colors">
+                <MoreHorizontal className="w-4 h-4 text-gray-500" />
               </button>
             </div>
           </div>
 
-          {/* Post Text */}
           <div className="mb-3">
-            <div
-              className="text-white leading-relaxed"
-              dangerouslySetInnerHTML={{
-                __html: `${plant.commonName}!${
-                  plant.description
-                    ? " " + plant.description.substring(0, 120) + "..."
-                    : ""
-                }`,
-              }}
-            />
+            <p className="text-white text-sm leading-relaxed">
+              <span className="font-medium">{plant.commonName}</span>
+              {plant.description && (
+                <span className="text-gray-300"> — {plant.description.substring(0, 120)}...</span>
+              )}
+            </p>
 
-            {/* Plant Details */}
             {plant.botanicalName && (
-              <p className="text-gray-400 text-sm italic mt-2">
+              <p className="text-gray-500 text-xs italic mt-1.5">
                 {plant.botanicalName}
               </p>
             )}
 
-            {/* Tags */}
             {plant.tags && plant.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {plant.tags.map((tag) => (
                   <Link
                     key={tag.id}
                     href={`/the-vault/results?tag=${tag.name}`}
-                    className="text-green-400 hover:text-green-300 hover:underline"
+                    className="text-purple-400 hover:text-purple-300 text-xs"
                   >
                     #{tag.name}
                   </Link>
@@ -461,123 +482,69 @@ function PlantPost({ plant }: { plant: Plant }) {
             )}
           </div>
 
-          {/* Plant Image */}
           {mainImage && (
-            <div className="mb-3 rounded-2xl overflow-hidden border border-gray-700">
+            <div className="mb-3 rounded-2xl overflow-hidden border border-gray-800/50">
               <img
                 src={mainImage.url}
                 alt={plant.commonName || "Plant image"}
-                className="w-full max-h-96 object-cover"
+                className="w-full max-h-[28rem] object-cover"
                 loading="lazy"
                 onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
               />
             </div>
           )}
 
-          {/* Plant Info Card */}
-          <div className="bg-gray-900/50 rounded-xl p-3 mb-3 border border-gray-700">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold text-white">{plant.commonName}</h3>
-                <div className="flex items-center space-x-2 mt-1 text-sm text-gray-400">
-                  {plant.type && (
-                    <span className="bg-green-900/30 text-green-300 px-2 py-0.5 rounded-full text-xs">
-                      {plant.type}
-                    </span>
-                  )}
-                  {plant.origin && <span>📍 {plant.origin}</span>}
-                </div>
+          <div className="bg-gray-900/30 rounded-xl p-3 mb-3 border border-gray-800/30">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <h3 className="font-medium text-white text-sm">{plant.commonName}</h3>
+                {plant.type && (
+                  <span className="bg-green-900/20 text-green-400 px-2 py-0.5 rounded-full text-[10px] border border-green-800/20">
+                    {plant.type}
+                  </span>
+                )}
               </div>
-              <div className="text-right text-sm">
-                <div className="text-gray-400">
-                  {plant.views.toLocaleString()} views
-                </div>
+              <div className="flex items-center gap-3 text-xs text-gray-500">
+                {plant.origin && <span>{plant.origin}</span>}
+                <span>{plant.views.toLocaleString()} views</span>
               </div>
             </div>
           </div>
 
-          {/* Related Plants Section */}
-          <div className="mt-4">
-            <h4 className="text-white font-semibold mb-2">Related Plants</h4>
-            <div className="flex space-x-2 overflow-x-auto pb-2">
-              {relatedPlants.map((relatedPlant) => (
-                <div
-                  key={relatedPlant.id}
-                  className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border border-gray-700"
-                >
-                  <img
-                    src={relatedPlant.image}
-                    alt={relatedPlant.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Interaction Buttons */}
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center space-x-1">
-              {/* Like */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-1">
               <button
                 onClick={handleLike}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-red-900/20 transition-colors group"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-500/5 transition-all group"
               >
                 <Heart
-                  className={`w-5 h-5 transition-colors ${
+                  className={`w-[18px] h-[18px] transition-all ${
                     liked
-                      ? "text-red-500 fill-red-500"
-                      : "text-gray-400 group-hover:text-red-400"
+                      ? "text-red-500 fill-red-500 scale-110"
+                      : "text-gray-500 group-hover:text-red-400"
                   }`}
                 />
                 <span
-                  className={`text-sm transition-colors ${
+                  className={`text-xs transition-colors ${
                     liked
                       ? "text-red-500"
-                      : "text-gray-400 group-hover:text-red-400"
+                      : "text-gray-500 group-hover:text-red-400"
                   }`}
                 >
                   {likeCount}
                 </span>
               </button>
 
-              {/* Comment */}
               <button
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-blue-900/20 transition-colors group"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-purple-500/5 transition-all group"
               >
-                <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-400" />
-                <span className="text-sm text-gray-400 group-hover:text-blue-400">
+                <MessageCircle className="w-[18px] h-[18px] text-gray-500 group-hover:text-purple-400" />
+                <span className="text-xs text-gray-500 group-hover:text-purple-400">
                   {commentCount}
                 </span>
               </button>
 
-              {/* Repost */}
-              <button
-                onClick={handleRetweet}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-green-900/20 transition-colors group"
-              >
-                <Repeat2
-                  className={`w-5 h-5 transition-colors ${
-                    retweeted
-                      ? "text-green-500"
-                      : "text-gray-400 group-hover:text-green-400"
-                  }`}
-                />
-                <span
-                  className={`text-sm transition-colors ${
-                    retweeted
-                      ? "text-green-500"
-                      : "text-gray-400 group-hover:text-green-400"
-                  }`}
-                >
-                  {retweetCount}
-                </span>
-              </button>
-
-              {/* Share */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -588,11 +555,24 @@ function PlantPost({ plant }: { plant: Plant }) {
                     navigator.clipboard.writeText(url);
                   }
                 }}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-900 transition-colors group"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-blue-500/5 transition-all group"
               >
-                <Share className="w-5 h-5 text-gray-400 group-hover:text-gray-300" />
+                <Share2 className="w-[18px] h-[18px] text-gray-500 group-hover:text-blue-400" />
               </button>
             </div>
+
+            <button
+              onClick={handleSave}
+              className="p-1.5 rounded-lg hover:bg-purple-500/5 transition-all group"
+            >
+              <Bookmark
+                className={`w-[18px] h-[18px] transition-all ${
+                  saved
+                    ? "text-purple-400 fill-purple-400"
+                    : "text-gray-500 group-hover:text-purple-400"
+                }`}
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -600,7 +580,6 @@ function PlantPost({ plant }: { plant: Plant }) {
   );
 }
 
-// Trending Item Component
 function TrendingItem({
   category,
   title,
@@ -611,86 +590,75 @@ function TrendingItem({
   posts: string;
 }) {
   return (
-    <div className="hover:bg-gray-800/50 p-2 rounded cursor-pointer">
-      <p className="text-gray-500 text-sm">{category}</p>
-      <p className="font-bold text-white">{title}</p>
-      <p className="text-gray-500 text-sm">{posts}</p>
+    <div className="hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
+      <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
+      <p className="font-semibold text-white text-sm mt-0.5">{title}</p>
+      <p className="text-gray-500 text-xs mt-0.5">{posts}</p>
     </div>
   );
 }
 
-// Marketplace Content Component
 function MarketplaceContent() {
   return (
     <div className="p-6">
-      {/* Marketplace Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold text-white mb-1">
           Plant Marketplace
         </h1>
-        <p className="text-white text-lg">
+        <p className="text-gray-400">
           Discover beautiful plants from trusted sellers
         </p>
       </div>
 
-      {/* Marketplace Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {marketplacePlants.map((plant) => (
           <div
             key={plant.id}
-            className="bg-[#1a1a1a] rounded-xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-green-500/20"
+            className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-purple-500/10 border border-gray-800/30 hover:border-purple-500/20"
           >
-            {/* Plant Image */}
             <div className="relative aspect-square overflow-hidden">
               <img
                 src={plant.image || "/fallback.png"}
                 alt={plant.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
               />
-
-              {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-2">
                 {plant.sale && (
-                  <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                  <span className="bg-red-500/90 backdrop-blur text-white text-xs font-medium px-2.5 py-1 rounded-full">
                     {plant.sale}
                   </span>
                 )}
                 {plant.freeShipping && (
-                  <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                  <span className="bg-blue-500/90 backdrop-blur text-white text-xs font-medium px-2.5 py-1 rounded-full">
                     Free Ship
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Plant Info */}
             <div className="p-4">
-              <h3 className="font-semibold text-white mb-2 line-clamp-1 group-hover:text-green-400 transition-colors cursor-pointer">
+              <h3 className="font-medium text-white mb-1.5 line-clamp-1 group-hover:text-purple-300 transition-colors cursor-pointer text-sm">
                 {plant.name}
               </h3>
-
-              {/* Rating and Reviews */}
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-1.5">
                 <div className="flex items-center gap-1">
-                  <span className="text-yellow-400">★</span>
-                  <span className="text-sm text-white">{plant.rating}</span>
+                  <span className="text-yellow-400 text-xs">&#9733;</span>
+                  <span className="text-xs text-white">{plant.rating}</span>
                 </div>
-                <span className="text-xs text-gray-400">
-                  ({plant.reviews} reviews)
+                <span className="text-[10px] text-gray-500">
+                  ({plant.reviews})
                 </span>
               </div>
-
-              {/* Shop Name */}
-              <p className="text-sm text-gray-400 mb-3 hover:text-green-400 cursor-pointer transition-colors">
+              <p className="text-xs text-gray-500 mb-3 hover:text-purple-400 cursor-pointer transition-colors">
                 by {plant.shop}
               </p>
-
-              {/* Price */}
               <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-white">
+                <span className="text-base font-bold text-white">
                   {plant.price}
                 </span>
-                <button className="px-3 py-1 text-white text-sm rounded-lg bg-[#81a308] hover:bg-green-600 transition-colors border border-green-500">
+                <button className="px-3.5 py-1.5 text-white text-xs rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-lg hover:shadow-purple-500/20 transition-all font-medium">
                   View
                 </button>
               </div>

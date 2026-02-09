@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, SlidersHorizontal, Leaf } from "lucide-react";
+import { Search, SlidersHorizontal, Leaf, Heart, Eye } from "lucide-react";
 import { getPaginatedPlants } from "@/lib/utils";
 import Link from "next/link";
 
@@ -66,56 +66,63 @@ const PlantsDiscoveryPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Discover Plants
+      <div className="relative overflow-hidden pb-6 pt-10 md:pt-14">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-black to-pink-900/20" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1">
+            Discover <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Plants</span>
           </h1>
-          <p className="text-gray-400 text-lg">
-            Browse and search our growing catalog of plants
+          <p className="text-gray-400 text-sm md:text-base mb-6">
+            Browse and search our growing catalog
           </p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search by name, botanical name, or tag..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#81a308]"
-            />
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search plants..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 backdrop-blur border border-gray-700/50 rounded-full text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all"
+              />
+            </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-sm transition-all border ${
+                showFilters || selectedType
+                  ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                  : "bg-gray-900/80 border-gray-700/50 text-gray-400 hover:text-white hover:border-gray-600"
+              }`}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Filters</span>
+              {selectedType && (
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              )}
+            </button>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2.5 bg-gray-900/80 border border-gray-700/50 rounded-full text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
+            >
+              {sortOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl hover:border-gray-700 transition-colors sm:w-auto"
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filters
-            {selectedType && (
-              <span className="bg-[#81a308] text-black text-xs px-2 py-0.5 rounded-full">1</span>
-            )}
-          </button>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-[#81a308]"
-          >
-            {sortOptions.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
-          </select>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
         {showFilters && (
-          <div className="mb-6 p-4 bg-gray-900 border border-gray-800 rounded-xl">
+          <div className="mb-5 p-4 bg-gray-900/60 backdrop-blur border border-gray-800/50 rounded-2xl">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-300">Plant Type</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Plant Type</h3>
               {selectedType && (
                 <button
                   onClick={() => setSelectedType(null)}
-                  className="text-xs text-[#81a308] hover:underline"
+                  className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
                 >
                   Clear
                 </button>
@@ -126,10 +133,10 @@ const PlantsDiscoveryPage = () => {
                 <button
                   key={type}
                   onClick={() => setSelectedType(selectedType === type ? null : type)}
-                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                     selectedType === type
-                      ? "bg-[#81a308] text-black font-medium"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25"
+                      : "bg-gray-800/80 text-gray-400 hover:text-white hover:bg-gray-700/80"
                   }`}
                 >
                   {type}
@@ -139,85 +146,88 @@ const PlantsDiscoveryPage = () => {
           </div>
         )}
 
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-xs text-gray-500 mb-4">
           {filtered.length} plant{filtered.length !== 1 ? "s" : ""} found
         </p>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="bg-gray-900 rounded-xl overflow-hidden animate-pulse">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden animate-pulse bg-gray-900">
                 <div className="aspect-square bg-gray-800" />
                 <div className="p-3 space-y-2">
-                  <div className="h-4 bg-gray-800 rounded w-3/4" />
-                  <div className="h-3 bg-gray-800 rounded w-1/2" />
+                  <div className="h-3.5 bg-gray-800 rounded-full w-3/4" />
+                  <div className="h-3 bg-gray-800 rounded-full w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Leaf className="w-8 h-8 text-gray-600" />
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Leaf className="w-8 h-8 text-purple-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-300 mb-2">No plants found</h3>
-            <p className="text-gray-500 mb-4">Try adjusting your search or filters</p>
+            <p className="text-gray-500 text-sm mb-4">Try adjusting your search or filters</p>
             <button
               onClick={() => { setSearch(""); setSelectedType(null); }}
-              className="px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-sm hover:border-gray-700"
+              className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full text-sm text-purple-300 hover:from-purple-500/30 hover:to-pink-500/30 transition-all"
             >
               Clear filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filtered.map((plant) => {
               const mainImg = plant.images?.find((img) => img.isMain) || plant.images?.[0];
               return (
                 <Link
                   key={plant.id}
                   href={`/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`}
-                  className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-gray-700 transition-all group"
+                  className="group rounded-2xl overflow-hidden bg-gray-900/60 border border-gray-800/50 hover:border-purple-500/30 transition-all hover:shadow-lg hover:shadow-purple-500/5"
                 >
-                  <div className="aspect-square overflow-hidden bg-gray-800">
+                  <div className="aspect-square overflow-hidden bg-gray-800 relative">
                     {mainImg ? (
                       <img
                         src={mainImg.url}
                         alt={plant.commonName || plant.botanicalName}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-pink-900/20">
                         <Leaf className="w-10 h-10 text-gray-700" />
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1.5 text-white/80 text-xs">
+                        <Eye className="w-3.5 h-3.5" />
+                        {plant.views}
+                      </div>
+                      <Heart className="w-4 h-4 text-white/80" />
+                    </div>
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-white text-sm truncate group-hover:text-[#81a308] transition-colors">
+                    <h3 className="font-medium text-white text-sm truncate group-hover:text-purple-300 transition-colors">
                       {plant.commonName || plant.botanicalName}
                     </h3>
                     {plant.commonName && (
-                      <p className="text-xs text-gray-500 italic truncate">{plant.botanicalName}</p>
+                      <p className="text-xs text-gray-500 italic truncate mt-0.5">{plant.botanicalName}</p>
                     )}
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                       {plant.type && (
-                        <span className="text-[10px] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] bg-gradient-to-r from-green-900/40 to-emerald-900/40 text-green-400 px-2 py-0.5 rounded-full border border-green-800/30">
                           {plant.type}
                         </span>
                       )}
-                      <span className="text-[10px] text-gray-500">{plant.views} views</span>
+                      {plant.tags && plant.tags.slice(0, 1).map((tag) => (
+                        <span key={tag.id} className="text-[10px] text-purple-400">
+                          #{tag.name}
+                        </span>
+                      ))}
                     </div>
-                    {plant.tags && plant.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {plant.tags.slice(0, 2).map((tag) => (
-                          <span key={tag.id} className="text-[10px] text-[#81a308]">
-                            #{tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </Link>
               );
@@ -230,17 +240,17 @@ const PlantsDiscoveryPage = () => {
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-sm disabled:opacity-50 hover:border-gray-700"
+              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-full text-sm disabled:opacity-30 hover:border-purple-500/30 transition-all"
             >
               Previous
             </button>
-            <span className="text-sm text-gray-400">
-              Page {page} of {totalPages}
+            <span className="text-sm text-gray-500 px-3">
+              {page} / {totalPages}
             </span>
             <button
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-sm disabled:opacity-50 hover:border-gray-700"
+              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-full text-sm disabled:opacity-30 hover:border-purple-500/30 transition-all"
             >
               Next
             </button>
