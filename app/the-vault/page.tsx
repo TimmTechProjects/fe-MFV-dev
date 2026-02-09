@@ -112,8 +112,8 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto flex">
-        {/* Left Sidebar - Navigation */}
-        <aside className="w-64 flex-shrink-0 p-4 border-r border-gray-800 h-screen sticky top-0">
+        {/* Left Sidebar - Navigation (hidden on mobile) */}
+        <aside className="hidden lg:block w-64 flex-shrink-0 p-4 border-r border-gray-800 h-screen sticky top-0">
           <div className="space-y-2">
             <nav className="space-y-1">
               <NavItem
@@ -248,8 +248,8 @@ export default function TwitterPlantFeed({ searchParams }: Props) {
           )}
         </main>
 
-        {/* Right Sidebar - Trending & Suggestions */}
-        <aside className="w-80 p-4 space-y-4">
+        {/* Right Sidebar - Trending & Suggestions (hidden on mobile/tablet) */}
+        <aside className="hidden xl:block w-80 p-4 space-y-4">
           {/* Search */}
           <div className="bg-gray-900 rounded-full p-3 flex items-center space-x-2">
             <Search className="w-5 h-5 text-gray-400" />
@@ -390,6 +390,7 @@ function PlantPost({ plant }: { plant: Plant }) {
               src={plant.user.avatarUrl}
               alt={plant.user.username}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full bg-[#81a308] flex items-center justify-center">
@@ -465,8 +466,10 @@ function PlantPost({ plant }: { plant: Plant }) {
             <div className="mb-3 rounded-2xl overflow-hidden border border-gray-700">
               <img
                 src={mainImage.url}
-                alt={plant.commonName}
+                alt={plant.commonName || "Plant image"}
                 className="w-full max-h-96 object-cover"
+                loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
               />
             </div>
           )}
@@ -506,6 +509,8 @@ function PlantPost({ plant }: { plant: Plant }) {
                     src={relatedPlant.image}
                     alt={relatedPlant.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
                   />
                 </div>
               ))}
@@ -574,7 +579,15 @@ function PlantPost({ plant }: { plant: Plant }) {
 
               {/* Share */}
               <button
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const url = `${window.location.origin}/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`;
+                  if (navigator.share) {
+                    navigator.share({ title: plant.commonName || plant.botanicalName, text: plant.description?.substring(0, 100), url });
+                  } else {
+                    navigator.clipboard.writeText(url);
+                  }
+                }}
                 className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-900 transition-colors group"
               >
                 <Share className="w-5 h-5 text-gray-400 group-hover:text-gray-300" />
