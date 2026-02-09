@@ -67,10 +67,10 @@ const PlantsDiscoveryPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="relative overflow-hidden pb-6 pt-10 md:pt-14">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-black to-pink-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-[#81a308]/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-1">
-            Discover <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Plants</span>
+            Discover <span className="text-[#81a308]">Plants</span>
           </h1>
           <p className="text-gray-400 text-sm md:text-base mb-6">
             Browse and search our growing catalog
@@ -84,27 +84,27 @@ const PlantsDiscoveryPage = () => {
                 placeholder="Search plants..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 backdrop-blur border border-gray-700/50 rounded-full text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 backdrop-blur border border-gray-700/50 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#81a308]/50 focus:ring-1 focus:ring-[#81a308]/25 transition-all"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-sm transition-all border ${
+              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm transition-all border ${
                 showFilters || selectedType
-                  ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                  ? "bg-[#81a308]/20 border-[#81a308]/40 text-[#81a308]"
                   : "bg-gray-900/80 border-gray-700/50 text-gray-400 hover:text-white hover:border-gray-600"
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Filters</span>
               {selectedType && (
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#81a308]" />
               )}
             </button>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2.5 bg-gray-900/80 border border-gray-700/50 rounded-full text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
+              className="px-3 py-2.5 bg-gray-900/80 border border-gray-700/50 rounded-xl text-sm text-gray-300 focus:outline-none focus:border-[#81a308]/50 cursor-pointer"
             >
               {sortOptions.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
@@ -122,7 +122,7 @@ const PlantsDiscoveryPage = () => {
               {selectedType && (
                 <button
                   onClick={() => setSelectedType(null)}
-                  className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                  className="text-xs text-[#81a308] hover:text-[#9ec20a] transition-colors"
                 >
                   Clear
                 </button>
@@ -133,9 +133,9 @@ const PlantsDiscoveryPage = () => {
                 <button
                   key={type}
                   onClick={() => setSelectedType(selectedType === type ? null : type)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedType === type
-                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25"
+                      ? "bg-[#81a308] text-white shadow-lg shadow-[#81a308]/25"
                       : "bg-gray-800/80 text-gray-400 hover:text-white hover:bg-gray-700/80"
                   }`}
                 >
@@ -164,14 +164,14 @@ const PlantsDiscoveryPage = () => {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Leaf className="w-8 h-8 text-purple-400" />
+            <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Leaf className="w-8 h-8 text-[#81a308]" />
             </div>
             <h3 className="text-lg font-medium text-gray-300 mb-2">No plants found</h3>
             <p className="text-gray-500 text-sm mb-4">Try adjusting your search or filters</p>
             <button
               onClick={() => { setSearch(""); setSelectedType(null); }}
-              className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full text-sm text-purple-300 hover:from-purple-500/30 hover:to-pink-500/30 transition-all"
+              className="px-5 py-2 bg-[#81a308]/15 border border-[#81a308]/30 rounded-xl text-sm text-[#81a308] hover:bg-[#81a308]/25 transition-all"
             >
               Clear filters
             </button>
@@ -184,7 +184,7 @@ const PlantsDiscoveryPage = () => {
                 <Link
                   key={plant.id}
                   href={`/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`}
-                  className="group rounded-2xl overflow-hidden bg-gray-900/60 border border-gray-800/50 hover:border-purple-500/30 transition-all hover:shadow-lg hover:shadow-purple-500/5"
+                  className="group rounded-2xl overflow-hidden bg-gray-900/60 border border-gray-800/50 hover:border-[#81a308]/30 transition-all hover:shadow-lg hover:shadow-[#81a308]/5"
                 >
                   <div className="aspect-square overflow-hidden bg-gray-800 relative">
                     {mainImg ? (
@@ -196,7 +196,7 @@ const PlantsDiscoveryPage = () => {
                         onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-pink-900/20">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-900/20 to-[#81a308]/10">
                         <Leaf className="w-10 h-10 text-gray-700" />
                       </div>
                     )}
@@ -210,7 +210,7 @@ const PlantsDiscoveryPage = () => {
                     </div>
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-white text-sm truncate group-hover:text-purple-300 transition-colors">
+                    <h3 className="font-medium text-white text-sm truncate group-hover:text-[#81a308] transition-colors">
                       {plant.commonName || plant.botanicalName}
                     </h3>
                     {plant.commonName && (
@@ -218,12 +218,12 @@ const PlantsDiscoveryPage = () => {
                     )}
                     <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                       {plant.type && (
-                        <span className="text-[10px] bg-gradient-to-r from-green-900/40 to-emerald-900/40 text-green-400 px-2 py-0.5 rounded-full border border-green-800/30">
+                        <span className="text-[10px] bg-green-900/40 text-green-400 px-2 py-0.5 rounded-full border border-green-800/30">
                           {plant.type}
                         </span>
                       )}
                       {plant.tags && plant.tags.slice(0, 1).map((tag) => (
-                        <span key={tag.id} className="text-[10px] text-purple-400">
+                        <span key={tag.id} className="text-[10px] text-[#81a308]">
                           #{tag.name}
                         </span>
                       ))}
@@ -240,7 +240,7 @@ const PlantsDiscoveryPage = () => {
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-full text-sm disabled:opacity-30 hover:border-purple-500/30 transition-all"
+              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-xl text-sm disabled:opacity-30 hover:border-[#81a308]/30 transition-all"
             >
               Previous
             </button>
@@ -250,7 +250,7 @@ const PlantsDiscoveryPage = () => {
             <button
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}
-              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-full text-sm disabled:opacity-30 hover:border-purple-500/30 transition-all"
+              className="px-5 py-2 bg-gray-900/80 border border-gray-800/50 rounded-xl text-sm disabled:opacity-30 hover:border-[#81a308]/30 transition-all"
             >
               Next
             </button>

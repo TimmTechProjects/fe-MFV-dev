@@ -17,6 +17,9 @@ import {
   TrendingUp,
   Users,
   Leaf,
+  PlusSquare,
+  Bell,
+  User,
 } from "lucide-react";
 
 interface Plant {
@@ -79,6 +82,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const [activeFilter, setActiveFilter] = useState("Feed");
   const [loading, setLoading] = useState(true);
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mobileTab, setMobileTab] = useState("home");
 
   const unwrappedSearchParams = searchParams ? use(searchParams) : {};
   const currentPage = Number(unwrappedSearchParams?.page || 1);
@@ -111,13 +116,25 @@ export default function PlantVaultFeed({ searchParams }: Props) {
     setShowMarketplaceContent(false);
   };
 
+  const filteredPlants = plants.filter((p) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (p.commonName || "").toLowerCase().includes(q) ||
+      p.botanicalName.toLowerCase().includes(q) ||
+      p.user.username.toLowerCase().includes(q) ||
+      p.tags?.some((t) => t.name.toLowerCase().includes(q)) ||
+      (p.collection?.name || "").toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto flex">
         <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-800/50 h-screen sticky top-0">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
                 <Leaf className="w-4 h-4 text-white" />
               </div>
               <span className="font-bold text-lg">The Vault</span>
@@ -143,7 +160,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
             <Link
               href="/forum"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-purple-500/25 block text-center"
+              className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-[#81a308]/25 block text-center"
             >
               Create Post
             </Link>
@@ -168,12 +185,22 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           </div>
         </aside>
 
-        <main className="flex-1 border-r border-gray-800/50">
+        <main className="flex-1 border-r border-gray-800/50 pb-20 lg:pb-0">
           <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-gray-800/50 z-10">
-            <div className="p-4">
-              <h1 className="text-xl font-bold">
+            <div className="p-4 flex items-center gap-3">
+              <h1 className="text-xl font-bold flex-shrink-0">
                 {showMarketplaceContent ? "Marketplace" : "Home"}
               </h1>
+              <div className="flex-1 relative lg:hidden">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-gray-900/60 border border-gray-800/50 rounded-lg outline-none text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all text-sm"
+                />
+              </div>
             </div>
 
             {!showMarketplaceContent && (
@@ -190,7 +217,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                   >
                     {filter}
                     {activeFilter === filter && (
-                      <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
+                      <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-[#81a308]" />
                     )}
                   </button>
                 ))}
@@ -200,24 +227,24 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
           <div className="p-4 border-b border-gray-800/50">
             <div className="flex gap-3">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex-shrink-0 flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-purple-400" />
+              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#81a308]/30 to-emerald-500/20 flex-shrink-0 flex items-center justify-center">
+                <Leaf className="w-5 h-5 text-[#81a308]" />
               </div>
               <div className="flex-1">
                 <input
                   type="text"
                   placeholder="Share something with the community..."
-                  className="w-full bg-gray-900/60 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500/30 border border-gray-800/50 transition-all"
+                  className="w-full bg-gray-900/60 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-800/50 transition-all"
                 />
               </div>
             </div>
             <div className="flex items-center justify-between mt-3 pl-14">
               <div className="flex gap-1">
-                <button className="flex items-center gap-1.5 text-gray-500 hover:text-purple-400 px-3 py-1.5 rounded-lg hover:bg-purple-500/5 transition-all text-sm">
+                <button className="flex items-center gap-1.5 text-gray-500 hover:text-[#81a308] px-3 py-1.5 rounded-lg hover:bg-[#81a308]/5 transition-all text-sm">
                   <ImageIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">Photo</span>
                 </button>
-                <button className="flex items-center gap-1.5 text-gray-500 hover:text-pink-400 px-3 py-1.5 rounded-lg hover:bg-pink-500/5 transition-all text-sm">
+                <button className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-400 px-3 py-1.5 rounded-lg hover:bg-emerald-500/5 transition-all text-sm">
                   <VideoIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">Video</span>
                 </button>
@@ -226,7 +253,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                   <span className="hidden sm:inline">Feeling</span>
                 </button>
               </div>
-              <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-5 py-1.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-purple-500/20 transition-all">
+              <button className="bg-[#81a308] hover:bg-[#6c8a0a] text-white px-5 py-1.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-[#81a308]/20 transition-all">
                 Post
               </button>
             </div>
@@ -236,21 +263,22 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <div className="divide-y divide-gray-800/50">
               {loading ? (
                 <Loading />
-              ) : plants.length === 0 ? (
+              ) : filteredPlants.length === 0 ? (
                 <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full flex items-center justify-center mb-4">
-                    <Leaf className="w-8 h-8 text-purple-400" />
+                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
+                    <Leaf className="w-8 h-8 text-[#81a308]" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    No plants in your feed
+                    {searchQuery ? "No results found" : "No plants in your feed"}
                   </h3>
                   <p className="text-gray-500 max-w-md">
-                    Follow some plant enthusiasts or share your first plant to
-                    get started!
+                    {searchQuery
+                      ? "Try a different search term"
+                      : "Follow some plant enthusiasts or share your first plant to get started!"}
                   </p>
                 </div>
               ) : (
-                plants.map((plant) => (
+                filteredPlants.map((plant) => (
                   <PlantPost key={plant.id} plant={plant} />
                 ))
               )}
@@ -270,19 +298,21 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           )}
         </main>
 
-        <aside className="hidden xl:block w-80 p-5 space-y-5">
+        <aside className="hidden xl:block w-80 p-5 space-y-5 sticky top-0 h-screen overflow-y-auto">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
               placeholder="Search plants, people..."
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-900/60 border border-gray-800/50 rounded-xl outline-none text-white placeholder-gray-500 focus:border-purple-500/30 transition-all text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-900/60 border border-gray-800/50 rounded-lg outline-none text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all text-sm"
             />
           </div>
 
           <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-purple-400" />
+              <TrendingUp className="w-4 h-4 text-[#81a308]" />
               <h2 className="font-bold text-base">Trending</h2>
             </div>
             <div className="space-y-1">
@@ -311,14 +341,14 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
           <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
-              <Users className="w-4 h-4 text-pink-400" />
+              <Users className="w-4 h-4 text-emerald-400" />
               <h2 className="font-bold text-base">Suggested Growers</h2>
             </div>
             <div className="space-y-3">
               {["PlantMom", "GreenThumb", "UrbanJungle"].map((name) => (
                 <div key={name} className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xs font-bold text-purple-400">
+                    <div className="w-8 h-8 rounded-full bg-[#81a308]/15 flex items-center justify-center text-xs font-bold text-[#81a308]">
                       {name[0]}
                     </div>
                     <div>
@@ -326,7 +356,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                       <p className="text-xs text-gray-500">@{name.toLowerCase()}</p>
                     </div>
                   </div>
-                  <button className="text-xs px-3 py-1 rounded-full border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all">
+                  <button className="text-xs px-3 py-1 rounded-full border border-[#81a308]/30 text-[#81a308] hover:bg-[#81a308]/10 transition-all">
                     Follow
                   </button>
                 </div>
@@ -334,6 +364,46 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           </div>
         </aside>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800/50 z-50 lg:hidden">
+        <div className="flex items-center justify-around py-2 px-4 max-w-lg mx-auto">
+          <button
+            onClick={() => { setMobileTab("home"); setShowMarketplaceContent(false); setActiveFilter("Feed"); }}
+            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "home" ? "text-[#81a308]" : "text-gray-500"}`}
+          >
+            <Home className="w-5 h-5" />
+            <span className="text-[10px]">Home</span>
+          </button>
+          <button
+            onClick={() => setMobileTab("explore")}
+            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "explore" ? "text-[#81a308]" : "text-gray-500"}`}
+          >
+            <Compass className="w-5 h-5" />
+            <span className="text-[10px]">Explore</span>
+          </button>
+          <Link
+            href="/forum"
+            className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-gray-500 hover:text-[#81a308] transition-colors"
+          >
+            <PlusSquare className="w-5 h-5" />
+            <span className="text-[10px]">Create</span>
+          </Link>
+          <button
+            onClick={() => setMobileTab("notifications")}
+            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "notifications" ? "text-[#81a308]" : "text-gray-500"}`}
+          >
+            <Bell className="w-5 h-5" />
+            <span className="text-[10px]">Alerts</span>
+          </button>
+          <button
+            onClick={() => setMobileTab("profile")}
+            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "profile" ? "text-[#81a308]" : "text-gray-500"}`}
+          >
+            <User className="w-5 h-5" />
+            <span className="text-[10px]">Profile</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -423,7 +493,7 @@ function PlantPost({ plant }: { plant: Plant }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
               <span className="text-white font-bold text-sm">
                 {plant.user.firstName?.[0] ||
                   plant.user.username[0].toUpperCase()}
@@ -442,7 +512,7 @@ function PlantPost({ plant }: { plant: Plant }) {
             <span className="text-gray-500 text-xs">
               @{plant.user.username}
             </span>
-            <span className="text-gray-600 text-xs">·</span>
+            <span className="text-gray-600 text-xs">&middot;</span>
             <span className="text-gray-500 text-xs">
               {timeAgo(plant.createdAt)}
             </span>
@@ -473,7 +543,7 @@ function PlantPost({ plant }: { plant: Plant }) {
                   <Link
                     key={tag.id}
                     href={`/the-vault/results?tag=${tag.name}`}
-                    className="text-purple-400 hover:text-purple-300 text-xs"
+                    className="text-[#81a308] hover:text-[#9ec20a] text-xs"
                   >
                     #{tag.name}
                   </Link>
@@ -537,10 +607,10 @@ function PlantPost({ plant }: { plant: Plant }) {
 
               <button
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-purple-500/5 transition-all group"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-[#81a308]/5 transition-all group"
               >
-                <MessageCircle className="w-[18px] h-[18px] text-gray-500 group-hover:text-purple-400" />
-                <span className="text-xs text-gray-500 group-hover:text-purple-400">
+                <MessageCircle className="w-[18px] h-[18px] text-gray-500 group-hover:text-[#81a308]" />
+                <span className="text-xs text-gray-500 group-hover:text-[#81a308]">
                   {commentCount}
                 </span>
               </button>
@@ -563,13 +633,13 @@ function PlantPost({ plant }: { plant: Plant }) {
 
             <button
               onClick={handleSave}
-              className="p-1.5 rounded-lg hover:bg-purple-500/5 transition-all group"
+              className="p-1.5 rounded-lg hover:bg-[#81a308]/5 transition-all group"
             >
               <Bookmark
                 className={`w-[18px] h-[18px] transition-all ${
                   saved
-                    ? "text-purple-400 fill-purple-400"
-                    : "text-gray-500 group-hover:text-purple-400"
+                    ? "text-[#81a308] fill-[#81a308]"
+                    : "text-gray-500 group-hover:text-[#81a308]"
                 }`}
               />
             </button>
@@ -614,7 +684,7 @@ function MarketplaceContent() {
         {marketplacePlants.map((plant) => (
           <div
             key={plant.id}
-            className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-purple-500/10 border border-gray-800/30 hover:border-purple-500/20"
+            className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-[#81a308]/10 border border-gray-800/30 hover:border-[#81a308]/20"
           >
             <div className="relative aspect-square overflow-hidden">
               <img
@@ -639,7 +709,7 @@ function MarketplaceContent() {
             </div>
 
             <div className="p-4">
-              <h3 className="font-medium text-white mb-1.5 line-clamp-1 group-hover:text-purple-300 transition-colors cursor-pointer text-sm">
+              <h3 className="font-medium text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
                 {plant.name}
               </h3>
               <div className="flex items-center gap-2 mb-1.5">
@@ -651,14 +721,14 @@ function MarketplaceContent() {
                   ({plant.reviews})
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mb-3 hover:text-purple-400 cursor-pointer transition-colors">
+              <p className="text-xs text-gray-500 mb-3 hover:text-[#81a308] cursor-pointer transition-colors">
                 by {plant.shop}
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-base font-bold text-white">
                   {plant.price}
                 </span>
-                <button className="px-3.5 py-1.5 text-white text-xs rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-lg hover:shadow-purple-500/20 transition-all font-medium">
+                <button className="px-3.5 py-1.5 text-white text-xs rounded-lg bg-[#81a308] hover:bg-[#6c8a0a] hover:shadow-lg hover:shadow-[#81a308]/20 transition-all font-medium">
                   View
                 </button>
               </div>

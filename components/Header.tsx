@@ -92,7 +92,7 @@ const Header = () => {
     plantSuggestions.length > 0 || userSuggestions.length > 0;
 
   return (
-    <header className="bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50">
+    <header className="bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 border-b border-[#3a3a3a]">
       {/* Logo - Responsive sizing */}
       <Link href="/" className="flex-shrink-0">
         <h1 className="text-2xl sm:text-3xl text-white font-bold tracking-tight">
@@ -190,7 +190,7 @@ const Header = () => {
 
           return (
             <Link key={link.href} href={href}>
-              <span className="text-white hover:text-[#81a308] transition-colors text-sm md:text-base">
+              <span className="text-white/90 hover:text-[#81a308] transition-colors text-sm md:text-base">
                 {link.label}
               </span>
             </Link>
@@ -211,7 +211,7 @@ const Header = () => {
               </Avatar>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-64 mt-1 mr-5 border border-zinc-800 p-1 scrollbar-none">
+            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-64 mt-1 mr-5 border border-zinc-800 p-1.5 scrollbar-none">
               {/* Dropdown header with avatar */}
               <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-3">
                 <Avatar className="h-10 w-10">
@@ -231,7 +231,7 @@ const Header = () => {
                 </div>
               </div>
 
-              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
                 <Link
                   href={`/profiles/${user.username}`}
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -240,7 +240,7 @@ const Header = () => {
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
                 <Link
                   href="/notifications"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -249,7 +249,7 @@ const Header = () => {
                   Notifications
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
                 <Link
                   href="/messages"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -258,7 +258,7 @@ const Header = () => {
                   Messages
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
                 <Link
                   href="/membership"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -267,7 +267,7 @@ const Header = () => {
                   Membership
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-emerald-500/10 focus:bg-emerald-500/10 hover:text-emerald-400 focus:text-emerald-400 transition-colors">
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
                 <Link
                   href="/settings"
                   className="flex items-center gap-3 w-full cursor-pointer"
@@ -308,7 +308,7 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="bg-[#2b2a2a] text-white border-l border-[#4a4a4a]"
+            className="bg-[#2b2a2a] text-white border-l border-[#4a4a4a] p-0"
           >
             <SheetHeader>
               <SheetTitle className="text-2xl text-white">
@@ -335,7 +335,7 @@ const Header = () => {
             </form>
 
             {/* Mobile Menu Links */}
-            <div className="">
+            <div className="mt-4 space-y-1.5">
               {navLinks.map((link) => {
                 const href =
                   link.label === "Albums" && user
@@ -344,7 +344,7 @@ const Header = () => {
 
                 return (
                   <Link key={link.href} href={href}>
-                    <div className="py-1  mb-1 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                    <div className="py-2.5 mb-1.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                       {link.label}
                     </div>
                   </Link>
@@ -355,7 +355,7 @@ const Header = () => {
                 <>
                   <div className="pt-4 border-t border-[#4a4a4a]">
                     <Link href={`/profiles/${user.username}`}>
-                      <div className="flex items-center py-2 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                      <div className="flex items-center py-2.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                         <Avatar className="h-8 w-8 mr-3">
                           <AvatarImage
                             src={user.avatarUrl || "/default-avatar.png"}
@@ -370,7 +370,7 @@ const Header = () => {
                     </Link>
                     {authUserLinks.map((link) => (
                       <Link key={link.href} href={link.href}>
-                        <div className="py-2 px-3 rounded-lg hover:bg-[#3a3a3a] transition-colors">
+                        <div className="py-2.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                           {link.label}
                         </div>
                       </Link>
