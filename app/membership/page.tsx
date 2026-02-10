@@ -22,32 +22,20 @@ const membershipTiers = [
     plan: "free",
   },
   {
-    name: "Pro",
+    name: "Premium",
     price: {
-      monthly: "$10/mo",
-      yearly: "$100/yr (save 20%)",
+      monthly: "$5/mo",
+      yearly: "$50/yr",
     },
-    description: "For serious enthusiasts seeking a vast collection.",
+    description: "Unlimited access for serious enthusiasts & sellers.",
     benefits: [
       "Save unlimited plants",
       "Sell on marketplace",
       "Private your collections",
       "Custom profile",
-    ],
-    plan: "pro",
-  },
-  {
-    name: "Premium",
-    price: {
-      monthly: "$25/mo",
-      yearly: "$240/yr (save 20%)",
-    },
-    description: "For professionals & power users.",
-    benefits: [
-      "All Pro benefits",
       "All listings are featured",
       "Discounted listing fee",
-      "Unlock video Thumbnails",
+      "Unlock video thumbnails",
     ],
     plan: "premium",
   },
@@ -61,19 +49,20 @@ const MembershipPage = () => {
 
   const handleUpgrade = (plan: string) => {
     console.log(`Upgrade to ${plan} clicked`);
-    // TODO: Hook into payment/upgrade flow (Stripe, etc.)
   };
 
   const handleCancelMembership = () => {
     console.log("Cancel membership clicked");
-    // TODO: Hook into Stripe cancel subscription flow
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 text-white">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 text-white">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
         Membership Plans
       </h1>
+      <p className="text-gray-400 text-center mb-8 max-w-lg mx-auto">
+        Choose the plan that fits your botanical journey
+      </p>
 
       <div className="flex justify-center mb-8">
         <div className="flex items-center gap-3">
@@ -84,7 +73,7 @@ const MembershipPage = () => {
           </span>
           <button
             onClick={() => setIsYearly(!isYearly)}
-            className={`relative w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 transition ${
+            className={`relative w-12 h-6 flex items-center rounded-full p-1 transition ${
               isYearly ? "bg-[#81a308]" : "bg-gray-600"
             }`}
           >
@@ -102,24 +91,35 @@ const MembershipPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
         {membershipTiers.map((tier) => (
           <Card
             key={tier.plan}
             className={`border ${
-              currentPlan === tier.plan
-                ? "border-[#81a308] shadow-lg"
+              tier.plan === "premium"
+                ? "border-[#81a308] shadow-lg shadow-[#81a308]/10"
+                : currentPlan === tier.plan
+                ? "border-[#81a308]/50"
                 : "border-gray-700"
-            } bg-[#1f1f1f] flex flex-col justify-between`}
+            } bg-[#1f1f1f] flex flex-col justify-between relative`}
           >
-            <CardHeader>
+            {tier.plan === "premium" && (
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#81a308] text-white text-xs font-medium rounded-full">
+                Recommended
+              </div>
+            )}
+            <CardHeader className="pt-6">
               <CardTitle className="text-2xl text-center">
                 {tier.name}
               </CardTitle>
               <p className="text-center text-lg text-gray-300 mt-2">
                 {isYearly ? tier.price.yearly : tier.price.monthly}
               </p>
-
+              {isYearly && tier.plan === "premium" && (
+                <p className="text-center text-xs text-[#81a308] mt-1">
+                  Save $10/yr vs monthly
+                </p>
+              )}
               <p className="text-center text-sm text-gray-400 mt-2">
                 {tier.description}
               </p>
@@ -128,7 +128,7 @@ const MembershipPage = () => {
               <ul className="mt-4 space-y-2 text-sm text-gray-300">
                 {tier.benefits.map((benefit, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-[#81a308] font-bold">✔</span>
+                    <span className="text-[#81a308] font-bold">&#10003;</span>
                     <span>{benefit}</span>
                   </li>
                 ))}
@@ -138,13 +138,17 @@ const MembershipPage = () => {
                 {currentPlan === tier.plan ? (
                   <Button
                     disabled
-                    className="bg-gray-600 cursor-default rounded-2xl px-6 py-2"
+                    className="bg-gray-600 cursor-default rounded-xl px-6 py-2 w-full"
                   >
                     Current Plan
                   </Button>
                 ) : (
                   <Button
-                    className="bg-[#81a308] hover:bg-[#6ca148] rounded-2xl px-6 py-2"
+                    className={`rounded-xl px-6 py-2 w-full ${
+                      tier.plan === "premium"
+                        ? "bg-[#81a308] hover:bg-[#6c8a0a] text-white"
+                        : "bg-gray-700 hover:bg-gray-600 text-white"
+                    }`}
                     onClick={() => handleUpgrade(tier.plan)}
                   >
                     {tier.plan === "free" ? "Downgrade" : "Upgrade"}
@@ -156,9 +160,8 @@ const MembershipPage = () => {
         ))}
       </div>
 
-      {/* Cancel Membership Section */}
       {currentPlan !== "free" && (
-        <div className="mt-12 text-center border border-[#dab9df] rounded-2xl p-6 max-w-2xl mx-auto bg-[#1f1f1f]">
+        <div className="mt-12 text-center border border-gray-700 rounded-2xl p-6 max-w-2xl mx-auto bg-[#1f1f1f]">
           <h2 className="text-2xl font-semibold mb-4">Manage Subscription</h2>
           <p className="text-gray-300 mb-6">
             You are currently subscribed to the{" "}
@@ -167,7 +170,7 @@ const MembershipPage = () => {
           </p>
           <Button
             variant="destructive"
-            className="rounded-2xl px-6 py-2 bg-red-600 hover:bg-red-700 text-white"
+            className="rounded-xl px-6 py-2 bg-red-600 hover:bg-red-700 text-white"
             onClick={handleCancelMembership}
           >
             Cancel Membership
@@ -176,7 +179,6 @@ const MembershipPage = () => {
       )}
 
       <div className="mt-10 text-center text-gray-400 text-sm">
-        {/* Placeholder: Add your Stripe subscription integration here */}
         Need help? Contact{" "}
         <a
           href="/contact"

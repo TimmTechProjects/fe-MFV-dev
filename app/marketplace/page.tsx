@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Filter, X, Search, Star } from "lucide-react";
+import { Filter, X, Search, Star, ShoppingCart, Gavel } from "lucide-react";
 
 import { marketplacePlants } from "@/mock/marketplaceData";
 
@@ -180,7 +180,7 @@ const MarketplacePage = () => {
                 </button>
                 <button
                   onClick={() => setShowFilters(false)}
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:shadow-lg hover:shadow-purple-500/20 transition-all"
+                  className="flex-1 px-4 py-2.5 bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-xl hover:shadow-lg hover:shadow-[#81a308]/20 transition-all"
                 >
                   Apply
                 </button>
@@ -195,7 +195,7 @@ const MarketplacePage = () => {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-1">
-            Plant <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Marketplace</span>
+            Plant <span className="text-[#81a308]">Marketplace</span>
           </h1>
           <p className="text-gray-400">
             Discover beautiful plants from trusted sellers
@@ -203,59 +203,42 @@ const MarketplacePage = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-gray-900/40 backdrop-blur rounded-2xl p-5 mb-8 border border-gray-800/30">
-          <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
-            {/* Left Side - Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <button
-                onClick={() => setShowFilters(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/80 text-gray-300 rounded-full hover:bg-purple-500/10 hover:text-purple-300 transition-all border border-gray-800/50 hover:border-purple-500/30"
-              >
-                <Filter size={18} />
-                Filters
-              </button>
-
-              <div className="relative flex-1 max-w-md">
-                <Search
-                  size={18}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                />
-                <input
-                  type="text"
-                  placeholder="Search plants, shops..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 text-white rounded-full border border-gray-800/50 focus:outline-none focus:border-purple-500/30 focus:ring-1 focus:ring-purple-500/25 transition-all placeholder-gray-500"
-                />
-              </div>
-            </div>
-
-            {/* Right Side - Sort */}
-            <div className="flex items-center gap-3">
-              <span className="text-white text-sm whitespace-nowrap">
-                Sort by:
-              </span>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="bg-gray-900/80 text-gray-300 rounded-full px-4 py-2.5 border border-gray-800/50 focus:outline-none focus:border-purple-500/30 cursor-pointer"
-              >
-                <option>Relevancy</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Top Rated</option>
-              </select>
-            </div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="relative flex-1">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            />
+            <input
+              type="text"
+              placeholder="Search marketplace..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-gray-900/60 text-white text-sm rounded-full border border-gray-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-gray-500"
+            />
           </div>
-
-          {/* Results Count */}
-          <div className="mt-4 pt-4 border-t border-gray-800/30">
-            <p className="text-xs text-gray-500">
-              {filteredPlants.length}{" "}
-              {filteredPlants.length === 1 ? "result" : "results"} found
-            </p>
-          </div>
+          <button
+            onClick={() => setShowFilters(true)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-900/60 text-gray-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-gray-800/50"
+          >
+            <Filter size={14} />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="bg-gray-900/60 text-gray-300 text-sm rounded-full px-3 py-2 border border-gray-800/50 focus:outline-none cursor-pointer hidden sm:block"
+          >
+            <option>Relevancy</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Top Rated</option>
+          </select>
         </div>
+        <p className="text-xs text-gray-500 mb-4">
+          {filteredPlants.length}{" "}
+          {filteredPlants.length === 1 ? "result" : "results"} found
+        </p>
 
         {/* Plant Grid */}
         {filteredPlants.length > 0 ? (
@@ -263,7 +246,7 @@ const MarketplacePage = () => {
             {filteredPlants.map((plant) => (
               <div
                 key={plant.id}
-                className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-gray-800/30 hover:border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/5"
+                className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-gray-800/30 hover:border-[#81a308]/20 hover:shadow-lg hover:shadow-[#81a308]/5"
               >
                 {/* Plant Image */}
                 <div className="relative aspect-square overflow-hidden">
@@ -292,7 +275,7 @@ const MarketplacePage = () => {
 
                 {/* Plant Info */}
                 <div className="p-3 sm:p-4">
-                  <h3 className="font-medium text-white text-sm mb-1.5 line-clamp-1 group-hover:text-purple-300 transition-colors cursor-pointer">
+                  <h3 className="font-medium text-white text-sm mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer">
                     {plant.name}
                   </h3>
 
@@ -311,7 +294,7 @@ const MarketplacePage = () => {
                   </div>
 
                   {/* Shop Name */}
-                  <p className="text-xs text-gray-500 mb-3 hover:text-purple-400 cursor-pointer transition-colors">
+                  <p className="text-xs text-gray-500 mb-3 hover:text-[#81a308] cursor-pointer transition-colors">
                     by {plant.shop}
                   </p>
 
@@ -320,9 +303,21 @@ const MarketplacePage = () => {
                     <span className="text-sm sm:text-base font-bold text-white">
                       {plant.price}
                     </span>
-                    <button className="px-3 py-1.5 text-white text-xs rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-lg hover:shadow-purple-500/20 transition-all font-medium">
-                      View
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      {(plant.listingType === "buy" || plant.listingType === "both") && (
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-[#81a308] hover:bg-[#6c8a0a] transition-all font-medium">
+                          <ShoppingCart size={12} />
+                          <span className="hidden sm:inline">Add to Cart</span>
+                          <span className="sm:hidden">Cart</span>
+                        </button>
+                      )}
+                      {(plant.listingType === "auction" || plant.listingType === "both") && (
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-amber-600 hover:bg-amber-700 transition-all font-medium">
+                          <Gavel size={12} />
+                          Bid
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -330,8 +325,8 @@ const MarketplacePage = () => {
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search size={24} className="text-purple-400" />
+            <div            className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Search size={24} className="text-[#81a308]"/>
             </div>
             <h3 className="text-lg font-medium text-gray-300 mb-2">
               No plants found
@@ -344,7 +339,7 @@ const MarketplacePage = () => {
                 setSearch("");
                 clearFilters();
               }}
-              className="px-5 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-full hover:from-purple-500/30 hover:to-pink-500/30 transition-all border border-purple-500/30 text-sm"
+              className="px-5 py-2 bg-[#81a308]/15 text-[#81a308] rounded-xl hover:bg-[#81a308]/25 transition-all border border-[#81a308]/30 text-sm"
             >
               Clear all filters
             </button>
