@@ -202,7 +202,7 @@ const Header = () => {
             <DropdownMenuTrigger asChild onClick={() => setUserMenuOpen((o) => !o)}>
               <Avatar className="cursor-pointer hover:group">
                 <AvatarImage
-                  src={user.avatarUrl || "https://github.com/shadcn.png"}
+                  src={user.avatarUrl || "/default-avatar.png"}
                 />
                 <AvatarFallback className="bg-white">
                   {user?.firstName?.slice(0, 1).toLocaleUpperCase()}
@@ -287,7 +287,7 @@ const Header = () => {
           </DropdownMenu>
         ) : (
           <Link href={`/login?redirect=${pathname}`}>
-            <Button className="bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-xl px-4 py-2 text-sm md:text-base">
+            <Button className="inline-flex bg-[#81a308] hover:bg-[#6c8a0a] active:bg-[#5a7508] text-white rounded-full px-5 py-2 text-sm md:text-base font-medium shadow-sm hover:shadow-md hover:shadow-[#81a308]/20 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
               Login
             </Button>
           </Link>
@@ -384,7 +384,7 @@ const Header = () => {
               ) : (
                 <div className="px-1 mt-6">
                   <Link href={`/login?redirect=${pathname}`}>
-                    <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-full py-2.5 text-[15px] font-semibold">
+                    <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] active:bg-[#5a7508] text-white rounded-full py-2.5 text-[15px] font-semibold shadow-sm hover:shadow-md hover:shadow-[#81a308]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]">
                       Login
                     </Button>
                   </Link>
