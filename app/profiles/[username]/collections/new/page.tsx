@@ -146,15 +146,12 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
           <div>
             <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
               <TreeDeciduous className="w-6 h-6 text-emerald-500" />
-              Create New Garden Bed
+              Create New Album
             </h1>
-            <p className="text-sm text-zinc-400">
-              Organize your plants into a themed album
-            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="max-w-xl mx-auto">
           {/* Form Section */}
           <BotanicalCard className="p-6 relative overflow-hidden">
             <LeafDecoration position="top-right" size="lg" />
@@ -289,7 +286,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                   ) : (
                     <>
                       <Check className="w-4 h-4" />
-                      Create Garden Bed
+                      Create Album
                     </>
                   )}
                 </BotanicalButton>
@@ -297,18 +294,17 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
             </form>
           </BotanicalCard>
 
-          {/* Preview Section */}
+          {/* Live Preview section - hidden per redesign, code preserved */}
+          {false && (
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-emerald-500">
               <Eye className="w-5 h-5" />
               <h2 className="font-medium">Live Preview</h2>
             </div>
 
-            {/* Preview Card */}
             <div className="collection-bed relative overflow-hidden">
               <LeafDecoration position="top-right" size="lg" />
               
-              {/* Cover Image Preview */}
               <div className="relative h-40 rounded-xl overflow-hidden mb-4 bg-zinc-800/50">
                 {previewUrl ? (
                   <img
@@ -329,7 +325,6 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-50" />
               </div>
 
-              {/* Content Preview */}
               <div className="relative z-10">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-lg font-semibold text-zinc-100">
@@ -345,11 +340,9 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
                 </p>
               </div>
 
-              {/* Bottom accent */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600" />
             </div>
 
-            {/* Tips Card */}
             <BotanicalCard className="p-5">
               <h3 className="flex items-center gap-2 text-emerald-500 font-medium mb-4">
                 <Leaf className="w-5 h-5" />
@@ -371,7 +364,6 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               </ul>
             </BotanicalCard>
 
-            {/* Inspiration */}
             <div className="text-center py-4">
               <p className="text-sm text-zinc-500">
                 Need inspiration? Browse{" "}
@@ -381,6 +373,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               </p>
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>

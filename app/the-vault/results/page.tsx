@@ -46,17 +46,25 @@ const ResultsPageContent = () => {
     fetchResults();
   }, [tag, query, router]);
 
+  const totalResults = plants.length + users.length + albums.length;
+
   return (
-    <div className="flex flex-col text-white py-5 px-4 md:px-10 text-2xl font-semibold">
+    <div className="flex flex-col text-white py-5 px-4 md:px-10">
       {/* Page Heading */}
       <div className="flex py-5 items-center justify-between">
-        <h1>
-          Searching for:{" "}
-          <span className="italic">
-            {tag?.toUpperCase() || query?.toUpperCase()}
-          </span>
-        </h1>
-
+        <div>
+          <h1 className="text-2xl font-semibold">
+            Searching for:{" "}
+            <span className="italic text-[#81a308]">
+              {tag?.toUpperCase() || query?.toUpperCase()}
+            </span>
+          </h1>
+          {!loading && (
+            <p className="text-sm text-gray-400 mt-1 font-normal">
+              {totalResults} {totalResults === 1 ? 'result' : 'results'} found
+            </p>
+          )}
+        </div>
         <GoBackButton />
       </div>
 
@@ -65,10 +73,10 @@ const ResultsPageContent = () => {
         {["all", "plants", "albums", "accounts"].map((key) => (
           <button
             key={key}
-            className={`capitalize px-4 py-2 rounded cursor-pointer ${
+            className={`capitalize px-4 py-2 rounded-lg cursor-pointer transition-colors ${
               filter === key
-                ? "bg-green-700 text-white"
-                : "bg-gray-700 text-white"
+                ? "bg-[#81a308] text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
             onClick={() => setFilter(key as typeof filter)}
           >
@@ -82,56 +90,55 @@ const ResultsPageContent = () => {
         <div className="flex h-[50vh] items-center justify-center text-white">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81a308] mx-auto mb-4"></div>
-            <p>Searching...</p>
+            <p className="text-gray-400">Searching...</p>
           </div>
         </div>
       ) : (
         <div className="flex flex-col w-full justify-center items-center gap-8">
           {/* Plants section */}
           {(filter === "all" || filter === "plants") && plants.length > 0 && (
-            <div className="flex flex-col w-5xl">
-              <h2 className="text-xl mb-2 ml-10 text-gray-300">Plants</h2>
-
-              {plants.map((plant) => (
-                <div
-                  key={plant.id}
-                  className="flex justify-center items-center"
-                >
+            <div className="flex flex-col w-full max-w-5xl">
+              <h2 className="text-lg mb-3 text-[#81a308] font-semibold flex items-center gap-2">
+                <span>Plants</span>
+                <span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full font-normal">{plants.length}</span>
+              </h2>
+              <div className="space-y-3">
+                {plants.map((plant) => (
                   <ResultsCard key={plant.id} plant={plant} />
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
           {/* Albums section */}
           {(filter === "all" || filter === "albums") && albums.length > 0 && (
-            <div className="flex flex-col w-5xl">
-              <h2 className="text-xl mb-2 ml-10 text-gray-300">Albums</h2>
-              {albums.map((album) => (
-                <div
-                  key={album.id}
-                  className="flex justify-center items-center"
-                >
+            <div className="flex flex-col w-full max-w-5xl">
+              <h2 className="text-lg mb-3 text-[#81a308] font-semibold flex items-center gap-2">
+                <span>Albums</span>
+                <span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full font-normal">{albums.length}</span>
+              </h2>
+              <div className="space-y-3">
+                {albums.map((album) => (
                   <ResultsCard key={album.id} album={album} />
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
           {/* Accounts section */}
           {(filter === "all" || filter === "accounts") && users.length > 0 && (
-            <div className="flex flex-col w-5xl">
-              <h2 className="text-xl mb-2 ml-10 text-gray-300">Users</h2>
-              {users
-                .slice(0, filter === "all" ? 4 : users.length)
-                .map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex justify-center items-center"
-                  >
+            <div className="flex flex-col w-full max-w-5xl">
+              <h2 className="text-lg mb-3 text-[#81a308] font-semibold flex items-center gap-2">
+                <span>Users</span>
+                <span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full font-normal">{users.length}</span>
+              </h2>
+              <div className="space-y-3">
+                {users
+                  .slice(0, filter === "all" ? 4 : users.length)
+                  .map((user) => (
                     <ResultsCard key={user.id} user={user} />
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
           )}
 
