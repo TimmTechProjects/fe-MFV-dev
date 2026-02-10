@@ -11,6 +11,7 @@ import {
   Home,
   Compass,
   ShoppingCart,
+  Gavel,
   ImageIcon,
   VideoIcon,
   Smile,
@@ -81,6 +82,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const [total, setTotal] = useState(0);
   const [activeFilter, setActiveFilter] = useState("Feed");
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileTab, setMobileTab] = useState("home");
@@ -95,6 +97,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   useEffect(() => {
     let ignore = false;
     setLoading(true);
+    setFetchError(null);
     getPaginatedPlants(currentPage, limit).then(
       ({ plants: fetchedPlants, total }) => {
         if (!ignore) {
@@ -103,7 +106,12 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           setLoading(false);
         }
       }
-    );
+    ).catch((err) => {
+      if (!ignore) {
+        setFetchError(err instanceof Error ? err.message : "Failed to load posts");
+        setLoading(false);
+      }
+    });
     return () => {
       ignore = true;
     };
@@ -190,9 +198,12 @@ export default function PlantVaultFeed({ searchParams }: Props) {
         <main className="flex-1 border-r border-gray-800/50 pb-20 lg:pb-0">
           <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-gray-800/50 z-10">
             <div className="p-4">
-              <h1 className="text-xl font-bold">
-                {showMarketplaceContent ? "Marketplace" : mobileTab === "search" ? "Search" : "Home"}
-              </h1>
+              {showMarketplaceContent && (
+                <h1 className="text-xl font-bold">Marketplace</h1>
+              )}
+              {!showMarketplaceContent && mobileTab === "search" && (
+                <h1 className="text-xl font-bold lg:hidden">Search</h1>
+              )}
             </div>
 
             {!showMarketplaceContent && (
@@ -327,6 +338,16 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <div className="divide-y divide-gray-800/50">
               {loading ? (
                 <Loading />
+              ) : fetchError ? (
+                <div className="flex flex-col justify-center items-center py-20 text-center">
+                  <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+                    <Leaf className="w-8 h-8 text-red-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                    Could not load posts
+                  </h3>
+                  <p className="text-gray-500 max-w-md text-sm">{fetchError}</p>
+                </div>
               ) : filteredPlants.length === 0 ? (
                 <div className="flex flex-col justify-center items-center py-20 text-center">
                   <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
@@ -438,7 +459,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <span className="text-[10px]">Home</span>
           </button>
           <button
-            onClick={() => { setMobileTab("search"); setSearchSubmitted(false); }}
+            onClick={() => { setMobileTab("search"); setSearchSubmitted(false); window.scrollTo(0, 0); }}
             className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "search" ? "text-[#81a308]" : "text-gray-500"}`}
           >
             <Search className="w-5 h-5" />
@@ -586,12 +607,15 @@ function PlantPost({ plant }: { plant: Plant }) {
           </div>
 
           <div className="mb-3">
-            <p className="text-white text-sm leading-relaxed">
+            <p className="text-white text-sm leading-relaxed line-clamp-3">
               <span className="font-medium">{plant.commonName}</span>
               {plant.description && (
-                <span className="text-gray-300"> — {plant.description.substring(0, 120)}...</span>
+                <span className="text-gray-300"> — {plant.description}</span>
               )}
             </p>
+            {plant.description && plant.description.length > 80 && (
+              <button className="text-xs text-gray-500/70 hover:text-gray-400 mt-1 transition-colors">view all</button>
+            )}
 
             {plant.botanicalName && (
               <p className="text-gray-500 text-xs italic mt-1.5">
@@ -790,9 +814,20 @@ function MarketplaceContent() {
                 <span className="text-base font-bold text-white">
                   {plant.price}
                 </span>
-                <button className="px-3.5 py-1.5 text-white text-xs rounded-lg bg-[#81a308] hover:bg-[#6c8a0a] hover:shadow-lg hover:shadow-[#81a308]/20 transition-all font-medium">
-                  View
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {(plant.listingType === "buy" || plant.listingType === "both") && (
+                    <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-[#81a308] hover:bg-[#6c8a0a] transition-all font-medium">
+                      <ShoppingCart className="w-3 h-3" />
+                      Cart
+                    </button>
+                  )}
+                  {(plant.listingType === "auction" || plant.listingType === "both") && (
+                    <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-amber-600 hover:bg-amber-700 transition-all font-medium">
+                      <Gavel className="w-3 h-3" />
+                      Bid
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

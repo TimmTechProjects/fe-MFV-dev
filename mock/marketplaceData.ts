@@ -8,6 +8,7 @@ export interface MarketplacePlant {
   reviews: number;
   sale: string;
   freeShipping: boolean;
+  listingType: "buy" | "auction" | "both";
 }
 
 export const marketplacePlants: MarketplacePlant[] = [
@@ -22,6 +23,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 120,
     sale: "20% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 2,
@@ -34,6 +36,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 98,
     sale: "10% off",
     freeShipping: false,
+    listingType: "auction",
   },
   {
     id: 3,
@@ -46,6 +49,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 150,
     sale: "15% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 4,
@@ -58,6 +62,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 80,
     sale: "",
     freeShipping: false,
+    listingType: "both",
   },
   {
     id: 5,
@@ -70,6 +75,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 110,
     sale: "5% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 6,
@@ -82,6 +88,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 95,
     sale: "",
     freeShipping: false,
+    listingType: "auction",
   },
   {
     id: 7,
@@ -94,6 +101,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 140,
     sale: "10% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 8,
@@ -106,6 +114,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 105,
     sale: "",
     freeShipping: false,
+    listingType: "both",
   },
   {
     id: 9,
@@ -118,6 +127,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 90,
     sale: "12% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 10,
@@ -129,6 +139,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 130,
     sale: "",
     freeShipping: false,
+    listingType: "auction",
   },
   {
     id: 11,
@@ -141,6 +152,7 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 115,
     sale: "10% off",
     freeShipping: true,
+    listingType: "buy",
   },
   {
     id: 12,
@@ -152,5 +164,6 @@ export const marketplacePlants: MarketplacePlant[] = [
     reviews: 85,
     sale: "",
     freeShipping: false,
+    listingType: "buy",
   },
 ];

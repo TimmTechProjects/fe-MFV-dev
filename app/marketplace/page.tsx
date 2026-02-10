@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Filter, X, Search, Star } from "lucide-react";
+import { Filter, X, Search, Star, ShoppingCart, Gavel } from "lucide-react";
 
 import { marketplacePlants } from "@/mock/marketplaceData";
 
@@ -303,9 +303,21 @@ const MarketplacePage = () => {
                     <span className="text-sm sm:text-base font-bold text-white">
                       {plant.price}
                     </span>
-                    <button className="px-3 py-1.5 text-white text-xs rounded-lg bg-[#81a308] hover:bg-[#6c8a0a] hover:shadow-lg hover:shadow-[#81a308]/20 transition-all font-medium">
-                      View
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      {(plant.listingType === "buy" || plant.listingType === "both") && (
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-[#81a308] hover:bg-[#6c8a0a] transition-all font-medium">
+                          <ShoppingCart size={12} />
+                          <span className="hidden sm:inline">Add to Cart</span>
+                          <span className="sm:hidden">Cart</span>
+                        </button>
+                      )}
+                      {(plant.listingType === "auction" || plant.listingType === "both") && (
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-amber-600 hover:bg-amber-700 transition-all font-medium">
+                          <Gavel size={12} />
+                          Bid
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
