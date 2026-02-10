@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createNewCollection } from "@/lib/utils";
+import { createNewCollection, uploadCollectionCover } from "@/lib/utils";
+import { useUploadThing } from "@/lib/uploadthingClient";
 import {
   ArrowLeft,
   Upload,
@@ -13,6 +14,7 @@ import {
   Eye,
   ImageIcon,
   Check,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -40,6 +42,9 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+
+  const { startUpload } = useUploadThing("imageUploader");
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -110,7 +115,22 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
 
       if (response.ok) {
         const data = await response.json();
+        const collectionId = data.id;
         const slug = data.slug;
+
+        if (thumbnail && collectionId) {
+          setUploadProgress("Uploading cover image...");
+          try {
+            const uploadResult = await startUpload([thumbnail]);
+            if (uploadResult && uploadResult[0]) {
+              const imageUrl = uploadResult[0].ufsUrl || uploadResult[0].url;
+              const imageKey = uploadResult[0].key;
+              await uploadCollectionCover(collectionId, imageUrl, imageKey);
+            }
+          } catch (uploadErr) {
+            console.error("Cover upload failed:", uploadErr);
+          }
+        }
 
         if (slug) {
           if (redirectTo) {
@@ -129,6 +149,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
       alert("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
+      setUploadProgress("");
     }
   };
 
@@ -308,7 +329,7 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
               <div className="relative h-40 rounded-xl overflow-hidden mb-4 bg-zinc-800/50">
                 {previewUrl ? (
                   <img
-                    src={previewUrl}
+                    src={previewUrl ?? undefined}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />

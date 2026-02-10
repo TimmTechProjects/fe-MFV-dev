@@ -71,31 +71,36 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex h-[80vh] pt-5 items-center justify-center">
-      <div className="shadow-input mx-auto w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
-        <h2 className="w-full items-center text-xl font-bold text-neutral-800 dark:text-neutral-200">
-          Welcome to Floral Vault
-        </h2>
-        <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-          Your personal vault for all your floral needs. Sign up to get started.
-        </p>
+    <div className="flex min-h-[80vh] pt-5 items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6 md:p-8 shadow-xl shadow-black/20">
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-full bg-[#81a308]/15 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-[#81a308]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+          </div>
+          <h2 className="text-2xl font-bold text-zinc-100">
+            Create Your Account
+          </h2>
+          <p className="mt-2 text-sm text-zinc-400">
+            Join Floral Vault and start your botanical journey
+          </p>
+        </div>
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="my-8 space-y-6"
+            className="space-y-4"
           >
-            <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-3">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>First name</FormLabel>
+                    <FormLabel className="text-zinc-300 text-sm">First name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tyler" {...field} />
+                      <Input placeholder="Tyler" {...field} className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )}
               />
@@ -104,11 +109,11 @@ const SignUp = () => {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Last name</FormLabel>
+                    <FormLabel className="text-zinc-300 text-sm">Last name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Durden" {...field} />
+                      <Input placeholder="Durden" {...field} className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )}
               />
@@ -119,30 +124,31 @@ const SignUp = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-zinc-300 text-sm">Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username" type="text" {...field} />
+                    <Input placeholder="username" type="text" {...field} className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                   </FormControl>
-                  <FormMessage className="text-red-500" />
+                  <FormMessage className="text-red-400 text-xs" />
                 </FormItem>
               )}
             />
 
-            <div className="flex gap-5">
+            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-3">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel className="text-zinc-300 text-sm">Email Address</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="youremail@email.com"
                         type="email"
                         {...field}
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
                       />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )}
               />
@@ -151,51 +157,69 @@ const SignUp = () => {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel className="text-zinc-300 text-sm">Password</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
                           {...field}
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword((prev) => !prev)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 transition-colors"
                         >
-                          {showPassword ? <EyeOff /> : <Eye />}
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                       </div>
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )}
               />
             </div>
 
-            <Button
+            <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2"
+              disabled={isLoading}
+              className={`relative block h-11 w-full rounded-xl font-medium text-white transition-all duration-200 mt-2 ${
+                isLoading
+                  ? "bg-zinc-600 cursor-not-allowed"
+                  : "bg-[#81a308] hover:bg-[#6c8a0a] active:bg-[#5a7508] hover:shadow-lg hover:shadow-[#81a308]/20 hover:scale-[1.01] active:scale-[0.99]"
+              }`}
             >
-              {isLoading ? "Creating account..." : `Sign up →`}
-            </Button>
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  Creating account...
+                </span>
+              ) : "Create Account"}
+            </button>
 
-            <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-700" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-zinc-900 px-3 text-zinc-500">or continue with</span>
+              </div>
+            </div>
 
-            <div className="flex flex-col space-y-4">
-              <OAuthButton icon={<IconBrandGithub />} label="GitHub" />
-              <OAuthButton icon={<IconBrandGoogle />} label="Google" />
+            <div className="flex flex-col space-y-3">
+              <OAuthButton icon={<IconBrandGithub className="w-5 h-5" />} label="GitHub" />
+              <OAuthButton icon={<IconBrandGoogle className="w-5 h-5" />} label="Google" />
             </div>
           </form>
         </Form>
 
-        <div className="mt-2 text-center text-sm text-neutral-600 dark:text-neutral-400">
+        <div className="mt-6 text-center text-sm text-zinc-400">
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-medium text-[#81a308] hover:underline"
+            className="font-medium text-[#81a308] hover:text-[#9bc20a] transition-colors"
           >
             Login here
           </Link>
@@ -213,22 +237,12 @@ const OAuthButton = ({
   label: string;
 }) => (
   <button
-    className="group/btn shadow-input relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_#262626]"
+    className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 hover:border-zinc-600 transition-all duration-200"
     type="button"
   >
     {icon}
-    <span className="text-sm text-neutral-700 dark:text-neutral-300">
-      {label}
-    </span>
-    <BottomGradient />
+    <span>{label}</span>
   </button>
-);
-
-const BottomGradient = () => (
-  <>
-    <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-    <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-  </>
 );
 
 export default SignUp;

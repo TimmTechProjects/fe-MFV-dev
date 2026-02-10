@@ -607,6 +607,112 @@ export async function deleteCollectionCover(
   }
 }
 
+export interface CareReminder {
+  id: string;
+  userId: string;
+  plantId: string;
+  type: string;
+  frequency: number;
+  frequencyUnit: string;
+  nextDue: string;
+  lastCompleted: string | null;
+  enabled: boolean;
+  notes: string | null;
+  plant: {
+    commonName: string | null;
+    botanicalName: string;
+  };
+}
+
+export async function getCareReminders(userId: string): Promise<CareReminder[]> {
+  const token = localStorage.getItem("token");
+  if (!token) return [];
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function getDueCareReminders(userId: string): Promise<CareReminder[]> {
+  const token = localStorage.getItem("token");
+  if (!token) return [];
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders/${userId}/due`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function createCareReminder(data: {
+  userId: string;
+  plantId: string;
+  type: string;
+  frequency: number;
+  frequencyUnit?: string;
+  nextDue: string;
+  notes?: string;
+}): Promise<CareReminder | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function completeCareReminder(id: string): Promise<CareReminder | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders/${id}/complete`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteCareReminder(id: string): Promise<boolean> {
+  const token = localStorage.getItem("token");
+  if (!token) return false;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.ok || res.status === 204;
+  } catch {
+    return false;
+  }
+}
+
 export function formatRelativeTime(dateString: string) {
   const now = new Date();
   const date = new Date(dateString);
