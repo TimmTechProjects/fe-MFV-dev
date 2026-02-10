@@ -84,6 +84,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileTab, setMobileTab] = useState("home");
+  const [searchCategory, setSearchCategory] = useState("all");
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
 
   const unwrappedSearchParams = searchParams ? use(searchParams) : {};
   const currentPage = Number(unwrappedSearchParams?.page || 1);
@@ -187,20 +189,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
         <main className="flex-1 border-r border-gray-800/50 pb-20 lg:pb-0">
           <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-gray-800/50 z-10">
-            <div className="p-4 flex items-center gap-3">
-              <h1 className="text-xl font-bold flex-shrink-0">
-                {showMarketplaceContent ? "Marketplace" : "Home"}
+            <div className="p-4">
+              <h1 className="text-xl font-bold">
+                {showMarketplaceContent ? "Marketplace" : mobileTab === "search" ? "Search" : "Home"}
               </h1>
-              <div className="flex-1 relative lg:hidden">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-gray-900/60 border border-gray-800/50 rounded-lg outline-none text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all text-sm"
-                />
-              </div>
             </div>
 
             {!showMarketplaceContent && (
@@ -225,7 +217,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             )}
           </div>
 
-          <div className="p-4 border-b border-gray-800/50">
+          <div className="hidden lg:block p-4 border-b border-gray-800/50">
             <div className="flex gap-3">
               <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#81a308]/30 to-emerald-500/20 flex-shrink-0 flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-[#81a308]" />
@@ -242,15 +234,15 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <div className="flex gap-1">
                 <button className="flex items-center gap-1.5 text-gray-500 hover:text-[#81a308] px-3 py-1.5 rounded-lg hover:bg-[#81a308]/5 transition-all text-sm">
                   <ImageIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">Photo</span>
+                  Photo
                 </button>
                 <button className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-400 px-3 py-1.5 rounded-lg hover:bg-emerald-500/5 transition-all text-sm">
                   <VideoIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">Video</span>
+                  Video
                 </button>
                 <button className="flex items-center gap-1.5 text-gray-500 hover:text-green-400 px-3 py-1.5 rounded-lg hover:bg-green-500/5 transition-all text-sm">
                   <Smile className="w-4 h-4" />
-                  <span className="hidden sm:inline">Feeling</span>
+                  Feeling
                 </button>
               </div>
               <button className="bg-[#81a308] hover:bg-[#6c8a0a] text-white px-5 py-1.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-[#81a308]/20 transition-all">
@@ -259,7 +251,79 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           </div>
 
-          {!showMarketplaceContent ? (
+          {mobileTab === "search" && (
+            <div className="lg:hidden">
+              <div className="p-4">
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <input
+                    type="text"
+                    placeholder="Search plants, people, tags..."
+                    value={searchQuery}
+                    onChange={(e) => { setSearchQuery(e.target.value); setSearchSubmitted(false); }}
+                    onKeyDown={(e) => { if (e.key === "Enter" && searchQuery.trim()) setSearchSubmitted(true); }}
+                    className="w-full pl-10 pr-4 py-3 bg-gray-900/60 border border-gray-800/50 rounded-full outline-none text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all"
+                    autoFocus
+                  />
+                </div>
+              </div>
+
+              {!searchSubmitted && !searchQuery.trim() && (
+                <div className="px-4 pb-4">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Suggestions</p>
+                  <div className="space-y-1">
+                    {["Monstera", "Succulents", "Rare Plants", "Beginner Friendly", "Indoor Plants"].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => { setSearchQuery(s); setSearchSubmitted(true); }}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-gray-900/60 transition-colors text-left"
+                      >
+                        <Search className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                        <span className="text-sm text-gray-300">{s}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(searchSubmitted || searchQuery.trim()) && (
+                <>
+                  <div className="flex border-b border-gray-800/50 px-2">
+                    {["all", "plants", "people"].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSearchCategory(cat)}
+                        className={`flex-1 py-2.5 text-sm font-medium capitalize transition-colors relative ${
+                          searchCategory === cat ? "text-white" : "text-gray-500"
+                        }`}
+                      >
+                        {cat === "all" ? "All" : cat === "plants" ? "Plants" : "People"}
+                        {searchCategory === cat && (
+                          <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-[#81a308]" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="divide-y divide-gray-800/50">
+                    {filteredPlants.length === 0 ? (
+                      <div className="flex flex-col items-center py-16 text-center">
+                        <Search className="w-10 h-10 text-gray-600 mb-3" />
+                        <p className="text-gray-400 text-sm">No results for &ldquo;{searchQuery}&rdquo;</p>
+                        <p className="text-gray-600 text-xs mt-1">Try a different search term</p>
+                      </div>
+                    ) : (
+                      (searchCategory === "all" || searchCategory === "plants"
+                        ? filteredPlants
+                        : []
+                      ).map((plant) => <PlantPost key={plant.id} plant={plant} />)
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {mobileTab !== "search" && !showMarketplaceContent ? (
             <div className="divide-y divide-gray-800/50">
               {loading ? (
                 <Loading />
@@ -269,12 +333,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                     <Leaf className="w-8 h-8 text-[#81a308]" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    {searchQuery ? "No results found" : "No plants in your feed"}
+                    No plants in your feed
                   </h3>
                   <p className="text-gray-500 max-w-md">
-                    {searchQuery
-                      ? "Try a different search term"
-                      : "Follow some plant enthusiasts or share your first plant to get started!"}
+                    Follow some plant enthusiasts or share your first plant to get started!
                   </p>
                 </div>
               ) : (
@@ -283,9 +345,9 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 ))
               )}
             </div>
-          ) : (
+          ) : mobileTab !== "search" ? (
             <MarketplaceContent />
-          )}
+          ) : null}
 
           {!loading && totalPages > 1 && !showMarketplaceContent && (
             <div className="p-4 border-t border-gray-800/50">
@@ -376,11 +438,11 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <span className="text-[10px]">Home</span>
           </button>
           <button
-            onClick={() => setMobileTab("explore")}
-            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "explore" ? "text-[#81a308]" : "text-gray-500"}`}
+            onClick={() => { setMobileTab("search"); setSearchSubmitted(false); }}
+            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "search" ? "text-[#81a308]" : "text-gray-500"}`}
           >
-            <Compass className="w-5 h-5" />
-            <span className="text-[10px]">Explore</span>
+            <Search className="w-5 h-5" />
+            <span className="text-[10px]">Search</span>
           </button>
           <Link
             href="/forum"

@@ -308,7 +308,7 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="bg-[#2b2a2a] text-white border-l border-[#4a4a4a] p-0"
+            className="bg-[#1a1a1a] text-white border-l border-[#2a2a2a] p-0"
           >
             <SheetHeader>
               <SheetTitle className="text-2xl text-white">
@@ -320,22 +320,20 @@ const Header = () => {
               </SheetTitle>
             </SheetHeader>
 
-            {/* Mobile Search */}
             <form onSubmit={handleSearch}>
-              <div className="relative px-2">
+              <div className="relative px-4">
                 <Input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pr-10 rounded-xl bg-white text-black border-0"
+                  className="w-full pr-10 rounded-full bg-[#2a2a2a] text-white border border-[#3a3a3a] placeholder-gray-500 focus-visible:ring-1 focus-visible:ring-[#81a308]"
                 />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500 " />
+                <Search className="absolute right-7 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
               </div>
             </form>
 
-            {/* Mobile Menu Links */}
-            <div className="mt-4 space-y-1.5">
+            <div className="mt-6 px-3 space-y-0.5">
               {navLinks.map((link) => {
                 const href =
                   link.label === "Albums" && user
@@ -344,7 +342,7 @@ const Header = () => {
 
                 return (
                   <Link key={link.href} href={href}>
-                    <div className="py-2.5 mb-1.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                    <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                       {link.label}
                     </div>
                   </Link>
@@ -353,42 +351,44 @@ const Header = () => {
 
               {user ? (
                 <>
-                  <div className="pt-4 border-t border-[#4a4a4a]">
+                  <div className="mt-4 pt-4 border-t border-[#2a2a2a]">
                     <Link href={`/profiles/${user.username}`}>
-                      <div className="flex items-center py-2.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                      <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                         <Avatar className="h-8 w-8 mr-3">
                           <AvatarImage
                             src={user.avatarUrl || "/default-avatar.png"}
                           />
-                          <AvatarFallback className="bg-white text-[#2b2a2a] text-sm">
+                          <AvatarFallback className="bg-[#81a308] text-white text-sm">
                             {user.firstName?.[0]}
                             {user.lastName?.[0]}
                           </AvatarFallback>
                         </Avatar>
-                        <span>My Profile</span>
+                        <span className="text-[15px] font-medium">My Profile</span>
                       </div>
                     </Link>
                     {authUserLinks.map((link) => (
                       <Link key={link.href} href={link.href}>
-                        <div className="py-2.5 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                           {link.label}
                         </div>
                       </Link>
                     ))}
                     <div
                       onClick={LogoutUser}
-                      className="py-2 px-3 rounded-lg hover:bg-[#3a3a3a] text-red-400 transition-colors cursor-pointer"
+                      className="py-3 px-4 rounded-xl text-[15px] font-medium text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer mt-2"
                     >
                       Logout
                     </div>
                   </div>
                 </>
               ) : (
-                <Link href={`/login?redirect=${pathname}`}>
-                  <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-xl py-2 mt-4">
-                    Login
-                  </Button>
-                </Link>
+                <div className="px-1 mt-6">
+                  <Link href={`/login?redirect=${pathname}`}>
+                    <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white rounded-full py-2.5 text-[15px] font-semibold">
+                      Login
+                    </Button>
+                  </Link>
+                </div>
               )}
             </div>
           </SheetContent>

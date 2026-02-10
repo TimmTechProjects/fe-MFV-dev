@@ -203,59 +203,42 @@ const MarketplacePage = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-gray-900/40 backdrop-blur rounded-2xl p-5 mb-8 border border-gray-800/30">
-          <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
-            {/* Left Side - Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <button
-                onClick={() => setShowFilters(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/80 text-gray-300 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-gray-800/50 hover:border-[#81a308]/30"
-              >
-                <Filter size={18} />
-                Filters
-              </button>
-
-              <div className="relative flex-1 max-w-md">
-                <Search
-                  size={18}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                />
-                <input
-                  type="text"
-                  placeholder="Search plants, shops..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 text-white rounded-xl border border-gray-800/50 focus:outline-none focus:border-[#81a308]/30 focus:ring-1 focus:ring-[#81a308]/25 transition-all placeholder-gray-500"
-                />
-              </div>
-            </div>
-
-            {/* Right Side - Sort */}
-            <div className="flex items-center gap-3">
-              <span className="text-white text-sm whitespace-nowrap">
-                Sort by:
-              </span>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="bg-gray-900/80 text-gray-300 rounded-xl px-4 py-2.5 border border-gray-800/50 focus:outline-none focus:border-[#81a308]/30 cursor-pointer"
-              >
-                <option>Relevancy</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Top Rated</option>
-              </select>
-            </div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="relative flex-1">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            />
+            <input
+              type="text"
+              placeholder="Search marketplace..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-gray-900/60 text-white text-sm rounded-full border border-gray-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-gray-500"
+            />
           </div>
-
-          {/* Results Count */}
-          <div className="mt-4 pt-4 border-t border-gray-800/30">
-            <p className="text-xs text-gray-500">
-              {filteredPlants.length}{" "}
-              {filteredPlants.length === 1 ? "result" : "results"} found
-            </p>
-          </div>
+          <button
+            onClick={() => setShowFilters(true)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-900/60 text-gray-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-gray-800/50"
+          >
+            <Filter size={14} />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="bg-gray-900/60 text-gray-300 text-sm rounded-full px-3 py-2 border border-gray-800/50 focus:outline-none cursor-pointer hidden sm:block"
+          >
+            <option>Relevancy</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Top Rated</option>
+          </select>
         </div>
+        <p className="text-xs text-gray-500 mb-4">
+          {filteredPlants.length}{" "}
+          {filteredPlants.length === 1 ? "result" : "results"} found
+        </p>
 
         {/* Plant Grid */}
         {filteredPlants.length > 0 ? (
