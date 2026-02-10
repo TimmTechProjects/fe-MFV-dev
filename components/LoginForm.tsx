@@ -14,17 +14,17 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
 import useAuth from "@/redux/hooks/useAuth";
 import useAppInit from "@/redux/hooks/useInit";
 import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
 const formSchema = z.object({
   username: z
     .string()
-    .min(3, { message: "Username must be at least 3 characters" }),
+    .min(3, { message: "Username or email must be at least 3 characters" }),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
@@ -37,10 +37,10 @@ const SignInForm = () => {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/";
 
-  const { user } = useSelector((state: any) => state.auth);
-
   const [loading, setLoading] = useState(false);
   const [btnLoadings, setBtnLoadings] = useState({ google: false });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,16 +52,24 @@ const SignInForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setErrorMessage(null);
+
+    const isEmail = values.username.includes("@");
+    const loginData = isEmail
+      ? { username: values.username, email: values.username, password: values.password }
+      : { username: values.username, password: values.password };
+
     getLogin(
-      values,
+      loginData,
       async () => {
         await __init();
         toast.success("Logged in successfully!");
         router.push(from);
       },
-      (error: any) => {
-        console.error("Login Error:", error);
-        toast.error("Invalid credentials");
+      (error: { response?: { data?: { message?: string } }; message?: string }) => {
+        const msg = error?.response?.data?.message || error?.message || "Invalid credentials. Please check your username/email and password.";
+        setErrorMessage(msg);
+        toast.error(msg);
         setLoading(false);
       }
     );
@@ -69,12 +77,13 @@ const SignInForm = () => {
 
   const handleGoogleLogin = async () => {
     setBtnLoadings((prev) => ({ ...prev, google: true }));
+    setErrorMessage(null);
     try {
       await signInWithGoogle();
       toast.success("Signed in with Google!");
       router.push(from);
-    } catch (err) {
-      toast.error("Google sign-in failed");
+    } catch {
+      toast.error("Google sign-in failed. Please try again.");
     } finally {
       setBtnLoadings((prev) => ({ ...prev, google: false }));
     }
@@ -95,6 +104,12 @@ const SignInForm = () => {
           </p>
         </div>
 
+        {errorMessage && (
+          <div className="mt-4 rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            {errorMessage}
+          </div>
+        )}
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -105,12 +120,11 @@ const SignInForm = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300 text-sm">Username</FormLabel>
+                  <FormLabel className="text-zinc-300 text-sm">Username or Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="yourusername"
                       {...field}
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
+                      className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
                     />
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs" />
@@ -125,12 +139,20 @@ const SignInForm = () => {
                 <FormItem>
                   <FormLabel className="text-zinc-300 text-sm">Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      {...field}
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        {...field}
+                        className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs" />
                 </FormItem>
