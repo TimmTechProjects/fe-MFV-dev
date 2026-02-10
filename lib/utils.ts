@@ -1,5 +1,11 @@
 import { PlantSchema } from "@/schemas/plantSchema";
 import { Collection } from "@/types/collections";
+import {
+  MarketplaceListing,
+  CreateListingInput,
+  MarketplaceFilters,
+  MarketplaceResponse,
+} from "@/types/marketplace";
 import { Plant } from "@/types/plants";
 import { RegisterUser, User, UserCredentials, UserResult } from "@/types/users";
 import { clsx, type ClassValue } from "clsx";
@@ -618,6 +624,122 @@ export function formatRelativeTime(dateString: string) {
   if (diffDay < 7) {
     return `${diffDay}d`;
   }
-  // Fallback to date string (e.g. Jun 30)
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+export async function getMarketplaceListings(
+  filters?: MarketplaceFilters
+): Promise<MarketplaceResponse> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set("search", filters.search);
+    if (filters?.listingType && filters.listingType !== "all")
+      params.set("listingType", filters.listingType);
+    if (filters?.category) params.set("category", filters.category);
+    if (filters?.minPrice !== undefined)
+      params.set("minPrice", String(filters.minPrice));
+    if (filters?.maxPrice !== undefined)
+      params.set("maxPrice", String(filters.maxPrice));
+    if (filters?.freeShipping) params.set("freeShipping", "true");
+    if (filters?.condition) params.set("condition", filters.condition);
+    if (filters?.sort) params.set("sort", filters.sort);
+    if (filters?.page) params.set("page", String(filters.page));
+    if (filters?.limit) params.set("limit", String(filters.limit));
+
+    const query = params.toString();
+    const res = await fetch(
+      `${baseUrl}/api/marketplace/listings${query ? `?${query}` : ""}`,
+      { cache: "no-store" }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch marketplace listings");
+      return { listings: [], total: 0, page: 1, totalPages: 0 };
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("Error fetching marketplace listings:", err);
+    return { listings: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function getMarketplaceListing(
+  id: string
+): Promise<MarketplaceListing | null> {
+  try {
+    const res = await fetch(`${baseUrl}/api/marketplace/listings/${id}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.error("Error fetching listing:", err);
+    return null;
+  }
+}
+
+export async function createMarketplaceListing(
+  input: CreateListingInput
+): Promise<{ success: boolean; listing?: MarketplaceListing; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/marketplace/listings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(input),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to create listing",
+      };
+    }
+
+    return { success: true, listing: data.listing || data };
+  } catch (err) {
+    console.error("Error creating listing:", err);
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function placeBid(
+  listingId: string,
+  amount: number
+): Promise<{ success: boolean; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/marketplace/listings/${listingId}/bid`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Failed to place bid" };
+    }
+
+    return { success: true, message: data.message };
+  } catch (err) {
+    console.error("Error placing bid:", err);
+    return { success: false, message: "Unexpected error" };
+  }
 }
