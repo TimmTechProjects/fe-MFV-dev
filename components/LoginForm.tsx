@@ -123,9 +123,8 @@ const SignInForm = () => {
                   <FormLabel className="text-zinc-300 text-sm">Username or Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="yourusername or email@example.com"
                       {...field}
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
+                      className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
                     />
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs" />
@@ -143,9 +142,8 @@ const SignInForm = () => {
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Your password"
                         {...field}
-                        className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
+                        className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
                       />
                       <button
                         type="button"
