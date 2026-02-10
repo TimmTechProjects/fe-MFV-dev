@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import useAuth from "@/redux/hooks/useAuth";
 
 const membershipTiers = [
@@ -24,8 +26,8 @@ const membershipTiers = [
   {
     name: "Premium",
     price: {
-      monthly: "$5/mo",
-      yearly: "$50/yr",
+      monthly: "$2.99/mo",
+      yearly: "$0.99/yr",
     },
     description: "Unlimited access for serious enthusiasts & sellers.",
     benefits: [
@@ -42,17 +44,46 @@ const membershipTiers = [
 ];
 
 const MembershipPage = () => {
-  const { user } = useAuth();
+  const { user, CreateCheckoutSession, ManageSubscription } = useAuth();
   const [isYearly, setIsYearly] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isPortalLoading, setIsPortalLoading] = useState(false);
 
-  const currentPlan = user?.plan ?? "free";
+  const currentPlan = user?.subscriptionTier ?? user?.plan ?? "free";
 
-  const handleUpgrade = (plan: string) => {
-    console.log(`Upgrade to ${plan} clicked`);
+  const handleUpgrade = async (plan: string) => {
+    if (plan === "free") return;
+    setIsCheckoutLoading(true);
+    try {
+      const res = await CreateCheckoutSession({
+        priceInterval: isYearly ? "year" : "month",
+      });
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Could not start checkout. Please try again.");
+      }
+    } catch {
+      toast.error("Checkout failed. Please try again.");
+    } finally {
+      setIsCheckoutLoading(false);
+    }
   };
 
-  const handleCancelMembership = () => {
-    console.log("Cancel membership clicked");
+  const handleCancelMembership = async () => {
+    setIsPortalLoading(true);
+    try {
+      const res = await ManageSubscription();
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Could not open subscription portal.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsPortalLoading(false);
+    }
   };
 
   return (
@@ -117,7 +148,7 @@ const MembershipPage = () => {
               </p>
               {isYearly && tier.plan === "premium" && (
                 <p className="text-center text-xs text-[#81a308] mt-1">
-                  Save $10/yr vs monthly
+                  Save 72% vs monthly
                 </p>
               )}
               <p className="text-center text-sm text-gray-400 mt-2">
@@ -150,8 +181,14 @@ const MembershipPage = () => {
                         : "bg-gray-700 hover:bg-gray-600 text-white"
                     }`}
                     onClick={() => handleUpgrade(tier.plan)}
+                    disabled={isCheckoutLoading}
                   >
-                    {tier.plan === "free" ? "Downgrade" : "Upgrade"}
+                    {isCheckoutLoading && tier.plan === "premium" ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Redirecting...
+                      </span>
+                    ) : tier.plan === "free" ? "Downgrade" : "Upgrade"}
                   </Button>
                 )}
               </div>
@@ -172,8 +209,14 @@ const MembershipPage = () => {
             variant="destructive"
             className="rounded-xl px-6 py-2 bg-red-600 hover:bg-red-700 text-white"
             onClick={handleCancelMembership}
+            disabled={isPortalLoading}
           >
-            Cancel Membership
+            {isPortalLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Loading...
+              </span>
+            ) : "Manage Subscription"}
           </Button>
         </div>
       )}
