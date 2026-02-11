@@ -334,7 +334,7 @@ function DiscoveryContent() {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="px-4 sm:px-5 py-2 bg-white dark:bg-gray-900/80 border border-gray-300 dark:border-gray-800/50 rounded-xl text-xs sm:text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:border-[#81a308]/30 transition-all text-zinc-700 dark:text-gray-300"
+                  className="px-4 sm:px-5 py-2 bg-white dark:bg-gray-900/80 border border-gray-300 dark:border-gray-800/50 rounded-xl text-xs sm:text-sm cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:border-[#81a308]/30 transition-all text-zinc-700 dark:text-gray-300"
                 >
                   Previous
                 </button>
@@ -344,7 +344,7 @@ function DiscoveryContent() {
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={!hasNextPage}
-                  className="px-4 sm:px-5 py-2 bg-white dark:bg-gray-900/80 border border-gray-300 dark:border-gray-800/50 rounded-xl text-xs sm:text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:border-[#81a308]/30 transition-all text-zinc-700 dark:text-gray-300"
+                  className="px-4 sm:px-5 py-2 bg-white dark:bg-gray-900/80 border border-gray-300 dark:border-gray-800/50 rounded-xl text-xs sm:text-sm cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:border-[#81a308]/30 transition-all text-zinc-700 dark:text-gray-300"
                 >
                   Next
                 </button>
