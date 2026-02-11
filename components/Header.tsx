@@ -85,7 +85,7 @@ const Header = () => {
     e.preventDefault();
     const trimmed = searchQuery.trim();
     if (trimmed) {
-      router.push(`/the-vault/results?query=${encodeURIComponent(trimmed)}`);
+      router.push(`/plants?search=${encodeURIComponent(trimmed)}`);
       setIsPopoverOpen(false);
     }
   };

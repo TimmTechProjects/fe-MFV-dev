@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Search, SlidersHorizontal, Leaf, Heart, Eye } from "lucide-react";
 import { getPaginatedPlants } from "@/lib/utils";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 interface PlantItem {
   id: string;
@@ -23,9 +24,11 @@ const plantTypes = ["Succulent", "Tropical", "Herb", "Flowering", "Fern", "Cactu
 const sortOptions = ["Most Popular", "Newest", "A-Z", "Z-A"];
 
 const PlantsDiscoveryPage = () => {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
   const [plants, setPlants] = useState<PlantItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("Most Popular");
   const [showFilters, setShowFilters] = useState(false);
