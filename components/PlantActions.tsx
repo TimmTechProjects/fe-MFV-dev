@@ -7,39 +7,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Heart, Plus, Check } from "lucide-react";
-import { cn, getUserCollectionsWithAuth, savePlantToAlbum } from "@/lib/utils";
+import {
+  cn,
+  getUserCollectionsWithAuth,
+  savePlantToAlbum,
+  togglePlantLike,
+  getPlantLikeStatus,
+} from "@/lib/utils";
 import { Collection } from "@/types/collections";
 import { toast } from "sonner";
 import Link from "next/link";
 import useAuth from "@/redux/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
-function getLikeKey(userId: string, plantId: string): string {
-  return `plant_like_${userId}_${plantId}`;
-}
-
-function getStoredLike(userId: string, plantId: string): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(getLikeKey(userId, plantId)) === "true";
-}
-
-function setStoredLike(userId: string, plantId: string, liked: boolean): void {
-  if (typeof window === "undefined") return;
-  if (liked) {
-    localStorage.setItem(getLikeKey(userId, plantId), "true");
-  } else {
-    localStorage.removeItem(getLikeKey(userId, plantId));
-  }
-}
-
 export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   const { user } = useAuth();
   const username = user?.username;
   const router = useRouter();
-  const [liked, setLiked] = useState(() => {
-    if (typeof window === "undefined" || !user?.id) return false;
-    return getStoredLike(user.id, plantId);
-  });
+  const [liked, setLiked] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);
   const [plantAlbumMap, setPlantAlbumMap] = useState<{
@@ -47,23 +32,34 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   }>({});
 
   useEffect(() => {
-    if (user?.id) {
-      setLiked(getStoredLike(user.id, plantId));
-    }
-  }, [user?.id, plantId]);
+    if (!user) return;
 
-  const toggleLike = useCallback(() => {
-    if (!user || !user.id) {
+    const fetchLikeStatus = async () => {
+      const result = await getPlantLikeStatus(plantId);
+      if (result) {
+        setLiked(result.liked);
+      }
+    };
+
+    fetchLikeStatus();
+  }, [user, plantId]);
+
+  const handleToggleLike = useCallback(async () => {
+    if (!user) {
       router.push("/login");
       toast.error("You must be logged in to like a plant.");
       return;
     }
-    const userId = user.id;
-    setLiked((prev) => {
-      const newLiked = !prev;
-      setStoredLike(userId, plantId, newLiked);
-      return newLiked;
-    });
+
+    setLiked((prev) => !prev);
+
+    const result = await togglePlantLike(plantId);
+    if (result) {
+      setLiked(result.liked);
+    } else {
+      setLiked((prev) => !prev);
+      toast.error("Failed to update like.");
+    }
   }, [user, plantId, router]);
 
   const handleTogglePlant = async (collectionId: string) => {
@@ -102,7 +98,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   return (
     <div className="flex gap-3 items-center">
       <button
-        onClick={toggleLike}
+        onClick={handleToggleLike}
         className={cn(
           "flex items-center gap-2 px-3 py-1 rounded border transition cursor-pointer",
           liked

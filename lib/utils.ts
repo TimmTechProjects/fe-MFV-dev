@@ -713,6 +713,47 @@ export async function deleteCareReminder(id: string): Promise<boolean> {
   }
 }
 
+export async function togglePlantLike(
+  plantId: string
+): Promise<{ liked: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/likes/${plantId}/toggle`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error toggling plant like:", error);
+    return null;
+  }
+}
+
+export async function getPlantLikeStatus(
+  plantId: string
+): Promise<{ liked: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/likes/${plantId}/status`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error getting plant like status:", error);
+    return null;
+  }
+}
+
 export function formatRelativeTime(dateString: string) {
   const now = new Date();
   const date = new Date(dateString);
