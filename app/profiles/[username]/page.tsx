@@ -546,7 +546,7 @@ const ProfilePage = () => {
                     }
                   />
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-6">
                     {usersCollections.map((collection) => (
                       <CollectionBedCard
                         key={collection.id}
@@ -558,7 +558,7 @@ const ProfilePage = () => {
                     {isOwnProfile && (
                       <Link
                         href={`/profiles/${profileUser.username}/collections/new`}
-                        className="collection-bed group cursor-pointer flex items-center justify-center min-h-[200px] hover:border-emerald-500/40 transition-colors"
+                        className="collection-bed group cursor-pointer flex items-center justify-center min-h-[120px] sm:min-h-[200px] hover:border-emerald-500/40 transition-colors"
                       >
                         <div className="flex flex-col items-center justify-center gap-3 text-zinc-400 group-hover:text-emerald-500 transition-colors">
                           <div className="flex items-center justify-center w-16 h-16 border-2 border-zinc-600 rounded-full group-hover:border-emerald-500 transition-colors">
@@ -887,7 +887,7 @@ function CollectionBedCard({
       <LeafDecoration position="top-right" size="lg" />
       
       {/* Cover Image */}
-      <div className="relative h-40 rounded-xl overflow-hidden mb-4">
+      <div className="relative h-24 sm:h-40 rounded-lg sm:rounded-xl overflow-hidden mb-2 sm:mb-4">
         <img
           src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
           alt={collection.name}
@@ -898,17 +898,19 @@ function CollectionBedCard({
 
       {/* Content */}
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors">
+        <div className="flex items-start justify-between mb-1 sm:mb-2">
+          <h3 className="text-sm sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
             {collection.name}
           </h3>
-          <span className="px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
+          <span className="hidden sm:inline px-2 py-1 text-xs rounded-full bg-emerald-500/15 text-emerald-500">
             {collection.plants?.length || 0} plants
           </span>
         </div>
-        
+        <span className="sm:hidden text-xs text-emerald-500 mb-1">
+          {collection.plants?.length || 0} plants
+        </span>
         {collection.description && (
-          <p className="text-sm text-zinc-400 line-clamp-2">
+          <p className="text-xs sm:text-sm text-zinc-400 line-clamp-1 sm:line-clamp-2">
             {collection.description}
           </p>
         )}
