@@ -159,7 +159,13 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              if (window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/");
+              }
+            }}
             className="p-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-emerald-500" />
