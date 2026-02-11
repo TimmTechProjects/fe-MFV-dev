@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -14,25 +14,57 @@ import Link from "next/link";
 import useAuth from "@/redux/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
+function getLikeKey(userId: string, plantId: string): string {
+  return `plant_like_${userId}_${plantId}`;
+}
+
+function getStoredLike(userId: string, plantId: string): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(getLikeKey(userId, plantId)) === "true";
+}
+
+function setStoredLike(userId: string, plantId: string, liked: boolean): void {
+  if (typeof window === "undefined") return;
+  if (liked) {
+    localStorage.setItem(getLikeKey(userId, plantId), "true");
+  } else {
+    localStorage.removeItem(getLikeKey(userId, plantId));
+  }
+}
+
 export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   const { user } = useAuth();
   const username = user?.username;
   const router = useRouter();
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(() => {
+    if (typeof window === "undefined" || !user?.id) return false;
+    return getStoredLike(user.id, plantId);
+  });
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);
   const [plantAlbumMap, setPlantAlbumMap] = useState<{
     [key: string]: boolean;
   }>({});
 
-  const toggleLike = () => {
-    if (!user) {
+  useEffect(() => {
+    if (user?.id) {
+      setLiked(getStoredLike(user.id, plantId));
+    }
+  }, [user?.id, plantId]);
+
+  const toggleLike = useCallback(() => {
+    if (!user || !user.id) {
       router.push("/login");
       toast.error("You must be logged in to like a plant.");
       return;
     }
-    setLiked((prev) => !prev);
-  };
+    const userId = user.id;
+    setLiked((prev) => {
+      const newLiked = !prev;
+      setStoredLike(userId, plantId, newLiked);
+      return newLiked;
+    });
+  }, [user, plantId, router]);
 
   const handleTogglePlant = async (collectionId: string) => {
     const result = await savePlantToAlbum(collectionId, plantId);
@@ -46,11 +78,12 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   };
 
   useEffect(() => {
+    if (!user) return;
+
     const fetchCollections = async () => {
       setLoading(true);
       const userCollections = await getUserCollectionsWithAuth();
 
-      // Infer if the plant is in each collection (backend must eventually return this info!)
       const plantMap: { [key: string]: boolean } = {};
       for (const collection of userCollections) {
         const plantIds =
@@ -64,7 +97,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
     };
 
     fetchCollections();
-  }, [plantId]);
+  }, [plantId, user]);
 
   return (
     <div className="flex gap-3 items-center">
