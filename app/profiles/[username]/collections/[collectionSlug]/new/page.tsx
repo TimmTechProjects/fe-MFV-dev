@@ -51,6 +51,8 @@ import {
   Info,
   Globe,
   Lock,
+  Droplets,
+  Wheat,
 } from "lucide-react";
 import {
   BotanicalCard,
@@ -66,16 +68,30 @@ const PlantEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
   ssr: false,
 });
 
-// Plant type icons mapping
+// Primary types (growth form)
 const PLANT_TYPE_ICONS: Record<string, React.ReactNode> = {
-  herb: <Leaf className="w-4 h-4" />,
-  shrub: <TreeDeciduous className="w-4 h-4" />,
-  flower: <Flower2 className="w-4 h-4" />,
   tree: <TreeDeciduous className="w-4 h-4" />,
-  vine: <Sprout className="w-4 h-4" />,
+  shrub: <TreeDeciduous className="w-4 h-4" />,
+  herbaceous: <Leaf className="w-4 h-4" />,
+  "vine / climber": <Sprout className="w-4 h-4" />,
   succulent: <Sun className="w-4 h-4" />,
+  grass: <Wheat className="w-4 h-4" />,
+  fern: <Leaf className="w-4 h-4" />,
   fungus: <Sprout className="w-4 h-4" />,
+  aquatic: <Droplets className="w-4 h-4" />,
+  epiphyte: <Flower2 className="w-4 h-4" />,
 };
+
+// Secondary traits (optional tags)
+const SECONDARY_TRAITS = [
+  "Flowering",
+  "Medicinal",
+  "Carnivorous",
+  "Tropical",
+  "Edible",
+  "Native / Invasive",
+  "Perennial / Annual",
+];
 
 const WIZARD_STEPS = [
   { id: "images", label: "Photos" },
@@ -119,6 +135,7 @@ const NewPlantPage = () => {
       commonName: "",
       botanicalName: "",
       type: "",
+      secondaryTraits: [],
       origin: "",
       family: "",
       description: "",
@@ -761,6 +778,43 @@ const NewPlantPage = () => {
                     />
                   </div>
 
+                  {/* Secondary Traits */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-emerald-500">
+                      Secondary Traits <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span>
+                    </label>
+                    <p className="text-xs text-zinc-400">
+                      Select any additional characteristics that apply
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {SECONDARY_TRAITS.map((trait) => {
+                        const selected = (form.watch("secondaryTraits") || []).includes(trait);
+                        return (
+                          <button
+                            key={trait}
+                            type="button"
+                            onClick={() => {
+                              const current = form.getValues("secondaryTraits") || [];
+                              if (current.includes(trait)) {
+                                form.setValue("secondaryTraits", current.filter((t) => t !== trait));
+                              } else {
+                                form.setValue("secondaryTraits", [...current, trait]);
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all border ${
+                              selected
+                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                                : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300"
+                            }`}
+                          >
+                            {selected && <Check className="w-3 h-3 inline mr-1" />}
+                            {trait}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Selected Type Preview */}
                   {form.watch("type") && (
                     <div className="p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
@@ -773,7 +827,9 @@ const NewPlantPage = () => {
                             {form.watch("type")}
                           </p>
                           <p className="text-xs text-zinc-500">
-                            Plant type selected
+                            {(form.watch("secondaryTraits") || []).length > 0
+                              ? (form.watch("secondaryTraits") || []).join(", ")
+                              : "Plant type selected"}
                           </p>
                         </div>
                       </div>

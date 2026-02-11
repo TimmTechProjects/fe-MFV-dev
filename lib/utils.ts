@@ -6,7 +6,7 @@ import {
   MarketplaceFilters,
   MarketplaceResponse,
 } from "@/types/marketplace";
-import { Plant } from "@/types/plants";
+import { Plant, Trait } from "@/types/plants";
 import { RegisterUser, User, UserCredentials, UserResult } from "@/types/users";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -212,6 +212,28 @@ export async function getUserByUsername(
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
+  }
+}
+
+export async function fetchAllTraits(): Promise<Trait[]> {
+  try {
+    const res = await fetch(`${baseUrl}/api/traits`, { cache: "no-store" });
+    if (!res.ok) return [];
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching traits:", error);
+    return [];
+  }
+}
+
+export async function fetchTraitsGrouped(): Promise<Record<string, Trait[]>> {
+  try {
+    const res = await fetch(`${baseUrl}/api/traits/grouped`, { cache: "no-store" });
+    if (!res.ok) return {};
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching grouped traits:", error);
+    return {};
   }
 }
 

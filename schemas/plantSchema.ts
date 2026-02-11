@@ -11,6 +11,9 @@ export const plantSchema = z.object({
   commonName: z.string().min(2, "Plant name is required"),
   botanicalName: z.string().min(2, "Scientific name is required"),
   type: z.string().optional(),
+  primaryType: z.string().optional(),
+  traitIds: z.array(z.string()).optional(),
+  secondaryTraits: z.array(z.string()).optional(),
   origin: z.string().optional(),
   family: z.string().optional(),
   isPublic: z.boolean(),
@@ -23,7 +26,6 @@ export const plantSchema = z.object({
     .max(10, "You can only add up to 10 tags")
     .optional(),
   images: z.array(imageSchema),
-  // .min(1, "At least one image is required"),
 });
 
 export type PlantSchema = z.infer<typeof plantSchema>;

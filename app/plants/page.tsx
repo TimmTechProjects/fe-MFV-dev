@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { SlidersHorizontal, Leaf, Heart, Eye, BookOpen, Users } from "lucide-react";
-import { getPaginatedPlants, searchEverything } from "@/lib/utils";
+import { getPaginatedPlants, searchEverything, fetchAllTraits } from "@/lib/utils";
+import { Trait, TraitCategory, PlantPrimaryType } from "@/types/plants";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Collection } from "@/types/collections";
 import { UserResult } from "@/types/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PlantItem {
   id: string;
@@ -17,14 +19,39 @@ interface PlantItem {
   slug: string;
   origin?: string;
   type?: string;
+  primaryType?: PlantPrimaryType;
   views: number;
   tags: { id: string; name: string }[];
+  plantTraits?: { trait: Trait }[];
   images: { id: string; url: string; isMain: boolean }[];
   user: { username: string; firstName?: string; lastName?: string };
   collection?: { id: string; slug: string; name?: string } | null;
 }
 
-const plantTypes = ["Succulent", "Tropical", "Herb", "Flowering", "Fern", "Cactus", "Tree", "Vine"];
+const PRIMARY_TYPES: { value: PlantPrimaryType; label: string }[] = [
+  { value: "TREE", label: "Tree" },
+  { value: "SHRUB", label: "Shrub" },
+  { value: "HERBACEOUS", label: "Herbaceous" },
+  { value: "VINE_CLIMBER", label: "Vine / Climber" },
+  { value: "FERN", label: "Fern" },
+  { value: "SUCCULENT", label: "Succulent" },
+  { value: "GRASS", label: "Grass" },
+  { value: "FUNGUS", label: "Fungus" },
+  { value: "AQUATIC", label: "Aquatic" },
+];
+
+const CATEGORY_LABELS: Record<TraitCategory, string> = {
+  BLOOMING_LIFECYCLE: "Blooming & Lifecycle",
+  ENVIRONMENT_GROWTH: "Environment & Growth",
+  USE_ORIGIN: "Use & Origin",
+};
+
+const CATEGORY_ORDER: TraitCategory[] = [
+  "BLOOMING_LIFECYCLE",
+  "ENVIRONMENT_GROWTH",
+  "USE_ORIGIN",
+];
+
 const sortOptions = ["Most Popular", "Newest", "A-Z", "Z-A"];
 
 function DiscoveryContent() {
@@ -37,7 +64,9 @@ function DiscoveryContent() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(initialSearch);
   const [activeTab, setActiveTab] = useState(initialTab);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedPrimaryType, setSelectedPrimaryType] = useState<string | null>(null);
+  const [selectedTraitSlugs, setSelectedTraitSlugs] = useState<string[]>([]);
+  const [allTraits, setAllTraits] = useState<Trait[]>([]);
   const [sortBy, setSortBy] = useState("Most Popular");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
@@ -48,6 +77,23 @@ function DiscoveryContent() {
   const [searchLoading, setSearchLoading] = useState(false);
 
   const pageSize = 20;
+
+  useEffect(() => {
+    fetchAllTraits().then(setAllTraits);
+  }, []);
+
+  useEffect(() => {
+    const typeParam = searchParams.get("type");
+    const traitParams = searchParams.getAll("trait");
+    if (typeParam) {
+      setSelectedPrimaryType(typeParam);
+      setShowFilters(true);
+    }
+    if (traitParams.length > 0) {
+      setSelectedTraitSlugs(traitParams);
+      setShowFilters(true);
+    }
+  }, [searchParams]);
 
   const fetchPlants = useCallback(async () => {
     setLoading(true);
@@ -79,6 +125,19 @@ function DiscoveryContent() {
     if (tab) setActiveTab(tab);
   }, [searchParams]);
 
+  const traitsByCategory = CATEGORY_ORDER.reduce<Record<string, Trait[]>>((acc, cat) => {
+    acc[cat] = allTraits.filter((t) => t.category === cat);
+    return acc;
+  }, {});
+
+  const toggleTraitSlug = (slug: string) => {
+    setSelectedTraitSlugs((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+    );
+  };
+
+  const hasActiveFilters = !!selectedPrimaryType || selectedTraitSlugs.length > 0;
+
   const filtered = plants
     .filter((p) => {
       const matchesSearch =
@@ -86,8 +145,14 @@ function DiscoveryContent() {
         (p.commonName || "").toLowerCase().includes(search.toLowerCase()) ||
         p.botanicalName.toLowerCase().includes(search.toLowerCase()) ||
         p.tags?.some((t) => t.name.toLowerCase().includes(search.toLowerCase()));
-      const matchesType = !selectedType || p.type === selectedType;
-      return matchesSearch && matchesType;
+      const matchesPrimaryType =
+        !selectedPrimaryType || p.primaryType === selectedPrimaryType;
+      const matchesTraits =
+        selectedTraitSlugs.length === 0 ||
+        selectedTraitSlugs.every((slug) =>
+          p.plantTraits?.some((pt) => pt.trait.slug === slug)
+        );
+      return matchesSearch && matchesPrimaryType && matchesTraits;
     })
     .sort((a, b) => {
       if (sortBy === "Most Popular") return b.views - a.views;
@@ -98,7 +163,7 @@ function DiscoveryContent() {
     });
 
   const totalPages = Math.ceil(total / pageSize);
-  const hasNextPage = page < totalPages && filtered.length === pageSize;
+  const hasNextPage = page < totalPages;
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -188,14 +253,14 @@ function DiscoveryContent() {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm transition-all border ${
-                  showFilters || selectedType
+                  showFilters || hasActiveFilters
                     ? "bg-[#81a308]/20 border-[#81a308]/40 text-[#81a308]"
                     : "bg-white dark:bg-gray-900/80 border-gray-300 dark:border-gray-700/50 text-gray-500 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-600"
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Filters</span>
-                {selectedType && (
+                {hasActiveFilters && (
                   <span className="w-1.5 h-1.5 rounded-full bg-[#81a308]" />
                 )}
               </button>
@@ -214,33 +279,77 @@ function DiscoveryContent() {
             </div>
 
             {showFilters && (
-              <div className="mb-5 p-3 sm:p-4 bg-gray-100 dark:bg-gray-900/60 backdrop-blur border border-gray-200 dark:border-gray-800/50 rounded-2xl">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-medium text-zinc-500 dark:text-gray-400 uppercase tracking-wide">Plant Type</h3>
-                  {selectedType && (
-                    <button
-                      onClick={() => setSelectedType(null)}
-                      className="text-xs text-[#81a308] hover:text-[#9ec20a] transition-colors"
-                    >
-                      Clear
-                    </button>
-                  )}
+              <div className="mb-5 p-3 sm:p-4 bg-gray-100 dark:bg-gray-900/60 backdrop-blur border border-gray-200 dark:border-gray-800/50 rounded-2xl space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xs font-medium text-zinc-500 dark:text-gray-400 uppercase tracking-wide">Primary Type</h3>
+                    {selectedPrimaryType && (
+                      <button
+                        onClick={() => setSelectedPrimaryType(null)}
+                        className="text-xs text-[#81a308] hover:text-[#9ec20a] transition-colors"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                    {PRIMARY_TYPES.map((pt) => (
+                      <button
+                        key={pt.value}
+                        onClick={() => setSelectedPrimaryType(selectedPrimaryType === pt.value ? null : pt.value)}
+                        className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-medium transition-all ${
+                          selectedPrimaryType === pt.value
+                            ? "bg-[#81a308] text-white shadow-lg shadow-[#81a308]/25"
+                            : "bg-gray-200 dark:bg-gray-800/80 text-zinc-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white hover:bg-gray-300 dark:hover:bg-gray-700/80"
+                        }`}
+                      >
+                        {pt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {plantTypes.map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setSelectedType(selectedType === type ? null : type)}
-                      className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-medium transition-all ${
-                        selectedType === type
-                          ? "bg-[#81a308] text-white shadow-lg shadow-[#81a308]/25"
-                          : "bg-gray-200 dark:bg-gray-800/80 text-zinc-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white hover:bg-gray-300 dark:hover:bg-gray-700/80"
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
+
+                {allTraits.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-xs font-medium text-zinc-500 dark:text-gray-400 uppercase tracking-wide">
+                        Traits {selectedTraitSlugs.length > 0 && `(${selectedTraitSlugs.length} selected)`}
+                      </h3>
+                      {selectedTraitSlugs.length > 0 && (
+                        <button
+                          onClick={() => setSelectedTraitSlugs([])}
+                          className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {CATEGORY_ORDER.map((category) => (
+                        <div key={category}>
+                          <p className="text-[10px] font-semibold text-[#81a308] uppercase tracking-wider mb-2">
+                            {CATEGORY_LABELS[category]}
+                          </p>
+                          <div className="space-y-1">
+                            {(traitsByCategory[category] || []).map((trait) => (
+                              <label
+                                key={trait.id}
+                                className="flex items-center gap-2 cursor-pointer text-xs text-zinc-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white transition-colors py-0.5"
+                              >
+                                <Checkbox
+                                  checked={selectedTraitSlugs.includes(trait.slug)}
+                                  onCheckedChange={() => toggleTraitSlug(trait.slug)}
+                                  className="h-3.5 w-3.5 border-zinc-400 dark:border-zinc-600 data-[state=checked]:bg-[#81a308] data-[state=checked]:border-[#81a308]"
+                                />
+                                <span>{trait.name}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -264,8 +373,8 @@ function DiscoveryContent() {
                 <h3 className="text-lg font-medium text-zinc-600 dark:text-gray-300 mb-2">No plants found</h3>
                 <p className="text-gray-500 text-sm mb-4">Try adjusting your search or filters</p>
                 <button
-                  onClick={() => { setSearch(""); setSelectedType(null); }}
-                  className="px-5 py-2 bg-[#81a308]/15 border border-[#81a308]/30 rounded-xl text-sm text-[#81a308] hover:bg-[#81a308]/25 transition-all"
+                  onClick={() => { setSearch(""); setSelectedPrimaryType(null); setSelectedTraitSlugs([]); }}
+                  className="px-5 py-2 bg-[#81a308]/15 border border-[#81a308]/30 rounded-xl text-sm text-[#81a308] hover:bg-[#81a308]/25 transition-all cursor-pointer"
                 >
                   Clear filters
                 </button>
@@ -311,7 +420,12 @@ function DiscoveryContent() {
                           <p className="text-[10px] sm:text-xs text-gray-500 italic truncate mt-0.5">{plant.botanicalName}</p>
                         )}
                         <div className="flex items-center gap-1.5 mt-1.5 sm:mt-2 flex-wrap">
-                          {plant.type && (
+                          {plant.primaryType && (
+                            <span className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30">
+                              {PRIMARY_TYPES.find(pt => pt.value === plant.primaryType)?.label || plant.primaryType}
+                            </span>
+                          )}
+                          {!plant.primaryType && plant.type && (
                             <span className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30">
                               {plant.type}
                             </span>
