@@ -510,6 +510,17 @@ const NewPlantPage = () => {
                     )}
                   />
 
+                  {stepErrors.length > 0 && currentStep === 0 && (
+                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 space-y-1">
+                      {stepErrors.map((err, i) => (
+                        <p key={i} className="text-sm text-red-400 flex items-center gap-2">
+                          <X className="w-4 h-4 flex-shrink-0" />
+                          {err}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
                     <Info className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-zinc-400">
@@ -525,6 +536,16 @@ const NewPlantPage = () => {
               )}
 
               {/* Step 2: Basic Info */}
+              {stepErrors.length > 0 && currentStep === 1 && (
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 mb-6 space-y-1">
+                  {stepErrors.map((err, i) => (
+                    <p key={i} className="text-sm text-red-400 flex items-center gap-2">
+                      <X className="w-4 h-4 flex-shrink-0" />
+                      {err}
+                    </p>
+                  ))}
+                </div>
+              )}
               {currentStep === 1 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
@@ -991,7 +1012,8 @@ const NewPlantPage = () => {
                   </BotanicalButton>
                 ) : (
                   <BotanicalButton
-                    type="submit"
+                    type="button"
+                    onClick={() => form.handleSubmit(onSubmit)()}
                     disabled={isSubmitting || !canProceed()}
                   >
                     {isSubmitting ? (
