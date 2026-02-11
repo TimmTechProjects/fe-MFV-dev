@@ -458,7 +458,7 @@ export async function savePlantToAlbum(
 export async function removePlantFromAlbum(
   collectionId: string,
   plantId: string
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; movedToUncategorized?: boolean }> {
   const token = localStorage.getItem("token");
   if (!token) return { success: false, message: "No token found" };
 
@@ -479,6 +479,14 @@ export async function removePlantFromAlbum(
 
     if (!res.ok) {
       return { success: false, message: data.message || "Failed to remove plant" };
+    }
+
+    if (data.movedToUncategorized) {
+      return {
+        success: true,
+        message: "This was the plant's last album. It has been moved to Uncategorized.",
+        movedToUncategorized: true,
+      };
     }
 
     return { success: true, message: "Plant removed from album." };

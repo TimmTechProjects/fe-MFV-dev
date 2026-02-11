@@ -82,6 +82,20 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
       }));
     }
 
+    if (result.success && "movedToUncategorized" in result && result.movedToUncategorized) {
+      toast.warning(result.message);
+      const userCollections = await getUserCollectionsWithAuth();
+      const plantMap: { [key: string]: boolean } = {};
+      for (const collection of userCollections) {
+        const plantIds =
+          collection.plants?.map((p: { id: string }) => p.id) || [];
+        plantMap[collection.id] = plantIds.includes(plantId);
+      }
+      setCollections(userCollections);
+      setPlantAlbumMap(plantMap);
+      return;
+    }
+
     toast[result.success ? "success" : "error"](result.message);
   };
 
