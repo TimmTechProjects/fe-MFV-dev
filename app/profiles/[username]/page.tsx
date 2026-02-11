@@ -469,22 +469,22 @@ const ProfilePage= () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5">
                     <Link href={`/profiles/${profileUser.username}/collections`}>
-                      <BotanicalButton variant="outline" size="sm">
+                      <button className="px-2 py-1 text-[11px] sm:px-3 sm:py-1.5 sm:text-xs font-medium rounded-md border border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/10 transition-colors whitespace-nowrap">
                         View All
-                      </BotanicalButton>
+                      </button>
                     </Link>
                     {isOwnProfile && (
-                      <BotanicalButton
+                      <button
                         onClick={() =>
                           router.push(`/profiles/${profileUser.username}/collections/new`)
                         }
-                        size="sm"
+                        className="px-2 py-1 text-[11px] sm:px-3 sm:py-1.5 sm:text-xs font-medium rounded-md bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center gap-1 whitespace-nowrap"
                       >
-                        <Plus className="w-3.5 h-3.5" />
+                        <Plus className="w-3 h-3" />
                         New
-                      </BotanicalButton>
+                      </button>
                     )}
                   </div>
                 </div>
