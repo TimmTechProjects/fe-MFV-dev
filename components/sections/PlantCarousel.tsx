@@ -22,7 +22,7 @@ export default function PlantCarousel() {
       try {
         const data = await getAllPlants();
 
-        setPlants(data.plants);
+        setPlants(data.plants.filter((p: { isPublic?: boolean }) => p.isPublic !== false));
       } catch (error) {
         console.error("Failed to fetch plants:", error);
       }
