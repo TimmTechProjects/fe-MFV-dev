@@ -97,13 +97,13 @@ const ClientCollectionView = ({
               
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <Leaf className="w-5 h-5 text-emerald-400" />
-                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Album</span>
+                  <Leaf className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-400 text-xs font-medium uppercase tracking-wider">Album</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
                   {name}
                 </h1>
-                <p className="text-zinc-400">
+                <p className="text-sm text-zinc-400">
                   by{" "}
                   <Link
                     href={`/profiles/${username}`}
