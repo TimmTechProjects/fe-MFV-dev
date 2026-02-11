@@ -471,20 +471,20 @@ const ProfilePage= () => {
                   
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Link href={`/profiles/${profileUser.username}/collections`}>
-                      <button className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-medium rounded-lg border border-zinc-700 text-zinc-300 hover:border-emerald-500/50 hover:text-emerald-400 transition-colors">
+                      <BotanicalButton variant="outline" size="sm">
                         View All
-                      </button>
+                      </BotanicalButton>
                     </Link>
                     {isOwnProfile && (
-                      <button
+                      <BotanicalButton
                         onClick={() =>
                           router.push(`/profiles/${profileUser.username}/collections/new`)
                         }
-                        className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center gap-1"
+                        size="sm"
                       >
-                        <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        <Plus className="w-3.5 h-3.5" />
                         New
-                      </button>
+                      </BotanicalButton>
                     )}
                   </div>
                 </div>
@@ -748,12 +748,12 @@ function CollectionBedCard({
   return (
     <Link
       href={`/profiles/${username}/collections/${collection.slug}`}
-      className="collection-bed group cursor-pointer relative overflow-hidden"
+      className="collection-bed group cursor-pointer relative overflow-hidden !p-0 sm:!p-6"
     >
       <LeafDecoration position="top-right" size="lg" />
       
       {/* Cover Image */}
-      <div className="relative aspect-[3/2] sm:h-40 sm:aspect-auto rounded-lg sm:rounded-xl overflow-hidden mb-1 sm:mb-4">
+      <div className="relative aspect-[4/3] sm:h-40 sm:aspect-auto overflow-hidden">
         <img
           src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
           alt={collection.name}
@@ -763,7 +763,7 @@ function CollectionBedCard({
       </div>
 
       {/* Content */}
-      <div className="relative z-10">
+      <div className="relative z-10 px-2.5 py-1.5 sm:px-0 sm:py-0 sm:mt-4">
         <h3 className="text-xs sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
           {collection.name}
         </h3>
