@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import ReduxProvider from "@/redux/Provider";
 import ClientLayout from "../app/ClientLayout";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,14 +66,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Toaster position="top-center" />
-        <ReduxProvider>
-          <ClientLayout>{children}</ClientLayout>
-        </ReduxProvider>
+        <ThemeProvider>
+          <ReduxProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

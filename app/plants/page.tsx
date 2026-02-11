@@ -65,14 +65,14 @@ const PlantsDiscoveryPage = () => {
   const totalPages = Math.ceil(total / 20);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
       <div className="relative overflow-hidden pb-6 pt-10 md:pt-14">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-[#81a308]/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/60 via-white to-[#81a308]/5 dark:from-emerald-900/20 dark:via-black dark:to-[#81a308]/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-1">
             Discover <span className="text-[#81a308]">Plants</span>
           </h1>
-          <p className="text-gray-400 text-sm md:text-base mb-6">
+          <p className="text-zinc-500 dark:text-gray-400 text-sm md:text-base mb-6">
             Browse and search our growing catalog
           </p>
 
@@ -84,7 +84,7 @@ const PlantsDiscoveryPage = () => {
                 placeholder="Search plants..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 backdrop-blur border border-gray-700/50 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#81a308]/50 focus:ring-1 focus:ring-[#81a308]/25 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-900/80 backdrop-blur border border-gray-300 dark:border-gray-700/50 rounded-xl text-sm text-zinc-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-[#81a308]/50 focus:ring-1 focus:ring-[#81a308]/25 transition-all"
               />
             </div>
             <button
@@ -92,7 +92,7 @@ const PlantsDiscoveryPage = () => {
               className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm transition-all border ${
                 showFilters || selectedType
                   ? "bg-[#81a308]/20 border-[#81a308]/40 text-[#81a308]"
-                  : "bg-gray-900/80 border-gray-700/50 text-gray-400 hover:text-white hover:border-gray-600"
+                  : "bg-white dark:bg-gray-900/80 border-gray-300 dark:border-gray-700/50 text-gray-500 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-600"
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -104,7 +104,7 @@ const PlantsDiscoveryPage = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2.5 bg-gray-900/80 border border-gray-700/50 rounded-xl text-sm text-gray-300 focus:outline-none focus:border-[#81a308]/50 cursor-pointer"
+              className="px-3 py-2.5 bg-white dark:bg-gray-900/80 border border-gray-300 dark:border-gray-700/50 rounded-xl text-sm text-zinc-700 dark:text-gray-300 focus:outline-none focus:border-[#81a308]/50 cursor-pointer"
             >
               {sortOptions.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
@@ -116,9 +116,9 @@ const PlantsDiscoveryPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
         {showFilters && (
-          <div className="mb-5 p-4 bg-gray-900/60 backdrop-blur border border-gray-800/50 rounded-2xl">
+          <div className="mb-5 p-4 bg-gray-100 dark:bg-gray-900/60 backdrop-blur border border-gray-200 dark:border-gray-800/50 rounded-2xl">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Plant Type</h3>
+              <h3 className="text-xs font-medium text-zinc-500 dark:text-gray-400 uppercase tracking-wide">Plant Type</h3>
               {selectedType && (
                 <button
                   onClick={() => setSelectedType(null)}
@@ -136,7 +136,7 @@ const PlantsDiscoveryPage = () => {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedType === type
                       ? "bg-[#81a308] text-white shadow-lg shadow-[#81a308]/25"
-                      : "bg-gray-800/80 text-gray-400 hover:text-white hover:bg-gray-700/80"
+                      : "bg-gray-200 dark:bg-gray-800/80 text-zinc-600 dark:text-gray-400 hover:text-zinc-900 dark:hover:text-white hover:bg-gray-300 dark:hover:bg-gray-700/80"
                   }`}
                 >
                   {type}
@@ -153,11 +153,11 @@ const PlantsDiscoveryPage = () => {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden animate-pulse bg-gray-900">
-                <div className="aspect-square bg-gray-800" />
-                <div className="p-3 space-y-2">
-                  <div className="h-3.5 bg-gray-800 rounded-full w-3/4" />
-                  <div className="h-3 bg-gray-800 rounded-full w-1/2" />
+                            <div key={i} className="rounded-2xl overflow-hidden animate-pulse bg-gray-100 dark:bg-gray-900">
+                              <div className="aspect-square bg-gray-200 dark:bg-gray-800" />
+                              <div className="p-3 space-y-2">
+                                <div className="h-3.5 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4" />
+                                <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2" />
                 </div>
               </div>
             ))}
@@ -167,7 +167,7 @@ const PlantsDiscoveryPage = () => {
             <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Leaf className="w-8 h-8 text-[#81a308]" />
             </div>
-            <h3 className="text-lg font-medium text-gray-300 mb-2">No plants found</h3>
+            <h3 className="text-lg font-medium text-zinc-600 dark:text-gray-300 mb-2">No plants found</h3>
             <p className="text-gray-500 text-sm mb-4">Try adjusting your search or filters</p>
             <button
               onClick={() => { setSearch(""); setSelectedType(null); }}
@@ -184,9 +184,9 @@ const PlantsDiscoveryPage = () => {
                 <Link
                   key={plant.id}
                   href={`/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`}
-                  className="group rounded-2xl overflow-hidden bg-gray-900/60 border border-gray-800/50 hover:border-[#81a308]/30 transition-all hover:shadow-lg hover:shadow-[#81a308]/5"
+                  className="group rounded-2xl overflow-hidden bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800/50 hover:border-[#81a308]/30 transition-all hover:shadow-lg hover:shadow-[#81a308]/5"
                 >
-                  <div className="aspect-square overflow-hidden bg-gray-800 relative">
+                  <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
                     {mainImg ? (
                       <img
                         src={mainImg.url}
@@ -197,7 +197,7 @@ const PlantsDiscoveryPage = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-900/20 to-[#81a308]/10">
-                        <Leaf className="w-10 h-10 text-gray-700" />
+                        <Leaf className="w-10 h-10 text-gray-400 dark:text-gray-700" />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -210,15 +210,15 @@ const PlantsDiscoveryPage = () => {
                     </div>
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-white text-sm truncate group-hover:text-[#81a308] transition-colors">
-                      {plant.commonName || plant.botanicalName}
+                                        <h3 className="font-medium text-zinc-900 dark:text-white text-sm truncate group-hover:text-[#81a308] transition-colors">
+                                          {plant.commonName || plant.botanicalName}
                     </h3>
                     {plant.commonName && (
                       <p className="text-xs text-gray-500 italic truncate mt-0.5">{plant.botanicalName}</p>
                     )}
                     <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                       {plant.type && (
-                        <span className="text-[10px] bg-green-900/40 text-green-400 px-2 py-0.5 rounded-full border border-green-800/30">
+                        <span className="text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30">
                           {plant.type}
                         </span>
                       )}

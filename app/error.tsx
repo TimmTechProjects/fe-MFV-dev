@@ -19,16 +19,16 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#121212] px-6 text-white text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-[#121212] px-6 text-zinc-900 dark:text-white text-center">
       <div className="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-6">
         <AlertTriangle className="text-yellow-400 w-8 h-8" />
       </div>
       <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
-      <p className="text-sm text-gray-400 mb-2">
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
         An unexpected error occurred. Please try again or return home.
       </p>
       {error?.message && (
-        <p className="text-xs text-gray-600 mb-6 max-w-md font-mono bg-gray-900 px-3 py-2 rounded-lg">
+        <p className="text-xs text-gray-600 mb-6 max-w-md font-mono bg-gray-100 dark:bg-gray-900 px-3 py-2 rounded-lg">
           {error.message}
         </p>
       )}

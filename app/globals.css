@@ -56,19 +56,40 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.24 0 0);
-
-  --primary: oklch(0.48 0.24 120); /* ← adjust hue here */
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.48 0.24 120);
   --primary-foreground: oklch(0.98 0 0);
-
-  --accent: oklch(0.3 0.1 100);
-  --accent-foreground: oklch(1 0 0);
-
-  --border: oklch(0.8 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
   --ring: oklch(0.6 0.2 120);
+  --radius: 0.625rem;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.96 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.9 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 
-  /* Botanical Theme Colors - Dark mode friendly */
+  /* Botanical Theme Colors */
   --botanical-sage: #10b981;
   --botanical-fern: #059669;
   --botanical-moss: #047857;
@@ -248,6 +269,23 @@
   );
 }
 
+.botanical-gradient-auto {
+  background: linear-gradient(
+    135deg,
+    var(--botanical-cream) 0%,
+    var(--botanical-parchment) 100%
+  );
+}
+
+.dark .botanical-gradient-auto {
+  background: linear-gradient(
+    135deg,
+    #09090b 0%,
+    #18181b 50%,
+    #09090b 100%
+  );
+}
+
 /* Leaf Pattern Overlay - Very subtle */
 .leaf-pattern {
   position: relative;
@@ -272,10 +310,19 @@
   transition: all 0.3s ease;
 }
 
+html:not(.dark) .garden-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.9));
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
 .garden-card:hover {
   border-color: rgba(16, 185, 129, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+
+html:not(.dark) .garden-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(16, 185, 129, 0.15);
 }
 
 /* Plant Card Grid */
@@ -295,6 +342,10 @@
   overflow: hidden;
 }
 
+html:not(.dark) .collection-bed {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 245, 0.9) 100%);
+}
+
 .collection-bed::before {
   content: '';
   position: absolute;
@@ -312,6 +363,10 @@
   overflow: hidden;
 }
 
+html:not(.dark) .garden-header {
+  background: linear-gradient(180deg, #f4f4f5 0%, #e4e4e7 100%);
+}
+
 .garden-header::after {
   content: '';
   position: absolute;
@@ -321,6 +376,10 @@
   height: 60px;
   background: linear-gradient(to top, #18181b, transparent);
   pointer-events: none;
+}
+
+html:not(.dark) .garden-header::after {
+  background: linear-gradient(to top, #e4e4e7, transparent);
 }
 
 /* Botanical Form Inputs - Dark zinc with green border accent */

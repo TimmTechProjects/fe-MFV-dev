@@ -46,7 +46,7 @@ export default function PlantCarousel() {
 
   if (loading) {
     return (
-      <div className="flex h-[80vh] items-center justify-center text-white">
+      <div className="flex h-[80vh] items-center justify-center text-zinc-900 dark:text-white">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81a308] mx-auto mb-4"></div>
           <p>Loading Newly Added Plants...</p>
@@ -56,7 +56,7 @@ export default function PlantCarousel() {
   }
 
   return (
-    <div className="w-full bg-[#121212] text-white py-12 px-4">
+    <div className="w-full bg-gray-50 dark:bg-[#121212] text-zinc-900 dark:text-white py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {plants.length === 0 ? (
           <div className="text-center py-10 text-gray-400">

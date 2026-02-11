@@ -12,7 +12,9 @@ import {
   Clock,
   Loader2,
   Tag,
+  Shield,
 } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import useAuth from "@/redux/hooks/useAuth";
 import { MarketplaceListing } from "@/types/marketplace";
@@ -596,19 +598,19 @@ const MarketplacePage = () => {
   ];
 
   return (
-    <div className="bg-black min-h-screen text-white">
+    <div className="bg-zinc-50 dark:bg-black min-h-screen text-zinc-900 dark:text-white">
       {showFilters && (
         <>
           <div
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowFilters(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-zinc-950 shadow-2xl flex flex-col rounded-r-2xl border-r border-zinc-800">
+          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-zinc-950 shadow-2xl flex flex-col rounded-r-2xl border-r border-gray-200 dark:border-zinc-800">
             <div className="flex items-center justify-between p-6">
-              <h2 className="text-xl font-bold text-white">Filters</h2>
+              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Filters</h2>
               <button
                 onClick={() => setShowFilters(false)}
-                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
               >
                 <X size={20} className="text-zinc-400" />
               </button>
@@ -616,7 +618,7 @@ const MarketplacePage = () => {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div>
-                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-zinc-800 pb-2">
+                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-gray-200 dark:border-zinc-800 pb-2">
                   Special Offers
                 </h3>
                 <div className="space-y-3">
@@ -625,9 +627,9 @@ const MarketplacePage = () => {
                       type="checkbox"
                       checked={freeShippingOnly}
                       onChange={() => setFreeShippingOnly(!freeShippingOnly)}
-                      className="w-4 h-4 text-[#81a308] bg-zinc-900 border-zinc-700 rounded focus:ring-[#81a308]"
+                      className="w-4 h-4 text-[#81a308] bg-white dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 rounded focus:ring-[#81a308]"
                     />
-                    <span className="text-zinc-300 text-sm">
+                    <span className="text-zinc-700 dark:text-zinc-300 text-sm">
                       Free Shipping
                     </span>
                   </label>
@@ -636,21 +638,21 @@ const MarketplacePage = () => {
                       type="checkbox"
                       checked={onSaleOnly}
                       onChange={() => setOnSaleOnly(!onSaleOnly)}
-                      className="w-4 h-4 text-[#81a308] bg-zinc-900 border-zinc-700 rounded focus:ring-[#81a308]"
+                      className="w-4 h-4 text-[#81a308] bg-white dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 rounded focus:ring-[#81a308]"
                     />
-                    <span className="text-zinc-300 text-sm">On Sale</span>
+                    <span className="text-zinc-700 dark:text-zinc-300 text-sm">On Sale</span>
                   </label>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-zinc-800 pb-2">
+                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-gray-200 dark:border-zinc-800 pb-2">
                   Price Range
                 </h3>
                 <select
                   value={selectedPrice || ""}
                   onChange={(e) => setSelectedPrice(e.target.value || null)}
-                  className="w-full bg-zinc-900 text-zinc-100 rounded-xl px-3 py-2.5 border border-zinc-800 focus:outline-none focus:border-[#81a308]/50 text-sm"
+                  className="w-full bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl px-3 py-2.5 border border-gray-300 dark:border-zinc-800 focus:outline-none focus:border-[#81a308]/50 text-sm"
                 >
                   <option value="">Any Price</option>
                   {uniquePrices.map((price) => (
@@ -662,11 +664,11 @@ const MarketplacePage = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-zinc-800">
+            <div className="p-6 border-t border-gray-200 dark:border-zinc-800">
               <div className="flex gap-3">
                 <button
                   onClick={clearFilters}
-                  className="flex-1 px-4 py-2.5 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800 transition-colors text-sm"
+                  className="flex-1 px-4 py-2.5 border border-gray-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-sm"
                 >
                   Clear All
                 </button>
@@ -691,7 +693,7 @@ const MarketplacePage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-1">
+            <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-1">
               Plant <span className="text-[#81a308]">Marketplace</span>
             </h1>
             <p className="text-zinc-500 text-sm">
@@ -710,7 +712,7 @@ const MarketplacePage = () => {
           )}
 
           {user && !isPremium && (
-            <div className="text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2">
+            <div className="text-xs text-emerald-900 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded-xl px-3 py-2">
               Upgrade to{" "}
               <span className="text-[#81a308] font-medium">Premium</span> to
               sell
@@ -718,7 +720,22 @@ const MarketplacePage = () => {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 mb-5 border-b border-zinc-800/50">
+                <div className="flex items-center gap-3 mb-5 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl">
+                  <Shield size={16} className="text-[#81a308] flex-shrink-0" />
+                  <p className="text-xs text-emerald-800 dark:text-emerald-200">
+            Shop and sell with confidence.{" "}
+            <Link href="/buyer-protection" className="text-[#81a308] hover:underline">
+              Buyer Protection
+            </Link>
+            {" and "}
+            <Link href="/seller-protection" className="text-[#81a308] hover:underline">
+              Seller Protection
+            </Link>
+            {" "}programs keep your transactions safe.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1.5 mb-5 border-b border-gray-200 dark:border-zinc-800/50">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -726,7 +743,7 @@ const MarketplacePage = () => {
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
                 activeTab === tab.key
                   ? "text-[#81a308] border-[#81a308]"
-                  : "text-zinc-500 border-transparent hover:text-zinc-300 hover:border-zinc-700"
+                  : "text-zinc-500 border-transparent hover:text-zinc-700 dark:hover:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700"
               }`}
             >
               {tab.icon}
@@ -746,12 +763,12 @@ const MarketplacePage = () => {
               placeholder="Search marketplace..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-zinc-900/60 text-white text-sm rounded-full border border-zinc-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-zinc-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-100 dark:bg-zinc-900/60 text-zinc-900 dark:text-white text-sm rounded-full border border-gray-200 dark:border-zinc-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-zinc-500"
             />
           </div>
           <button
             onClick={() => setShowFilters(true)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900/60 text-zinc-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-zinc-800/50"
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-zinc-900/60 text-zinc-700 dark:text-zinc-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-gray-200 dark:border-zinc-800/50"
           >
             <Filter size={14} />
             <span className="hidden sm:inline">Filters</span>
@@ -759,7 +776,7 @@ const MarketplacePage = () => {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-zinc-900/60 text-zinc-300 text-sm rounded-full px-3 py-2 border border-zinc-800/50 focus:outline-none cursor-pointer hidden sm:block"
+            className="bg-white dark:bg-zinc-900/60 text-zinc-900 dark:text-zinc-300 text-sm rounded-full px-3 py-2 border border-gray-300 dark:border-zinc-800/50 focus:outline-none cursor-pointer hidden sm:block"
           >
             {Object.entries(sortLabels).map(([key, label]) => (
               <option key={key} value={key}>
@@ -788,7 +805,7 @@ const MarketplacePage = () => {
             {sortedListings.map((listing) => (
               <div
                 key={listing.id}
-                className="bg-zinc-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-zinc-800/30 hover:border-[#81a308]/20 hover:shadow-lg hover:shadow-[#81a308]/5"
+                className="bg-white dark:bg-zinc-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-gray-200 dark:border-zinc-800/30 hover:border-[#81a308]/20 hover:shadow-lg hover:shadow-[#81a308]/5"
               >
                 <div className="relative aspect-square overflow-hidden">
                   <img
@@ -824,7 +841,7 @@ const MarketplacePage = () => {
                 </div>
 
                 <div className="p-3 sm:p-4">
-                  <h3 className="font-medium text-white text-sm mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer">
+                  <h3 className="font-medium text-zinc-900 dark:text-white text-sm mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer">
                     {listing.plantName}
                   </h3>
 
@@ -834,7 +851,7 @@ const MarketplacePage = () => {
                         size={14}
                         className="text-yellow-400 fill-current"
                       />
-                      <span className="text-xs text-white">
+                      <span className="text-xs text-zinc-900 dark:text-white">
                         {listing.rating}
                       </span>
                     </div>
@@ -861,12 +878,12 @@ const MarketplacePage = () => {
                           <span className="text-[10px] text-zinc-500 block">
                             Current bid
                           </span>
-                          <span className="text-sm sm:text-base font-bold text-white">
+                          <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
                             ${listing.currentBid.toFixed(2)}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-sm sm:text-base font-bold text-white">
+                        <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
                           ${listing.price.toFixed(2)}
                         </span>
                       )}
@@ -904,7 +921,7 @@ const MarketplacePage = () => {
             <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-[#81a308]" />
             </div>
-            <h3 className="text-lg font-medium text-zinc-300 mb-2">
+            <h3 className="text-lg font-medium text-zinc-600 dark:text-zinc-300 mb-2">
               No plants found
             </h3>
             <p className="text-zinc-500 text-sm mb-4">

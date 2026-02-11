@@ -76,7 +76,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
   }
 
   return (
-    <div className="min-h-screen botanical-gradient botanical-pattern text-white px-10 py-10">
+    <div className="min-h-screen botanical-gradient-auto botanical-pattern text-zinc-900 dark:text-white px-10 py-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-2xl font-bold ml-4 flex items-center gap-3">
@@ -87,12 +87,12 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
             </div>
             <div>
               <Link href={`/profiles/${username}`}>
-                <span className="text-white hover:text-emerald-500 transition-colors">
+                <span className="text-zinc-900 dark:text-white hover:text-emerald-500 transition-colors">
                   {isOwner ? "My" : <span className="capitalize">{username}&apos;s</span>}
                 </span>
               </Link>{" "}
-              <span className="text-white">Albums</span>
-              <p className="text-sm text-zinc-400 font-normal mt-1">
+              <span className="text-zinc-900 dark:text-white">Albums</span>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal mt-1">
                 {collections.length} album{collections.length !== 1 ? 's' : ''} • Organized plant albums
               </p>
             </div>
