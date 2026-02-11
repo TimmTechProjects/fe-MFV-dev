@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,7 +32,11 @@ import {
   Shield,
   CreditCard,
   ExternalLink,
+  AtSign,
+  X,
+  AlertCircle,
 } from "lucide-react";
+import { checkUsernameAvailability } from "@/lib/utils";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -60,6 +64,7 @@ const SettingsPage = () => {
     user,
     EditProfile,
     ChangePassword,
+    ChangeUsername,
     CreateCheckoutSession,
     ManageSubscription,
   } = useAuth();
@@ -69,6 +74,13 @@ const SettingsPage = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "taken" | "invalid" | "same"
+  >("idle");
+  const [usernameMessage, setUsernameMessage] = useState("");
+  const [isUsernameSaving, setIsUsernameSaving] = useState(false);
+  const usernameCheckTimer = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -147,6 +159,80 @@ const SettingsPage = () => {
     multiple: false,
     maxSize: 4 * 1024 * 1024,
   });
+
+  const validateUsernameFormat = (username: string): string | null => {
+    if (!username) return null;
+    if (username.length < 3) return "Username must be at least 3 characters";
+    if (username.length > 30) return "Username must be at most 30 characters";
+    if (!/^[a-zA-Z]/.test(username)) return "Username must start with a letter";
+    if (!/^[a-zA-Z0-9_-]+$/.test(username))
+      return "Only letters, numbers, underscores, and hyphens allowed";
+    return null;
+  };
+
+  const handleUsernameChange = (value: string) => {
+    const trimmed = value.trim();
+    setNewUsername(trimmed);
+
+    if (usernameCheckTimer.current) {
+      clearTimeout(usernameCheckTimer.current);
+    }
+
+    if (!trimmed) {
+      setUsernameStatus("idle");
+      setUsernameMessage("");
+      return;
+    }
+
+    if (trimmed.toLowerCase() === user?.username?.toLowerCase()) {
+      setUsernameStatus("same");
+      setUsernameMessage("This is your current username");
+      return;
+    }
+
+    const formatError = validateUsernameFormat(trimmed);
+    if (formatError) {
+      setUsernameStatus("invalid");
+      setUsernameMessage(formatError);
+      return;
+    }
+
+    setUsernameStatus("checking");
+    setUsernameMessage("Checking availability...");
+
+    usernameCheckTimer.current = setTimeout(async () => {
+      const result = await checkUsernameAvailability(trimmed);
+      if (result.available) {
+        setUsernameStatus("available");
+        setUsernameMessage(result.message || "Username is available");
+      } else {
+        setUsernameStatus("taken");
+        setUsernameMessage(result.message || "Username is not available");
+      }
+    }, 500);
+  };
+
+  const onUsernameSubmit = async () => {
+    if (usernameStatus !== "available" || !newUsername) return;
+
+    setIsUsernameSaving(true);
+    try {
+      const res = await ChangeUsername(newUsername);
+      if (res) {
+        toast.success("Username changed successfully!");
+        setNewUsername("");
+        setUsernameStatus("idle");
+        setUsernameMessage("");
+        router.push(`/profiles/${newUsername}`);
+      } else {
+        toast.error("Failed to change username. Please try again.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsUsernameSaving(false);
+    }
+  };
 
   const onProfileSubmit = async (values: ProfileFormValues) => {
     setIsProfileSaving(true);
@@ -391,6 +477,88 @@ const SettingsPage = () => {
                 </Button>
               </form>
             </Form>
+          </section>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <AtSign className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-100">
+                Change Username
+              </h2>
+            </div>
+
+            <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+              <p className="text-sm text-zinc-400 mb-1">
+                Current username
+              </p>
+              <p className="text-zinc-100 font-medium">@{user.username}</p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-zinc-300">
+                New Username
+              </label>
+              <div className="relative">
+                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <Input
+                  value={newUsername}
+                  onChange={(e) => handleUsernameChange(e.target.value)}
+                  placeholder="Enter new username"
+                  className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10 pr-10"
+                  maxLength={30}
+                />
+                {usernameStatus === "checking" && (
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 animate-spin" />
+                )}
+                {usernameStatus === "available" && (
+                  <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                )}
+                {(usernameStatus === "taken" || usernameStatus === "invalid") && (
+                  <X className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-400" />
+                )}
+                {usernameStatus === "same" && (
+                  <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
+                )}
+              </div>
+              {usernameMessage && (
+                <p
+                  className={`text-xs ${
+                    usernameStatus === "available"
+                      ? "text-emerald-400"
+                      : usernameStatus === "checking"
+                        ? "text-zinc-400"
+                        : usernameStatus === "same"
+                          ? "text-amber-400"
+                          : "text-red-400"
+                  }`}
+                >
+                  {usernameMessage}
+                </p>
+              )}
+              <p className="text-xs text-zinc-500">
+                3-30 characters. Letters, numbers, underscores, and hyphens
+                only. Must start with a letter.
+              </p>
+            </div>
+
+            <Button
+              onClick={onUsernameSubmit}
+              disabled={
+                isUsernameSaving ||
+                usernameStatus !== "available" ||
+                !newUsername
+              }
+              className="w-full botanical-btn text-white font-semibold py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isUsernameSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Change Username"
+              )}
+            </Button>
           </section>
 
           <section className="garden-card p-6 space-y-6">
