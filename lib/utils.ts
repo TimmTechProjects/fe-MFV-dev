@@ -495,7 +495,7 @@ export async function savePlantToAlbum(
 export async function removePlantFromAlbum(
   collectionId: string,
   plantId: string
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; movedToUncategorized?: boolean }> {
   const token = localStorage.getItem("token");
   if (!token) return { success: false, message: "No token found" };
 
@@ -518,7 +518,15 @@ export async function removePlantFromAlbum(
       return { success: false, message: data.message || "Failed to remove plant" };
     }
 
-    return { success: true, message: "Plant removed from album successfully." };
+    if (data.movedToUncategorized) {
+      return {
+        success: true,
+        message: "This was the plant's last album. It has been moved to Uncategorized.",
+        movedToUncategorized: true,
+      };
+    }
+
+    return { success: true, message: "Plant removed from album." };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, message: error.message };
@@ -526,7 +534,6 @@ export async function removePlantFromAlbum(
     return { success: false, message: "Unexpected error" };
   }
 }
-
 export async function setCollectionThumbnail(
   collectionId: string,
   plantImageId: string
@@ -782,6 +789,47 @@ export async function deleteCareReminder(id: string): Promise<boolean> {
     return res.ok || res.status === 204;
   } catch {
     return false;
+  }
+}
+
+export async function togglePlantLike(
+  plantId: string
+): Promise<{ liked: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/likes/${plantId}/toggle`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error toggling plant like:", error);
+    return null;
+  }
+}
+
+export async function getPlantLikeStatus(
+  plantId: string
+): Promise<{ liked: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/likes/${plantId}/status`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error getting plant like status:", error);
+    return null;
   }
 }
 

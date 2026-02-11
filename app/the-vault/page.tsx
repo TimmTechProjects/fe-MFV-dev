@@ -95,6 +95,13 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const selectedTag = unwrappedSearchParams?.tag;
 
   useEffect(() => {
+    if (activeFilter !== "Gallery") {
+      setPlants([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
+
     let ignore = false;
     setLoading(true);
     setFetchError(null);
@@ -108,14 +115,14 @@ export default function PlantVaultFeed({ searchParams }: Props) {
       }
     ).catch((err) => {
       if (!ignore) {
-        setFetchError(err instanceof Error ? err.message : "Failed to load posts");
+        setFetchError(err instanceof Error ? err.message : "Failed to load plants");
         setLoading(false);
       }
     });
     return () => {
       ignore = true;
     };
-  }, [currentPage]);
+  }, [currentPage, activeFilter]);
 
   const totalPages = Math.ceil(total / limit);
 
@@ -336,7 +343,37 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
           {mobileTab !== "search" && !showMarketplaceContent ? (
             <div className="divide-y divide-gray-200 dark:divide-gray-800/50">
-              {loading ? (
+              {activeFilter === "Feed" ? (
+                <div className="flex flex-col justify-center items-center py-20 text-center">
+                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
+                    <Leaf className="w-8 h-8 text-[#81a308]" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-zinc-600 dark:text-gray-300 mb-2">
+                    No posts yet
+                  </h3>
+                  <p className="text-gray-500 max-w-md text-sm">
+                    Posts from the community will appear here. Use the Create Post button to share something!
+                  </p>
+                  <Link
+                    href="/forum"
+                    className="mt-4 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-xl transition-all hover:shadow-lg hover:shadow-[#81a308]/25 text-sm"
+                  >
+                    Create Post
+                  </Link>
+                </div>
+              ) : activeFilter === "Forum" ? (
+                <div className="flex flex-col justify-center items-center py-20 text-center">
+                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
+                    <MessageCircle className="w-8 h-8 text-[#81a308]" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-zinc-600 dark:text-gray-300 mb-2">
+                    Forum coming soon
+                  </h3>
+                  <p className="text-gray-500 max-w-md text-sm">
+                    Community discussions and plant care tips will be available here.
+                  </p>
+                </div>
+              ) : loading ? (
                 <Loading />
               ) : fetchError ? (
                 <div className="flex flex-col justify-center items-center py-20 text-center">
@@ -344,7 +381,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                     <Leaf className="w-8 h-8 text-red-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    Could not load posts
+                    Could not load plants
                   </h3>
                   <p className="text-gray-500 max-w-md text-sm">{fetchError}</p>
                 </div>
@@ -354,10 +391,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                     <Leaf className="w-8 h-8 text-[#81a308]" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    No plants in your feed
+                    No plants to show
                   </h3>
                   <p className="text-gray-500 max-w-md">
-                    Follow some plant enthusiasts or share your first plant to get started!
+                    Browse the Gallery to discover plants from the community!
                   </p>
                 </div>
               ) : (
