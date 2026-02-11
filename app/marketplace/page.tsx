@@ -12,7 +12,9 @@ import {
   Clock,
   Loader2,
   Tag,
+  Shield,
 } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import useAuth from "@/redux/hooks/useAuth";
 import { MarketplaceListing } from "@/types/marketplace";
@@ -716,6 +718,21 @@ const MarketplacePage = () => {
               sell
             </div>
           )}
+        </div>
+
+        <div className="flex items-center gap-3 mb-5 p-3 bg-zinc-900/40 border border-zinc-800/30 rounded-xl">
+          <Shield size={16} className="text-[#81a308] flex-shrink-0" />
+          <p className="text-xs text-zinc-400">
+            Shop and sell with confidence.{" "}
+            <Link href="/buyer-protection" className="text-[#81a308] hover:underline">
+              Buyer Protection
+            </Link>
+            {" and "}
+            <Link href="/seller-protection" className="text-[#81a308] hover:underline">
+              Seller Protection
+            </Link>
+            {" "}programs keep your transactions safe.
+          </p>
         </div>
 
         <div className="flex items-center gap-1.5 mb-5 border-b border-zinc-800/50">
