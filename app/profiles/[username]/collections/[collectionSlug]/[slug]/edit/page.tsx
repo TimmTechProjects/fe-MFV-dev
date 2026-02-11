@@ -16,7 +16,7 @@ import {
   decodeHtmlEntities,
 } from "@/lib/utils";
 import { Plant } from "@/types/plants";
-import { UploadButton } from "@/lib/uploadthing";
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
 import {
   ArrowLeft,
   Sprout,
@@ -27,6 +27,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  Trash2,
+  Upload,
 } from "lucide-react";
 
 const PlantEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
@@ -224,9 +226,9 @@ const EditPlantPage = () => {
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleRemoveImage(i); }}
-                    className="absolute top-1 right-1 p-1 rounded-full bg-black/70 text-white opacity-0 group-hover/img:opacity-100 hover:bg-red-600 transition-all z-10"
+                    className="absolute top-1 right-1 p-1.5 rounded-full bg-red-600/80 text-white opacity-0 group-hover/img:opacity-100 hover:bg-red-500 transition-all z-10 shadow-md"
                   >
-                    <X className="w-3 h-3" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                   {i === 0 && (
                     <span className="absolute bottom-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-emerald-600/90 text-white">
@@ -236,7 +238,38 @@ const EditPlantPage = () => {
                 </div>
               ))}
             </div>
-            <div className="mt-3">
+            <div className="mt-3 hidden sm:block">
+              <UploadDropzone
+                endpoint="plantImageUploader"
+                content={{
+                  label() {
+                    return "Drag & drop photos here";
+                  },
+                  allowedContent() {
+                    return "";
+                  },
+                }}
+                appearance={{
+                  container: "border-2 border-dashed border-zinc-600 hover:border-emerald-500/50 bg-zinc-800/30 rounded-xl py-6 transition-colors cursor-pointer",
+                  label: "text-zinc-400 text-sm",
+                  button: "bg-emerald-600 hover:bg-emerald-500 ut-uploading:bg-emerald-700 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors border-0 mt-2",
+                  allowedContent: "hidden",
+                }}
+                onClientUploadComplete={(res) => {
+                  const newImages = res.map((file) => ({
+                    url: file.url,
+                    previewUrl: file.url,
+                    isMain: false,
+                  }));
+                  setValue("images", [...watch("images"), ...newImages]);
+                }}
+                onUploadError={(error: Error) => {
+                  console.error("Upload error:", error.message);
+                  toast.error("Image upload failed.");
+                }}
+              />
+            </div>
+            <div className="mt-3 sm:hidden">
               <UploadButton
                 endpoint="plantImageUploader"
                 content={{
@@ -455,9 +488,24 @@ const EditPlantPage = () => {
                 sizes="(max-width: 768px) 100vw, 80vw"
               />
             </div>
-            <span className="absolute bottom-4 text-sm text-zinc-400">
-              {lightboxIndex + 1} / {images.length}
-            </span>
+            <div className="absolute bottom-4 flex items-center gap-4">
+              <span className="text-sm text-zinc-400">
+                {lightboxIndex + 1} / {images.length}
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const nextIndex = images.length <= 1 ? null : lightboxIndex >= images.length - 1 ? lightboxIndex - 1 : lightboxIndex;
+                  handleRemoveImage(lightboxIndex);
+                  setLightboxIndex(nextIndex);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600/80 hover:bg-red-500 rounded-lg transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete
+              </button>
+            </div>
           </div>
         );
       })()}
