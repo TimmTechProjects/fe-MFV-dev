@@ -358,41 +358,41 @@ const ProfilePage= () => {
             {/* Garden Section - Card Grid */}
             {activeSection === "garden" && (
               <section className="animate-fade-in-up">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <Sprout className="w-6 h-6 text-emerald-500" />
+                <div className="flex items-center justify-between mb-3 sm:mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-emerald-500/10">
+                      <Sprout className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-zinc-100">
+                      <h2 className="text-base sm:text-xl font-semibold text-zinc-100">
                         {isOwnProfile ? "My Garden" : `${profileUser.username}'s Garden`}
                       </h2>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 hidden sm:block">
                         All plants across collections
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-2 rounded-lg transition-colors ${
+                      className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
                         viewMode === "grid"
                           ? "bg-emerald-500/15 text-emerald-500"
                           : "text-zinc-500 hover:text-emerald-500"
                       }`}
                     >
-                      <Grid3X3 className="w-5 h-5" />
+                      <Grid3X3 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-2 rounded-lg transition-colors ${
+                      className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
                         viewMode === "list"
                           ? "bg-emerald-500/15 text-emerald-500"
                           : "text-zinc-500 hover:text-emerald-500"
                       }`}
                     >
-                      <LayoutList className="w-5 h-5" />
+                      <LayoutList className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   </div>
                 </div>
@@ -471,7 +471,7 @@ const ProfilePage= () => {
                   
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Link href={`/profiles/${profileUser.username}/collections`}>
-                      <button className="px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-medium rounded-lg border border-zinc-700 text-zinc-300 hover:border-emerald-500/50 hover:text-emerald-400 transition-colors">
+                      <button className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-medium rounded-lg border border-zinc-700 text-zinc-300 hover:border-emerald-500/50 hover:text-emerald-400 transition-colors">
                         View All
                       </button>
                     </Link>
@@ -480,7 +480,7 @@ const ProfilePage= () => {
                         onClick={() =>
                           router.push(`/profiles/${profileUser.username}/collections/new`)
                         }
-                        className="px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center gap-1"
+                        className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center gap-1"
                       >
                         <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         New
@@ -646,7 +646,7 @@ function GardenPlantCard({
         className="overflow-hidden group cursor-pointer"
         style={{ animationDelay: `${index * 50}ms` }}
       >
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden">
           {mainImage ? (
             <img
               src={mainImage.url}
@@ -655,21 +655,21 @@ function GardenPlantCard({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-zinc-800">
-              <Leaf className="w-10 h-10 text-zinc-600" />
+              <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-zinc-600" />
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
         </div>
 
-        <div className="p-4">
-          <h3 className="text-zinc-100 font-medium text-sm mb-1 line-clamp-1">
+        <div className="p-2 sm:p-4">
+          <h3 className="text-zinc-100 font-medium text-xs sm:text-sm mb-0.5 sm:mb-1 line-clamp-1">
             {plant.commonName}
           </h3>
-          <p className="text-zinc-500 text-xs italic line-clamp-1">
+          <p className="text-zinc-500 text-[10px] sm:text-xs italic line-clamp-1">
             {plant.botanicalName}
           </p>
 
-          <div className="flex items-center justify-between mt-3">
+          <div className="hidden sm:flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
               <Avatar className="w-6 h-6">
                 <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
@@ -708,7 +708,7 @@ function GardenPlantListItem({
     <Link href={`/plants/${plant.slug}`}>
       <BotanicalCard className="flex gap-2.5 sm:gap-4 p-2.5 sm:p-4">
         {mainImage ? (
-          <div className="w-16 h-16 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
             <img
               src={mainImage.url}
               alt={plant.commonName}
@@ -716,8 +716,8 @@ function GardenPlantListItem({
             />
           </div>
         ) : (
-          <div className="w-16 h-16 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center bg-zinc-800">
-            <Leaf className="w-5 h-5 sm:w-8 sm:h-8 text-zinc-600" />
+          <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center bg-zinc-800">
+            <Leaf className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-600" />
           </div>
         )}
         <div className="flex-1 min-w-0">
@@ -764,10 +764,10 @@ function CollectionBedCard({
 
       {/* Content */}
       <div className="relative z-10">
-        <h3 className="text-xs sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
+        <h3 className="text-sm sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
           {collection.name}
         </h3>
-        <span className="text-[10px] sm:text-xs text-emerald-500">
+        <span className="text-xs sm:text-xs text-emerald-500">
           {collection.plants?.length || 0} plants
         </span>
       </div>
