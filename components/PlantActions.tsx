@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Heart, Plus, Check } from "lucide-react";
-import { cn, getUserCollectionsWithAuth, savePlantToAlbum } from "@/lib/utils";
+import {
+  cn,
+  getUserCollectionsWithAuth,
+  savePlantToAlbum,
+  removePlantFromAlbum,
+  togglePlantLike,
+  getPlantLikeStatus,
+} from "@/lib/utils";
 import { Collection } from "@/types/collections";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -26,32 +33,80 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
     [key: string]: boolean;
   }>({});
 
-  const toggleLike = () => {
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchLikeStatus = async () => {
+      const result = await getPlantLikeStatus(plantId);
+      if (result) {
+        setLiked(result.liked);
+      }
+    };
+
+    fetchLikeStatus();
+  }, [user, plantId]);
+
+  const handleToggleLike = useCallback(async () => {
     if (!user) {
       router.push("/login");
       toast.error("You must be logged in to like a plant.");
       return;
     }
+
     setLiked((prev) => !prev);
-  };
+
+    const result = await togglePlantLike(plantId);
+    if (result) {
+      setLiked(result.liked);
+    } else {
+      setLiked((prev) => !prev);
+      toast.error("Failed to update like.");
+    }
+  }, [user, plantId, router]);
 
   const handleTogglePlant = async (collectionId: string) => {
-    const result = await savePlantToAlbum(collectionId, plantId);
+    const isCurrentlyInAlbum = plantAlbumMap[collectionId];
 
     setPlantAlbumMap((prev) => ({
       ...prev,
       [collectionId]: !prev[collectionId],
     }));
 
+    const result = isCurrentlyInAlbum
+      ? await removePlantFromAlbum(collectionId, plantId)
+      : await savePlantToAlbum(collectionId, plantId);
+
+    if (!result.success) {
+      setPlantAlbumMap((prev) => ({
+        ...prev,
+        [collectionId]: isCurrentlyInAlbum,
+      }));
+    }
+
+    if (result.success && "movedToUncategorized" in result && result.movedToUncategorized) {
+      toast.warning(result.message);
+      const userCollections = await getUserCollectionsWithAuth();
+      const plantMap: { [key: string]: boolean } = {};
+      for (const collection of userCollections) {
+        const plantIds =
+          collection.plants?.map((p: { id: string }) => p.id) || [];
+        plantMap[collection.id] = plantIds.includes(plantId);
+      }
+      setCollections(userCollections);
+      setPlantAlbumMap(plantMap);
+      return;
+    }
+
     toast[result.success ? "success" : "error"](result.message);
   };
 
   useEffect(() => {
+    if (!user) return;
+
     const fetchCollections = async () => {
       setLoading(true);
       const userCollections = await getUserCollectionsWithAuth();
 
-      // Infer if the plant is in each collection (backend must eventually return this info!)
       const plantMap: { [key: string]: boolean } = {};
       for (const collection of userCollections) {
         const plantIds =
@@ -65,12 +120,12 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
     };
 
     fetchCollections();
-  }, [plantId]);
+  }, [plantId, user]);
 
   return (
     <div className="flex gap-3 items-center">
       <button
-        onClick={toggleLike}
+        onClick={handleToggleLike}
         className={cn(
           "flex items-center gap-2 px-3 py-1 rounded border transition cursor-pointer",
           liked
