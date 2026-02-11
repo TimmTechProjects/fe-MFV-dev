@@ -96,7 +96,7 @@ export default function CommunityHighlights() {
   return (
     <section className="w-full bg-gray-50 dark:bg-[#121212] py-16 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
             <MessageCircle className="w-6 h-6 text-[#81a308]" />
             <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
@@ -105,10 +105,10 @@ export default function CommunityHighlights() {
           </div>
           <Link
             href="/the-vault"
-            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25 inline-flex items-center gap-1.5 sm:gap-2"
+            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-full text-[10px] sm:text-xs uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25 inline-flex items-center gap-1 sm:gap-1.5"
           >
             Join the Conversation
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
