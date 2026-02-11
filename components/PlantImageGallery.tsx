@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Plant } from "@/types/plants";
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
 
@@ -165,7 +166,7 @@ export default function PlantImageGallery({
         )}
       </div>
 
-      {lightboxOpen && (
+      {lightboxOpen && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-black flex flex-col"
           onWheel={handleWheel}
@@ -264,7 +265,8 @@ export default function PlantImageGallery({
               ))}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
