@@ -598,7 +598,7 @@ const MarketplacePage = () => {
   ];
 
   return (
-    <div className="bg-white dark:bg-black min-h-screen text-zinc-900 dark:text-white">
+    <div className="bg-zinc-50 dark:bg-black min-h-screen text-zinc-900 dark:text-white">
       {showFilters && (
         <>
           <div
@@ -712,7 +712,7 @@ const MarketplacePage = () => {
           )}
 
           {user && !isPremium && (
-            <div className="text-xs text-zinc-500 bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-3 py-2">
+            <div className="text-xs text-emerald-900 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded-xl px-3 py-2">
               Upgrade to{" "}
               <span className="text-[#81a308] font-medium">Premium</span> to
               sell
@@ -720,9 +720,9 @@ const MarketplacePage = () => {
           )}
         </div>
 
-        <div className="flex items-center gap-3 mb-5 p-3 bg-zinc-900/40 border border-zinc-800/30 rounded-xl">
-          <Shield size={16} className="text-[#81a308] flex-shrink-0" />
-          <p className="text-xs text-zinc-400">
+                <div className="flex items-center gap-3 mb-5 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl">
+                  <Shield size={16} className="text-[#81a308] flex-shrink-0" />
+                  <p className="text-xs text-emerald-800 dark:text-emerald-200">
             Shop and sell with confidence.{" "}
             <Link href="/buyer-protection" className="text-[#81a308] hover:underline">
               Buyer Protection
@@ -735,7 +735,7 @@ const MarketplacePage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 mb-5 border-b border-zinc-800/50">
+        <div className="flex items-center gap-1.5 mb-5 border-b border-gray-200 dark:border-zinc-800/50">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -743,7 +743,7 @@ const MarketplacePage = () => {
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
                 activeTab === tab.key
                   ? "text-[#81a308] border-[#81a308]"
-                  : "text-zinc-500 border-transparent hover:text-zinc-300 hover:border-zinc-700"
+                  : "text-zinc-500 border-transparent hover:text-zinc-700 dark:hover:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700"
               }`}
             >
               {tab.icon}
@@ -851,9 +851,9 @@ const MarketplacePage = () => {
                         size={14}
                         className="text-yellow-400 fill-current"
                       />
-                      <span className="text-xs text-white">
-                        {listing.rating}
-                      </span>
+                                            <span className="text-xs text-zinc-900 dark:text-white">
+                                              {listing.rating}
+                                            </span>
                     </div>
                     <span className="text-[10px] text-zinc-500">
                       ({listing.reviews})
@@ -878,14 +878,14 @@ const MarketplacePage = () => {
                           <span className="text-[10px] text-zinc-500 block">
                             Current bid
                           </span>
-                          <span className="text-sm sm:text-base font-bold text-white">
-                            ${listing.currentBid.toFixed(2)}
-                          </span>
+                                                    <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
+                                                      ${listing.currentBid.toFixed(2)}
+                                                    </span>
                         </div>
                       ) : (
-                        <span className="text-sm sm:text-base font-bold text-white">
-                          ${listing.price.toFixed(2)}
-                        </span>
+                                                <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
+                                                  ${listing.price.toFixed(2)}
+                                                </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -921,8 +921,8 @@ const MarketplacePage = () => {
             <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-[#81a308]" />
             </div>
-            <h3 className="text-lg font-medium text-zinc-300 mb-2">
-              No plants found
+                        <h3 className="text-lg font-medium text-zinc-600 dark:text-zinc-300 mb-2">
+                          No plants found
             </h3>
             <p className="text-zinc-500 text-sm mb-4">
               Try adjusting your search or filters

@@ -94,7 +94,7 @@ const Header = () => {
     plantSuggestions.length > 0 || userSuggestions.length > 0;
 
   return (
-    <header className="bg-white dark:bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 border-b border-gray-200 dark:border-[#3a3a3a]">
+    <header className="bg-zinc-50 dark:bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 border-b border-gray-200 dark:border-[#3a3a3a]">
       {/* Logo - Responsive sizing */}
       <Link href="/" className="flex-shrink-0">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">

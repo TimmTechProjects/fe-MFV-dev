@@ -237,7 +237,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 <input
                   type="text"
                   placeholder="Share something with the community..."
-                  className="w-full bg-gray-100 dark:bg-gray-900/60 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-200 dark:border-gray-800/50 transition-all"
+                  className="w-full bg-white dark:bg-gray-900/60 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-300 dark:border-gray-800/50 transition-all"
                 />
               </div>
             </div>
@@ -396,7 +396,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-[#81a308]" />
-              <h2 className="font-bold text-base">Trending</h2>
+              <h2 className="font-bold text-base text-zinc-900 dark:text-white">Trending</h2>
             </div>
             <div className="space-y-1">
               <TrendingItem
@@ -425,7 +425,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-4 h-4 text-emerald-400" />
-              <h2 className="font-bold text-base">Suggested Growers</h2>
+              <h2 className="font-bold text-base text-zinc-900 dark:text-white">Suggested Growers</h2>
             </div>
             <div className="space-y-3">
               {["PlantMom", "GreenThumb", "UrbanJungle"].map((name) => (
@@ -509,22 +509,22 @@ function NavItem({
     return (
       <Link
         href={href}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-900/60 transition-all text-sm ${
-          active ? "font-semibold bg-gray-900/40" : "font-normal text-gray-300"
-        }`}
-      >
-        <span className="w-5 h-5">{icon}</span>
-        <span>{label}</span>
-      </Link>
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm ${
+                active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
+              }`}
+            >
+              <span className="w-5 h-5">{icon}</span>
+              <span>{label}</span>
+            </Link>
     );
   }
 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-900/60 transition-all text-sm w-full text-left ${
-        active ? "font-semibold bg-gray-900/40" : "font-normal text-gray-300"
-      }`}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm w-full text-left ${
+              active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
+            }`}
     >
       <span className="w-5 h-5">{icon}</span>
       <span>{label}</span>
@@ -565,9 +565,9 @@ function PlantPost({ plant }: { plant: Plant }) {
     plant.images?.find((img) => img.isMain) || plant.images?.[0];
 
   return (
-    <article className="p-4 hover:bg-gray-950/30 transition-colors">
+    <article className="p-4 hover:bg-gray-100 dark:hover:bg-gray-950/30 transition-colors">
       <div className="flex gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-gray-800">
+        <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-gray-200 dark:ring-gray-800">
           {plant.user.avatarUrl ? (
             <img
               src={plant.user.avatarUrl}
@@ -587,7 +587,7 @@ function PlantPost({ plant }: { plant: Plant }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="font-semibold text-white text-sm hover:underline cursor-pointer">
+            <span className="font-semibold text-zinc-900 dark:text-white text-sm hover:underline cursor-pointer">
               {plant.user.firstName && plant.user.lastName
                 ? `${plant.user.firstName} ${plant.user.lastName}`
                 : plant.user.username}
@@ -600,17 +600,17 @@ function PlantPost({ plant }: { plant: Plant }) {
               {timeAgo(plant.createdAt)}
             </span>
             <div className="ml-auto">
-              <button className="p-1.5 hover:bg-gray-800/60 rounded-lg transition-colors">
+              <button className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800/60 rounded-lg transition-colors">
                 <MoreHorizontal className="w-4 h-4 text-gray-500" />
               </button>
             </div>
           </div>
 
           <div className="mb-3">
-            <p className="text-white text-sm leading-relaxed line-clamp-3">
-              <span className="font-medium">{plant.commonName}</span>
-              {plant.description && (
-                <span className="text-gray-300"> — {plant.description}</span>
+                        <p className="text-zinc-900 dark:text-white text-sm leading-relaxed line-clamp-3">
+                          <span className="font-medium">{plant.commonName}</span>
+                          {plant.description && (
+                            <span className="text-zinc-600 dark:text-gray-300"> — {plant.description}</span>
               )}
             </p>
             {plant.description && plant.description.length > 80 && (
@@ -639,7 +639,7 @@ function PlantPost({ plant }: { plant: Plant }) {
           </div>
 
           {mainImage && (
-            <div className="mb-3 rounded-2xl overflow-hidden border border-gray-800/50">
+            <div className="mb-3 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800/50">
               <img
                 src={mainImage.url}
                 alt={plant.commonName || "Plant image"}
@@ -650,10 +650,10 @@ function PlantPost({ plant }: { plant: Plant }) {
             </div>
           )}
 
-          <div className="bg-gray-900/30 rounded-xl p-3 mb-3 border border-gray-800/30">
+          <div className="bg-gray-100 dark:bg-gray-900/30 rounded-xl p-3 mb-3 border border-gray-200 dark:border-gray-800/30">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <h3 className="font-medium text-white text-sm">{plant.commonName}</h3>
+                <h3 className="font-medium text-zinc-900 dark:text-white text-sm">{plant.commonName}</h3>
                 {plant.type && (
                   <span className="bg-green-900/20 text-green-400 px-2 py-0.5 rounded-full text-[10px] border border-green-800/20">
                     {plant.type}
@@ -746,9 +746,9 @@ function TrendingItem({
   posts: string;
 }) {
   return (
-    <div className="hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
-      <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
-      <p className="font-semibold text-white text-sm mt-0.5">{title}</p>
+        <div className="hover:bg-gray-200 dark:hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
+          <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
+          <p className="font-semibold text-zinc-900 dark:text-white text-sm mt-0.5">{title}</p>
       <p className="text-gray-500 text-xs mt-0.5">{posts}</p>
     </div>
   );
@@ -758,11 +758,11 @@ function MarketplaceContent() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-1">
-          Plant Marketplace
+                <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
+                  Plant Marketplace
         </h1>
-        <p className="text-gray-400">
-          Discover beautiful plants from trusted sellers
+                <p className="text-zinc-500 dark:text-gray-400">
+                  Discover beautiful plants from trusted sellers
         </p>
       </div>
 
@@ -770,7 +770,7 @@ function MarketplaceContent() {
         {marketplacePlants.map((plant) => (
           <div
             key={plant.id}
-            className="bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-[#81a308]/10 border border-gray-800/30 hover:border-[#81a308]/20"
+            className="bg-white dark:bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-[#81a308]/10 border border-gray-200 dark:border-gray-800/30 hover:border-[#81a308]/20"
           >
             <div className="relative aspect-square overflow-hidden">
               <img
@@ -795,13 +795,13 @@ function MarketplaceContent() {
             </div>
 
             <div className="p-4">
-              <h3 className="font-medium text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
-                {plant.name}
+                            <h3 className="font-medium text-zinc-900 dark:text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
+                              {plant.name}
               </h3>
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="flex items-center gap-1">
                   <span className="text-yellow-400 text-xs">&#9733;</span>
-                  <span className="text-xs text-white">{plant.rating}</span>
+                  <span className="text-xs text-zinc-900 dark:text-white">{plant.rating}</span>
                 </div>
                 <span className="text-[10px] text-gray-500">
                   ({plant.reviews})
@@ -811,8 +811,8 @@ function MarketplaceContent() {
                 by {plant.shop}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-base font-bold text-white">
-                  {plant.price}
+                                <span className="text-base font-bold text-zinc-900 dark:text-white">
+                                  {plant.price}
                 </span>
                 <div className="flex items-center gap-1.5">
                   {(plant.listingType === "buy" || plant.listingType === "both") && (

@@ -164,7 +164,7 @@ const ProfilePage = () => {
 
   if (!profileUser) {
     return (
-      <div className="min-h-screen botanical-gradient botanical-pattern flex items-center justify-center">
+      <div className="min-h-screen botanical-gradient-light dark:botanical-gradient botanical-pattern flex items-center justify-center">
         <BotanicalEmptyState
           icon={<Sprout className="w-10 h-10 text-[var(--botanical-sage)]" />}
           title="Gardener not found"
@@ -183,7 +183,7 @@ const ProfilePage = () => {
   const coverImage = GARDEN_COVERS[Math.floor(Math.random() * GARDEN_COVERS.length)];
 
   return (
-    <div className="min-h-screen botanical-gradient botanical-pattern">
+    <div className="min-h-screen botanical-gradient-light dark:botanical-gradient botanical-pattern">
       <div className="max-w-7xl mx-auto">
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
@@ -401,8 +401,8 @@ const ProfilePage = () => {
                       <h2 className="text-xl font-semibold text-zinc-100">
                         {isOwnProfile ? "My Garden" : `${profileUser.username}'s Garden`}
                       </h2>
-                      <p className="text-sm text-zinc-400">
-                        All plants across collections
+                                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                              All plants across collections
                       </p>
                     </div>
                   </div>

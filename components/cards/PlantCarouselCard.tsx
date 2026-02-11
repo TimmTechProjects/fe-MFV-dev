@@ -18,7 +18,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
   return (
     <div className="group relative w-full h-full">
       {/* Main Card Container */}
-      <div className="relative overflow-hidden rounded-2xl bg-black/20 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full flex flex-col">
+      <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 h-full flex flex-col">
         {/* Image Container */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <Link
@@ -85,11 +85,11 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
           >
             {/* Plant Names */}
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white leading-tight line-clamp-2 group-hover/content:text-green-400 transition-colors duration-200">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white leading-tight line-clamp-2 group-hover/content:text-green-600 dark:group-hover/content:text-green-400 transition-colors duration-200">
                 {plant.commonName || plant.botanicalName}
               </h3>
               {plant.commonName && plant.botanicalName && (
-                <p className="text-sm font-medium text-gray-300 italic">
+                <p className="text-sm font-medium text-zinc-600 dark:text-gray-300 italic">
                   {plant.botanicalName}
                 </p>
               )}
@@ -97,7 +97,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
 
             {/* Description */}
             {plant.description && (
-              <p className="text-sm text-gray-400 line-clamp-2 mt-2 leading-relaxed">
+              <p className="text-sm text-zinc-600 dark:text-gray-400 line-clamp-2 mt-2 leading-relaxed">
                 {decodeHtmlEntities(plant.description).replace(/<[^>]*>/g, "").slice(0, 120)}
                 {decodeHtmlEntities(plant.description).replace(/<[^>]*>/g, "").length > 120 &&
                   "..."}
@@ -107,7 +107,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
 
           {/* Bottom Tags (if more than 2 tags) */}
           {plant?.tags?.length > 2 && (
-            <div className="flex flex-wrap gap-1 pt-2 border-t border-gray-700 mt-auto">
+            <div className="flex flex-wrap gap-1 pt-2 border-t border-gray-200 dark:border-gray-700 mt-auto">
               {plant.tags.slice(2, 5).map((tag, i) => (
                 <Link
                   key={i}
@@ -117,7 +117,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
                 >
                   <Badge
                     variant="outline"
-                    className="text-xs px-2 py-0.5 text-gray-300 border-gray-600 hover:bg-[#81a308] hover:border-green-500 hover:text-white transition-all duration-200 max-w-[80px] truncate"
+                    className="text-xs px-2 py-0.5 text-zinc-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-[#81a308] hover:border-green-500 hover:text-white transition-all duration-200 max-w-[80px] truncate"
                   >
                     {tag.name}
                   </Badge>
