@@ -14,6 +14,7 @@ export const plantSchema = z.object({
   origin: z.string(),
   family: z.string(),
   isPublic: z.boolean(),
+  isGarden: z.boolean().optional(),
   description: z
     .string()
     .min(10, "Description must be at least 10 characters (HTML allowed)"),

@@ -64,6 +64,7 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
       tags: [],
       images: [],
       isPublic: true,
+      isGarden: false,
     },
   });
 
@@ -445,6 +446,25 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
                         🔒
                       </span>
                     )}
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isGarden"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2 justify-end">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormLabel className="cursor-pointer">
+                    Add to My Garden
                   </FormLabel>
                 </FormItem>
               )}
