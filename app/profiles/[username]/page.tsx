@@ -887,7 +887,7 @@ function CollectionBedCard({
       <LeafDecoration position="top-right" size="lg" />
       
       {/* Cover Image */}
-      <div className="relative h-24 sm:h-40 rounded-lg sm:rounded-xl overflow-hidden mb-2 sm:mb-4">
+      <div className="relative h-36 sm:h-40 rounded-lg sm:rounded-xl overflow-hidden mb-2 sm:mb-4">
         <img
           src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
           alt={collection.name}
