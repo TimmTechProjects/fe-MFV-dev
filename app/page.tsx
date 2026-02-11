@@ -1,5 +1,12 @@
 import Hero from "@/components/sections/Hero";
 import NewlyAddedCollections from "@/components/sections/NewlyAddedCollections";
+import PublicAlbumsShowcase from "@/components/sections/PublicAlbumsShowcase";
+import FeaturedPlantsOfTheWeek from "@/components/sections/FeaturedPlantsOfTheWeek";
+import MarketplaceFeaturedListings from "@/components/sections/MarketplaceFeaturedListings";
+import CommunityHighlights from "@/components/sections/CommunityHighlights";
+import TrendingPlants from "@/components/sections/TrendingPlants";
+import PlantCareTipsCarousel from "@/components/sections/PlantCareTipsCarousel";
+import QuickStatsBanner from "@/components/sections/QuickStatsBanner";
 import React from "react";
 
 export default function Home() {
@@ -7,6 +14,13 @@ export default function Home() {
     <div>
       <Hero />
       <NewlyAddedCollections />
+      <PublicAlbumsShowcase />
+      <FeaturedPlantsOfTheWeek />
+      <MarketplaceFeaturedListings />
+      <CommunityHighlights />
+      <TrendingPlants />
+      <PlantCareTipsCarousel />
+      <QuickStatsBanner />
     </div>
   );
 }

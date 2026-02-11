@@ -35,6 +35,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [plantSuggestions, setPlantSuggestions] = useState<Plant[]>([]);
+  const [suppressSuggestions, setSuppressSuggestions] = useState(false);
   const [userSuggestions, setUserSuggestions] = useState<UserResult[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,13 +50,17 @@ const Header = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery.trim().toLowerCase());
-    }, 500);
+    }, 250);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
   // Fetch suggestions
   useEffect(() => {
     const fetchSuggestions = async () => {
+      if (suppressSuggestions) {
+        setIsPopoverOpen(false);
+        return;
+      }
       if (!debouncedQuery) {
         setPlantSuggestions([]);
         setUserSuggestions([]);
@@ -80,14 +85,20 @@ const Header = () => {
     };
 
     fetchSuggestions();
-  }, [debouncedQuery]);
+  }, [debouncedQuery, suppressSuggestions]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = searchQuery.trim();
     if (trimmed) {
-      router.push(`/the-vault/results?query=${encodeURIComponent(trimmed)}`);
       setIsPopoverOpen(false);
+      setPlantSuggestions([]);
+      setUserSuggestions([]);
+      setDebouncedQuery("");
+      setSuppressSuggestions(true);
+      setSearchQuery("");
+      setTimeout(() => setSuppressSuggestions(false), 600);
+      router.push(`/plants?search=${encodeURIComponent(trimmed)}`);
     }
   };
 

@@ -1037,3 +1037,78 @@ export async function placeBid(
     return { success: false, message: "Unexpected error" };
   }
 }
+
+export async function getPublicCollections(
+  limit = 8
+): Promise<Collection[]> {
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/collections/public?limit=${limit}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.collections || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getTrendingPlants(
+  limit = 8
+): Promise<Plant[]> {
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/plants/trending?limit=${limit}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.plants || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getHomepageStats(): Promise<{
+  totalPlants: number;
+  totalSpecies: number;
+  totalUsers: number;
+  totalForumPosts: number;
+}> {
+  try {
+    const res = await fetch(`${baseUrl}/api/stats/homepage`, {
+      cache: "no-store",
+    });
+    if (!res.ok)
+      return { totalPlants: 0, totalSpecies: 0, totalUsers: 0, totalForumPosts: 0 };
+    return await res.json();
+  } catch {
+    return { totalPlants: 0, totalSpecies: 0, totalUsers: 0, totalForumPosts: 0 };
+  }
+}
+
+export async function getForumPosts(
+  limit = 7
+): Promise<
+  {
+    id: string;
+    title: string;
+    author: { username: string; avatarUrl?: string };
+    createdAt: string;
+    replyCount: number;
+    category?: string;
+  }[]
+> {
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/forum/posts?limit=${limit}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.posts || [];
+  } catch {
+    return [];
+  }
+}

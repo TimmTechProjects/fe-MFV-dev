@@ -10,6 +10,10 @@ export const navLinks = [
   //   href: "/",
   // },
   {
+    label: "All Plants",
+    href: "/plants",
+  },
+  {
     label: "The Vault",
     href: "/the-vault",
   },
