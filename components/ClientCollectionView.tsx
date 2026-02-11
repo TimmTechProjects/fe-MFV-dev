@@ -68,20 +68,20 @@ const ClientCollectionView = ({
         }}
       />
 
-      <div className="relative max-w-6xl mx-auto px-4 py-8">
+      <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Back button */}
         <button
           onClick={() => router.push(`/profiles/${username}/collections`)}
-          className="flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition mb-6 group"
+          className="flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition mb-3 sm:mb-6 group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm">Back to Albums</span>
         </button>
 
         {/* Header */}
-        <div className="relative mb-10">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div className="flex items-start gap-4">
+        <div className="relative mb-4 sm:mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+            <div className="flex items-start gap-3 sm:gap-4">
               {/* Collection thumbnail */}
               {displayCoverUrl && (
                 <div className="hidden sm:block w-20 h-20 rounded-xl overflow-hidden border-2 border-emerald-500/30 shadow-lg shadow-emerald-500/10 flex-shrink-0">
@@ -96,14 +96,14 @@ const ClientCollectionView = ({
               )}
               
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Leaf className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 text-xs font-medium uppercase tracking-wider">Album</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+                  <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                  <span className="text-emerald-400 text-xs sm:text-sm font-medium uppercase tracking-wider">Album</span>
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2">
                   {name}
                 </h1>
-                <p className="text-sm text-zinc-400">
+                <p className="text-xs sm:text-sm md:text-base text-zinc-400">
                   by{" "}
                   <Link
                     href={`/profiles/${username}`}
@@ -115,9 +115,9 @@ const ClientCollectionView = ({
                   <span>{plants.length} {plants.length === 1 ? 'plant' : 'plants'}</span>
                 </p>
                 {description && (
-                  <div className="mt-3 max-w-xl relative">
+                  <div className="mt-2 sm:mt-3 max-w-xl relative">
                     <div className={descriptionExpanded ? "" : "relative"}>
-                      <p className={`text-zinc-300 leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                      <p className={`text-zinc-300 text-sm sm:text-base leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
                         {description}
                       </p>
                       {!descriptionExpanded && (
@@ -136,7 +136,7 @@ const ClientCollectionView = ({
             </div>
 
             {isOwner && (
-              <div className="flex gap-3 sm:self-start">
+              <div className="flex gap-2 sm:gap-3 sm:self-start">
                 <CoverImageUploadModal
                   collectionId={collectionId}
                   currentCoverUrl={coverImageUrl}
@@ -155,7 +155,7 @@ const ClientCollectionView = ({
           </div>
           
           {/* Decorative line */}
-          <div className="mt-6 h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent" />
+          <div className="mt-3 sm:mt-6 h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent" />
         </div>
 
         {/* Plants Grid */}

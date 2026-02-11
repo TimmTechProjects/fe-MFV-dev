@@ -7,82 +7,47 @@ import {
 function ProfileSkeleton() {
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-6xl mx-auto flex">
-        <aside className="w-64 flex-shrink-0 p-4 border-r border-gray-800 h-screen sticky top-0">
-          <div className="space-y-2">
-            <nav className="space-y-3">
-              {Array.from({ length: 7 }).map((_, i) => (
+      <div className="max-w-7xl mx-auto">
+        <Skeleton className="h-36 sm:h-48 md:h-64 lg:h-80 w-full rounded-none" />
+
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6 md:px-8 md:pb-8 -mt-10 sm:-mt-16">
+          <div className="flex items-end gap-3 sm:gap-6 mb-4">
+            <SkeletonAvatar className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 border-2 sm:border-4 border-black" />
+            <div className="flex-1 space-y-2">
+              <SkeletonText className="h-5 sm:h-7 w-32 sm:w-48" />
+              <SkeletonText className="h-3 sm:h-4 w-24 sm:w-32" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 sm:h-16 w-full rounded-lg" />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 px-4 sm:px-6 md:px-8">
+          <div className="lg:w-64 flex-shrink-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 lg:flex lg:flex-col lg:space-y-1">
+              {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-10 w-full rounded-lg" />
               ))}
-            </nav>
-            <Skeleton className="h-12 w-full rounded-full mt-8" />
-          </div>
-        </aside>
-
-        <main className="flex-1 border-r border-gray-800">
-          <div className="relative">
-            <Skeleton className="h-48 w-full rounded-none" />
-
-            <div className="px-4 pb-4">
-              <div className="flex justify-between items-start -mt-16 mb-4">
-                <SkeletonAvatar className="w-32 h-32 border-4 border-black" />
-                <Skeleton className="mt-16 h-10 w-28 rounded-full" />
-              </div>
-
-              <div className="mb-3 space-y-2">
-                <SkeletonText className="h-7 w-48" />
-                <SkeletonText className="h-4 w-32" />
-              </div>
-
-              <SkeletonText className="h-4 w-64 mb-3" />
-
-              <div className="flex items-center gap-4 mb-3">
-                <SkeletonText className="h-4 w-36" />
-              </div>
-
-              <div className="flex gap-4">
-                <SkeletonText className="h-4 w-24" />
-                <SkeletonText className="h-4 w-24" />
-              </div>
-            </div>
-
-            <div className="border-b border-gray-800">
-              <div className="flex gap-2 px-2">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-28 rounded-none" />
-                ))}
-              </div>
             </div>
           </div>
 
-          <div className="divide-y divide-gray-800">
+          <div className="flex-1 space-y-3 sm:space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="p-4 flex gap-3">
-                <SkeletonAvatar className="w-12 h-12" />
-                <div className="flex-1 space-y-3">
-                  <div className="flex gap-2">
-                    <SkeletonText className="h-4 w-24" />
-                    <SkeletonText className="h-4 w-16" />
-                  </div>
-                  <SkeletonText className="h-4 w-full" />
-                  <SkeletonText className="h-4 w-3/4" />
-                  <Skeleton className="h-48 w-full rounded-xl" />
-                  <div className="flex gap-8">
-                    {Array.from({ length: 4 }).map((_, j) => (
-                      <Skeleton key={j} className="h-4 w-8" />
-                    ))}
-                  </div>
+              <div key={i} className="p-3 sm:p-4 flex gap-2.5 sm:gap-4 rounded-xl bg-zinc-900/50">
+                <Skeleton className="w-16 h-16 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl flex-shrink-0" />
+                <div className="flex-1 space-y-2 sm:space-y-3">
+                  <SkeletonText className="h-3 sm:h-4 w-24 sm:w-32" />
+                  <SkeletonText className="h-3 sm:h-4 w-full" />
+                  <SkeletonText className="h-3 sm:h-4 w-3/4" />
                 </div>
               </div>
             ))}
           </div>
-        </main>
-
-        <aside className="w-80 p-4 space-y-4">
-          <Skeleton className="h-12 w-full rounded-full" />
-          <Skeleton className="h-40 w-full rounded-2xl" />
-          <Skeleton className="h-40 w-full rounded-2xl" />
-        </aside>
+        </div>
       </div>
     </div>
   );
