@@ -546,14 +546,14 @@ const SettingsPage = () => {
                     New Username
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-500 select-none">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-500 select-none pointer-events-none">
                       @
                     </span>
                     <Input
                       value={newUsername}
                       onChange={(e) => handleUsernameChange(e.target.value)}
                       placeholder="Enter new username"
-                      className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-8 pr-10"
+                      className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10 pr-10"
                       maxLength={30}
                     />
                     {usernameStatus === "checking" && (
