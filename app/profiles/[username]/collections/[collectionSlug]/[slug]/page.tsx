@@ -256,53 +256,6 @@ export default async function PlantDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* ── Info Stats Grid ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-center">
-              <div className="flex items-center justify-center text-emerald-400 mb-1 [&>svg]:w-7 [&>svg]:h-7">
-                {PLANT_TYPE_ICONS[plant.type] || (
-                  <Leaf className="w-7 h-7" />
-                )}
-              </div>
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-0.5">
-                Type
-              </div>
-              <div className="text-sm text-white font-medium">
-                {typeLabel || "Unknown"}
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-center">
-              <MapPin className="w-7 h-7 text-emerald-400 mx-auto mb-1" />
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-0.5">
-                Origin
-              </div>
-              <div className="text-sm text-white font-medium truncate">
-                {plant.origin || "Unknown"}
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-center">
-              <Users className="w-7 h-7 text-emerald-400 mx-auto mb-1" />
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-0.5">
-                Family
-              </div>
-              <div className="text-sm text-white font-medium truncate">
-                {plant.family || "Unknown"}
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-center">
-              <Eye className="w-7 h-7 text-emerald-400 mx-auto mb-1" />
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-0.5">
-                Views
-              </div>
-              <div className="text-sm text-emerald-400 font-medium">
-                {plant.views.toLocaleString()}
-              </div>
-            </div>
-          </div>
-
           {/* ── Description / Notes ── */}
           {plant.description && (
             <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-zinc-800 mb-8">
