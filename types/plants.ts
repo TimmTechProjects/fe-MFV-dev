@@ -33,6 +33,7 @@ export interface Plant {
   createdAt: Date;
   updatedAt: Date;
   isPublic: boolean;
+  isGarden?: boolean;
 
   user: {
     username: string;

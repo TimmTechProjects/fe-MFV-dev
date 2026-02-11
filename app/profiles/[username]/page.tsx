@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { User } from "@/types/users";
-import { getUserByUsername, getUserCollections } from "@/lib/utils";
+import { getUserByUsername, getUserCollections, getUserPlants } from "@/lib/utils";
 import Link from "next/link";
 import {
   Plus,
@@ -18,12 +18,9 @@ import {
   UserIcon,
   Calendar,
   MapPin,
-  MoreHorizontal,
-  Share,
   Users,
   Bell,
   Bookmark,
-  ImageIcon,
   Leaf,
   Sprout,
   TreeDeciduous,
@@ -35,7 +32,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Collection } from "@/types/collections";
-import { DUMMY_POSTS } from "@/mock/posts";
+import { Plant } from "@/types/plants";
 import useAuth from "@/redux/hooks/useAuth";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import {
@@ -55,30 +52,7 @@ const GARDEN_COVERS = [
   "https://images.unsplash.com/photo-1477554193778-9562c28588c0?auto=format&fit=crop&w=1200&q=80",
 ];
 
-type UserForPost = {
-  username: string;
-  avatarUrl: string;
-};
-
-type Comment = {
-  id: number;
-  user: UserForPost;
-  text: string;
-  createdAt: string;
-};
-
-type Post = {
-  id: number;
-  text?: string;
-  image?: string;
-  createdAt: string;
-  upvotes?: number;
-  comments?: Comment[];
-  shares?: number;
-  user: UserForPost;
-};
-
-const ProfilePage = () => {
+const ProfilePage= () => {
   const { user } = useAuth();
   const { username } = useParams();
   const router = useRouter();
@@ -92,7 +66,7 @@ const ProfilePage = () => {
     : "garden") as "garden" | "collections" | "posts" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
-  const [posts, setPosts] = useState(DUMMY_POSTS);
+  const [gardenPlants, setGardenPlants] = useState<Plant[]>([]);
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<
@@ -134,29 +108,22 @@ const ProfilePage = () => {
     fetchCollections();
   }, [safeUsername, user]);
 
+  useEffect(() => {
+    const fetchGarden = async () => {
+      if (safeUsername) {
+        try {
+          const plants = await getUserPlants(safeUsername);
+          setGardenPlants(plants);
+        } catch (err) {
+          setGardenPlants([]);
+          console.log(err);
+        }
+      }
+    };
+    fetchGarden();
+  }, [safeUsername]);
+
   const isOwnProfile = user?.username === safeUsername;
-
-  const handleLike = (postId: number) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, upvotes: (post.upvotes || 0) + 1 }
-          : post
-      )
-    );
-  };
-
-  const timeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-    );
-
-    if (diffInHours < 1) return "now";
-    if (diffInHours < 24) return `${diffInHours}h`;
-    return `${Math.floor(diffInHours / 24)}d`;
-  };
 
   if (loading) {
     return <ProfileSkeleton />;
@@ -167,7 +134,7 @@ const ProfilePage = () => {
       <div className="min-h-screen botanical-gradient-auto botanical-pattern flex items-center justify-center">
         <BotanicalEmptyState
           icon={<Sprout className="w-10 h-10 text-[var(--botanical-sage)]" />}
-          title="Gardener not found"
+          title="Garden not found"
           description="This garden doesn't exist or has been moved."
           action={
             <BotanicalButton onClick={() => router.push("/")}>
@@ -179,7 +146,6 @@ const ProfilePage = () => {
     );
   }
 
-  const photoPosts: Post[] = posts.filter((p) => p.image);
   const coverImage = GARDEN_COVERS[Math.floor(Math.random() * GARDEN_COVERS.length)];
 
   return (
@@ -306,7 +272,7 @@ const ProfilePage = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <Leaf className="w-4 h-4" />
-                    {posts.length} Plants documented
+                    {gardenPlants.length} Plants documented
                   </span>
                 </div>
               </div>
@@ -320,7 +286,7 @@ const ProfilePage = () => {
                 icon={TreeDeciduous}
               />
               <BotanicalStat
-                value={posts.length}
+                value={gardenPlants.length}
                 label="Plants"
                 icon={Leaf}
               />
@@ -431,7 +397,7 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
-                {photoPosts.length === 0 ? (
+                {gardenPlants.length === 0 ? (
                   <BotanicalEmptyState
                     icon={<Sprout className="w-10 h-10 text-[var(--botanical-sage)]" />}
                     title="No plants yet"
@@ -462,26 +428,22 @@ const ProfilePage = () => {
                   />
                 ) : viewMode === "grid" ? (
                   <div className="plant-grid">
-                    {photoPosts.map((post, index) => (
-                      <PlantCard
-                        key={post.id}
-                        post={post}
+                    {gardenPlants.map((plant, index) => (
+                      <GardenPlantCard
+                        key={plant.id}
+                        plant={plant}
                         profileUser={profileUser}
-                        onLike={handleLike}
-                        timeAgo={timeAgo}
                         index={index}
                       />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {photoPosts.map((post) => (
-                      <PlantListItem
-                        key={post.id}
-                        post={post}
+                    {gardenPlants.map((plant) => (
+                      <GardenPlantListItem
+                        key={plant.id}
+                        plant={plant}
                         profileUser={profileUser}
-                        onLike={handleLike}
-                        timeAgo={timeAgo}
                       />
                     ))}
                   </div>
@@ -590,51 +552,11 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
-                {isOwnProfile && (
-                  <BotanicalCard className="mb-6 p-4">
-                    <div className="flex gap-4">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage
-                          src={profileUser.avatarUrl}
-                          alt={profileUser.username}
-                        />
-                        <AvatarFallback className="bg-emerald-600 text-white">
-                          {profileUser.username?.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <input
-                          type="text"
-                          placeholder="What's growing in your garden today?"
-                          className="botanical-input w-full"
-                        />
-                        <div className="flex justify-between items-center mt-3">
-                          <div className="flex items-center gap-2">
-                            <button className="p-2 rounded-lg hover:bg-zinc-800 transition-colors">
-                              <ImageIcon className="w-5 h-5 text-emerald-500" />
-                            </button>
-                            <button className="p-2 rounded-lg hover:bg-zinc-800 transition-colors">
-                              <Leaf className="w-5 h-5 text-emerald-500" />
-                            </button>
-                          </div>
-                          <BotanicalButton size="sm">Post</BotanicalButton>
-                        </div>
-                      </div>
-                    </div>
-                  </BotanicalCard>
-                )}
-
-                <div className="space-y-4">
-                  {posts.map((post) => (
-                    <PostCard
-                      key={post.id}
-                      post={post}
-                      profileUser={profileUser}
-                      onLike={handleLike}
-                      timeAgo={timeAgo}
-                    />
-                  ))}
-                </div>
+                <BotanicalEmptyState
+                  icon={<LayoutList className="w-10 h-10 text-[var(--botanical-sage)]" />}
+                  title="No posts yet"
+                  description="Garden journal posts and updates will appear here soon."
+                />
               </section>
             )}
 
@@ -707,173 +629,117 @@ function SidebarNavItem({
   );
 }
 
-// Plant Card Component (Grid View)
-function PlantCard({
-  post,
+function GardenPlantCard({
+  plant,
   profileUser,
-  onLike,
-  timeAgo,
   index,
 }: {
-  post: Post;
+  plant: Plant;
   profileUser: User;
-  onLike: (id: number) => void;
-  timeAgo: (date: string) => string;
   index: number;
 }) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.upvotes || 0);
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-    onLike(post.id);
-  };
+  const mainImage = plant.images?.find((img) => img.isMain) || plant.images?.[0];
 
   return (
-    <BotanicalCard
-      className="overflow-hidden group cursor-pointer"
-      style={{ animationDelay: `${index * 50}ms` }}
-    >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img
-          src={post.image}
-          alt="Plant"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
-        
-        {/* Quick actions overlay */}
-        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={handleLike}
-            className={`p-2 rounded-full backdrop-blur-sm transition-all ${
-              liked
-                ? "bg-red-500/80 text-white"
-                : "bg-black/30 text-white hover:bg-black/50"
-            }`}
-          >
-            <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
-          </button>
-          <button className="p-2 rounded-full bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm transition-all">
-            <Share className="w-4 h-4" />
-          </button>
+    <Link href={`/plants/${plant.slug}`}>
+      <BotanicalCard
+        className="overflow-hidden group cursor-pointer"
+        style={{ animationDelay: `${index * 50}ms` }}
+      >
+        <div className="relative aspect-[4/3] overflow-hidden">
+          {mainImage ? (
+            <img
+              src={mainImage.url}
+              alt={plant.commonName}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-zinc-800">
+              <Leaf className="w-10 h-10 text-zinc-600" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
         </div>
 
-        {/* Time badge */}
-        <span className="absolute top-3 left-3 px-2 py-1 text-xs rounded-full bg-black/30 backdrop-blur-sm text-white">
-          {timeAgo(post.createdAt)}
-        </span>
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        {post.text && (
-          <p className="text-zinc-100 text-sm line-clamp-2 mb-3">
-            {post.text}
+        <div className="p-4">
+          <h3 className="text-zinc-100 font-medium text-sm mb-1 line-clamp-1">
+            {plant.commonName}
+          </h3>
+          <p className="text-zinc-500 text-xs italic line-clamp-1">
+            {plant.botanicalName}
           </p>
+
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex items-center gap-2">
+              <Avatar className="w-6 h-6">
+                <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
+                <AvatarFallback className="bg-emerald-600 text-white text-xs">
+                  {profileUser.username?.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm text-zinc-400">
+                @{profileUser.username}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 text-sm text-zinc-500">
+              <span className="flex items-center gap-1">
+                <Heart className="w-4 h-4" />
+                {plant.likes ?? 0}
+              </span>
+            </div>
+          </div>
+        </div>
+      </BotanicalCard>
+    </Link>
+  );
+}
+
+function GardenPlantListItem({
+  plant,
+  profileUser,
+}: {
+  plant: Plant;
+  profileUser: User;
+}) {
+  const mainImage = plant.images?.find((img) => img.isMain) || plant.images?.[0];
+
+  return (
+    <Link href={`/plants/${plant.slug}`}>
+      <BotanicalCard className="flex gap-4 p-4">
+        {mainImage ? (
+          <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0">
+            <img
+              src={mainImage.url}
+              alt={plant.commonName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center bg-zinc-800">
+            <Leaf className="w-8 h-8 text-zinc-600" />
+          </div>
         )}
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
             <Avatar className="w-6 h-6">
               <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
               <AvatarFallback className="bg-emerald-600 text-white text-xs">
                 {profileUser.username?.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm text-zinc-400">
+            <span className="text-sm text-emerald-500">
               @{profileUser.username}
             </span>
           </div>
-          
-          <div className="flex items-center gap-3 text-sm text-zinc-500">
-            <span className="flex items-center gap-1">
-              <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
-              {likeCount}
-            </span>
-            <span className="flex items-center gap-1">
-              <MessageCircle className="w-4 h-4" />
-              {post.comments?.length || 0}
-            </span>
-          </div>
+          <h3 className="text-zinc-100 font-medium mb-1">{plant.commonName}</h3>
+          <p className="text-zinc-500 text-sm italic mb-2">{plant.botanicalName}</p>
+          {plant.family && (
+            <span className="text-xs text-zinc-400">Family: {plant.family}</span>
+          )}
         </div>
-      </div>
-    </BotanicalCard>
-  );
-}
-
-// Plant List Item Component (List View)
-function PlantListItem({
-  post,
-  profileUser,
-  onLike,
-  timeAgo,
-}: {
-  post: Post;
-  profileUser: User;
-  onLike: (id: number) => void;
-  timeAgo: (date: string) => string;
-}) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.upvotes || 0);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-    onLike(post.id);
-  };
-
-  return (
-    <BotanicalCard className="flex gap-4 p-4">
-      {post.image && (
-        <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0">
-          <img
-            src={post.image}
-            alt="Plant"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-2">
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-            <AvatarFallback className="bg-emerald-600 text-white text-xs">
-              {profileUser.username?.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm text-emerald-500">
-            @{profileUser.username}
-          </span>
-          <span className="text-zinc-600">·</span>
-          <span className="text-sm text-zinc-500">
-            {timeAgo(post.createdAt)}
-          </span>
-        </div>
-        {post.text && (
-          <p className="text-zinc-100 mb-3">{post.text}</p>
-        )}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleLike}
-            className="flex items-center gap-1 text-sm text-zinc-500 hover:text-red-400 transition-colors"
-          >
-            <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
-            {likeCount}
-          </button>
-          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
-            <MessageCircle className="w-4 h-4" />
-            {post.comments?.length || 0}
-          </button>
-          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
-            <Share className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </BotanicalCard>
+      </BotanicalCard>
+    </Link>
   );
 }
 
@@ -923,100 +789,6 @@ function CollectionBedCard({
       {/* Hover indicator */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
     </Link>
-  );
-}
-
-// Post Card Component (Journal Style)
-function PostCard({
-  post,
-  profileUser,
-  onLike,
-  timeAgo,
-}: {
-  post: Post;
-  profileUser: User;
-  onLike: (id: number) => void;
-  timeAgo: (date: string) => string;
-}) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.upvotes || 0);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-    onLike(post.id);
-  };
-
-  return (
-    <BotanicalCard className="p-4">
-      <div className="flex gap-4">
-        <Avatar className="w-10 h-10 flex-shrink-0">
-          <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-          <AvatarFallback className="bg-emerald-600 text-white">
-            {profileUser.username?.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-medium text-zinc-100">
-              {profileUser.firstName && profileUser.lastName
-                ? `${profileUser.firstName} ${profileUser.lastName}`
-                : profileUser.username}
-            </span>
-            <span className="text-sm text-zinc-500">
-              @{profileUser.username}
-            </span>
-            <span className="text-zinc-600">·</span>
-            <span className="text-sm text-zinc-500">
-              {timeAgo(post.createdAt)}
-            </span>
-            <button className="ml-auto p-1 rounded-lg hover:bg-zinc-800 transition-colors">
-              <MoreHorizontal className="w-4 h-4 text-zinc-500" />
-            </button>
-          </div>
-
-          {post.text && (
-            <p className="text-zinc-100 mb-3 leading-relaxed">
-              {post.text}
-            </p>
-          )}
-
-          {post.image && (
-            <div className="rounded-xl overflow-hidden mb-3 border border-zinc-700/50">
-              <img
-                src={post.image}
-                alt="Post media"
-                className="w-full max-h-96 object-cover"
-              />
-            </div>
-          )}
-
-          <div className="flex items-center gap-6">
-            <button
-              onClick={handleLike}
-              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-red-400 transition-colors group"
-            >
-              <div className="p-2 rounded-full group-hover:bg-red-500/10 transition-colors">
-                <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
-              </div>
-              {likeCount}
-            </button>
-            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
-              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
-                <MessageCircle className="w-4 h-4" />
-              </div>
-              {post.comments?.length || 0}
-            </button>
-            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
-              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
-                <Share className="w-4 h-4" />
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-    </BotanicalCard>
   );
 }
 

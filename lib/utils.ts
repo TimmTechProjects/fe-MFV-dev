@@ -430,6 +430,31 @@ export async function getPaginatedPlants(
   }
 }
 
+export async function getUserPlants(
+  username: string,
+  isGarden?: boolean
+): Promise<Plant[]> {
+  try {
+    const params = new URLSearchParams();
+    if (isGarden !== undefined) {
+      params.set("isGarden", String(isGarden));
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
+    const res = await fetch(
+      `${baseUrl}/api/plants/user/${username}${query}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      console.error("Failed to fetch user plants");
+      return [];
+    }
+    return res.json();
+  } catch (err) {
+    console.error("Error fetching user plants:", err);
+    return [];
+  }
+}
+
 export async function getUserCollectionsWithAuth() {
   const token = localStorage.getItem("token");
   if (!token) {
