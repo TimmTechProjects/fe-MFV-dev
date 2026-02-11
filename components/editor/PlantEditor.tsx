@@ -13,7 +13,8 @@ import ListItem from "@tiptap/extension-list-item";
 import Heading from "@tiptap/extension-heading";
 // import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PlantEditorProps {
@@ -57,6 +58,8 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
       },
     },
   });
+
+  const [toolbarOpen, setToolbarOpen] = useState(false);
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
@@ -145,22 +148,35 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
 
   return (
     <div className="w-full space-y-3">
-      <div className="flex flex-wrap gap-1.5 items-center justify-start rounded-xl p-3 bg-zinc-900 border border-zinc-700">
-        {buttons.map(({ label, command, active }) => (
-          <button
-            key={label}
-            onClick={command}
-            type="button"
-            className={cn(
-              "text-xs font-medium px-3 py-1.5 rounded-lg transition-all",
-              active
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "bg-zinc-800 text-zinc-300 hover:bg-emerald-500/20 hover:text-emerald-400 border border-zinc-700"
-            )}
-          >
-            {label}
-          </button>
-        ))}
+      <div className="rounded-xl bg-zinc-900 border border-zinc-700">
+        <button
+          type="button"
+          onClick={() => setToolbarOpen(!toolbarOpen)}
+          className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors sm:hidden"
+        >
+          <span>Formatting Tools</span>
+          {toolbarOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </button>
+        <div className={cn(
+          "flex-wrap gap-1.5 items-center justify-start p-3 sm:flex",
+          toolbarOpen ? "flex border-t border-zinc-700 sm:border-t-0" : "hidden"
+        )}>
+          {buttons.map(({ label, command, active }) => (
+            <button
+              key={label}
+              onClick={command}
+              type="button"
+              className={cn(
+                "text-xs font-medium px-3 py-1.5 rounded-lg transition-all",
+                active
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-zinc-800 text-zinc-300 hover:bg-emerald-500/20 hover:text-emerald-400 border border-zinc-700"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="text-white rounded-xl bg-zinc-900/50 border border-zinc-700 shadow-sm">
         <EditorContent editor={editor} />

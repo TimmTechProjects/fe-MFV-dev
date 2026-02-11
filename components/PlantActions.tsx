@@ -19,12 +19,13 @@ import { Collection } from "@/types/collections";
 import { toast } from "sonner";
 import Link from "next/link";
 import useAuth from "@/redux/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   const { user } = useAuth();
   const username = user?.username;
   const router = useRouter();
+  const pathname = usePathname();
   const [liked, setLiked] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);
@@ -181,7 +182,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
           {username && (
             <Link
               href={`/profiles/${username}/collections/new?redirectTo=${encodeURIComponent(
-                window.location.pathname
+                pathname
               )}`}
             >
               <button className="mt-3 text-xs text-emerald-400 hover:underline cursor-pointer">

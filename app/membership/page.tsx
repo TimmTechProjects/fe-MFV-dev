@@ -26,8 +26,8 @@ const membershipTiers = [
   {
     name: "Premium",
     price: {
-      monthly: "$2.99/mo",
-      yearly: "$0.99/yr",
+      monthly: "$7/mo",
+      yearly: "$50/yr",
     },
     description: "Unlimited access for serious enthusiasts & sellers.",
     benefits: [
@@ -148,7 +148,7 @@ const MembershipPage = () => {
               </p>
               {isYearly && tier.plan === "premium" && (
                 <p className="text-center text-xs text-[#81a308] mt-1">
-                  Save 72% vs monthly
+                  Save 40% vs monthly
                 </p>
               )}
               <p className="text-center text-sm text-gray-400 mt-2">

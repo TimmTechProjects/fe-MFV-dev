@@ -154,6 +154,43 @@ export async function getCurrentUser() {
   return data ? JSON.parse(data) : null;
 }
 
+export async function checkUsernameAvailability(
+  username: string
+): Promise<{ available: boolean; message?: string }> {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `${baseUrl}/api/users/check-username/${encodeURIComponent(username)}`,
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    );
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return { available: false, message: "Unable to check availability" };
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        available: false,
+        message: data.message || "Username is not available",
+      };
+    }
+
+    return { available: data.available, message: data.message };
+  } catch (error) {
+    console.error("Error checking username availability:", error);
+    return { available: false, message: "Unable to check availability" };
+  }
+}
+
 export async function getUserByUsername(
   username: string
 ): Promise<User | null> {
@@ -497,7 +534,6 @@ export async function removePlantFromAlbum(
     return { success: false, message: "Unexpected error" };
   }
 }
-
 export async function setCollectionThumbnail(
   collectionId: string,
   plantImageId: string
