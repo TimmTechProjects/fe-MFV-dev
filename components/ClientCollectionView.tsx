@@ -100,10 +100,10 @@ const ClientCollectionView = ({
                   <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
                   <span className="text-emerald-400 text-xs sm:text-sm font-medium uppercase tracking-wider">Album</span>
                 </div>
-                <h1 className="text-lg sm:text-3xl md:text-4xl font-bold text-white mb-0.5 sm:mb-2">
+                <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2">
                   {name}
                 </h1>
-                <p className="text-xs sm:text-base text-zinc-400">
+                <p className="text-xs sm:text-sm md:text-base text-zinc-400">
                   by{" "}
                   <Link
                     href={`/profiles/${username}`}
