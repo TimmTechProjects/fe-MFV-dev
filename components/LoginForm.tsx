@@ -64,7 +64,7 @@ const SignInForm = () => {
 
     const isEmail = values.username.includes("@");
     const loginData = isEmail
-      ? { username: values.username, email: values.username, password: values.password }
+      ? { email: values.username, password: values.password }
       : { username: values.username, password: values.password };
 
     getLogin(
