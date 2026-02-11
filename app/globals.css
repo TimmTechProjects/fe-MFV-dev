@@ -269,6 +269,23 @@
   );
 }
 
+.botanical-gradient-auto {
+  background: linear-gradient(
+    135deg,
+    var(--botanical-cream) 0%,
+    var(--botanical-parchment) 100%
+  );
+}
+
+.dark .botanical-gradient-auto {
+  background: linear-gradient(
+    135deg,
+    #09090b 0%,
+    #18181b 50%,
+    #09090b 100%
+  );
+}
+
 /* Leaf Pattern Overlay - Very subtle */
 .leaf-pattern {
   position: relative;
@@ -293,10 +310,19 @@
   transition: all 0.3s ease;
 }
 
+:not(.dark) .garden-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.9));
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
 .garden-card:hover {
   border-color: rgba(16, 185, 129, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+
+:not(.dark) .garden-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(16, 185, 129, 0.15);
 }
 
 /* Plant Card Grid */
@@ -316,6 +342,10 @@
   overflow: hidden;
 }
 
+:not(.dark) .collection-bed {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 245, 0.9) 100%);
+}
+
 .collection-bed::before {
   content: '';
   position: absolute;
@@ -333,6 +363,10 @@
   overflow: hidden;
 }
 
+:not(.dark) .garden-header {
+  background: linear-gradient(180deg, #f4f4f5 0%, #e4e4e7 100%);
+}
+
 .garden-header::after {
   content: '';
   position: absolute;
@@ -342,6 +376,10 @@
   height: 60px;
   background: linear-gradient(to top, #18181b, transparent);
   pointer-events: none;
+}
+
+:not(.dark) .garden-header::after {
+  background: linear-gradient(to top, #e4e4e7, transparent);
 }
 
 /* Botanical Form Inputs - Dark zinc with green border accent */

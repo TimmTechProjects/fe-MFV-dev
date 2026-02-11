@@ -18,7 +18,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
   return (
     <div className="group relative w-full h-full">
       {/* Main Card Container */}
-      <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 h-full flex flex-col">
+      <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-transparent shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full flex flex-col">
         {/* Image Container */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <Link

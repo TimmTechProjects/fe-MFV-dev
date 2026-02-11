@@ -607,10 +607,10 @@ const MarketplacePage = () => {
           />
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-zinc-950 shadow-2xl flex flex-col rounded-r-2xl border-r border-gray-200 dark:border-zinc-800">
             <div className="flex items-center justify-between p-6">
-              <h2 className="text-xl font-bold text-white">Filters</h2>
+              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Filters</h2>
               <button
                 onClick={() => setShowFilters(false)}
-                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
               >
                 <X size={20} className="text-zinc-400" />
               </button>
@@ -618,7 +618,7 @@ const MarketplacePage = () => {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div>
-                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-zinc-800 pb-2">
+                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-gray-200 dark:border-zinc-800 pb-2">
                   Special Offers
                 </h3>
                 <div className="space-y-3">
@@ -627,9 +627,9 @@ const MarketplacePage = () => {
                       type="checkbox"
                       checked={freeShippingOnly}
                       onChange={() => setFreeShippingOnly(!freeShippingOnly)}
-                      className="w-4 h-4 text-[#81a308] bg-zinc-900 border-zinc-700 rounded focus:ring-[#81a308]"
+                      className="w-4 h-4 text-[#81a308] bg-white dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 rounded focus:ring-[#81a308]"
                     />
-                    <span className="text-zinc-300 text-sm">
+                    <span className="text-zinc-700 dark:text-zinc-300 text-sm">
                       Free Shipping
                     </span>
                   </label>
@@ -638,15 +638,15 @@ const MarketplacePage = () => {
                       type="checkbox"
                       checked={onSaleOnly}
                       onChange={() => setOnSaleOnly(!onSaleOnly)}
-                      className="w-4 h-4 text-[#81a308] bg-zinc-900 border-zinc-700 rounded focus:ring-[#81a308]"
+                      className="w-4 h-4 text-[#81a308] bg-white dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 rounded focus:ring-[#81a308]"
                     />
-                    <span className="text-zinc-300 text-sm">On Sale</span>
+                    <span className="text-zinc-700 dark:text-zinc-300 text-sm">On Sale</span>
                   </label>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-zinc-800 pb-2">
+                <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3 border-b border-gray-200 dark:border-zinc-800 pb-2">
                   Price Range
                 </h3>
                 <select
@@ -664,11 +664,11 @@ const MarketplacePage = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-zinc-800">
+            <div className="p-6 border-t border-gray-200 dark:border-zinc-800">
               <div className="flex gap-3">
                 <button
                   onClick={clearFilters}
-                  className="flex-1 px-4 py-2.5 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800 transition-colors text-sm"
+                  className="flex-1 px-4 py-2.5 border border-gray-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-sm"
                 >
                   Clear All
                 </button>
@@ -851,9 +851,9 @@ const MarketplacePage = () => {
                         size={14}
                         className="text-yellow-400 fill-current"
                       />
-                                            <span className="text-xs text-zinc-900 dark:text-white">
-                                              {listing.rating}
-                                            </span>
+                      <span className="text-xs text-zinc-900 dark:text-white">
+                        {listing.rating}
+                      </span>
                     </div>
                     <span className="text-[10px] text-zinc-500">
                       ({listing.reviews})
@@ -878,14 +878,14 @@ const MarketplacePage = () => {
                           <span className="text-[10px] text-zinc-500 block">
                             Current bid
                           </span>
-                                                    <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
-                                                      ${listing.currentBid.toFixed(2)}
-                                                    </span>
+                          <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
+                            ${listing.currentBid.toFixed(2)}
+                          </span>
                         </div>
                       ) : (
-                                                <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
-                                                  ${listing.price.toFixed(2)}
-                                                </span>
+                        <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
+                          ${listing.price.toFixed(2)}
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -921,8 +921,8 @@ const MarketplacePage = () => {
             <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-[#81a308]" />
             </div>
-                        <h3 className="text-lg font-medium text-zinc-600 dark:text-zinc-300 mb-2">
-                          No plants found
+            <h3 className="text-lg font-medium text-zinc-600 dark:text-zinc-300 mb-2">
+              No plants found
             </h3>
             <p className="text-zinc-500 text-sm mb-4">
               Try adjusting your search or filters

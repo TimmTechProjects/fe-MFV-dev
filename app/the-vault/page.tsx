@@ -509,22 +509,22 @@ function NavItem({
     return (
       <Link
         href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm ${
-                active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
-              }`}
-            >
-              <span className="w-5 h-5">{icon}</span>
-              <span>{label}</span>
-            </Link>
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm ${
+          active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
+        }`}
+      >
+        <span className="w-5 h-5">{icon}</span>
+        <span>{label}</span>
+      </Link>
     );
   }
 
   return (
     <button
       onClick={onClick}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm w-full text-left ${
-              active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
-            }`}
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-900/60 transition-all text-sm w-full text-left ${
+        active ? "font-semibold bg-gray-200 dark:bg-gray-900/40 text-zinc-900 dark:text-white" : "font-normal text-zinc-600 dark:text-gray-300"
+      }`}
     >
       <span className="w-5 h-5">{icon}</span>
       <span>{label}</span>
@@ -607,10 +607,10 @@ function PlantPost({ plant }: { plant: Plant }) {
           </div>
 
           <div className="mb-3">
-                        <p className="text-zinc-900 dark:text-white text-sm leading-relaxed line-clamp-3">
-                          <span className="font-medium">{plant.commonName}</span>
-                          {plant.description && (
-                            <span className="text-zinc-600 dark:text-gray-300"> — {plant.description}</span>
+            <p className="text-zinc-900 dark:text-white text-sm leading-relaxed line-clamp-3">
+              <span className="font-medium">{plant.commonName}</span>
+              {plant.description && (
+                <span className="text-zinc-600 dark:text-gray-300"> — {plant.description}</span>
               )}
             </p>
             {plant.description && plant.description.length > 80 && (
@@ -746,9 +746,9 @@ function TrendingItem({
   posts: string;
 }) {
   return (
-        <div className="hover:bg-gray-200 dark:hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
-          <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
-          <p className="font-semibold text-zinc-900 dark:text-white text-sm mt-0.5">{title}</p>
+    <div className="hover:bg-gray-200 dark:hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
+      <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
+      <p className="font-semibold text-zinc-900 dark:text-white text-sm mt-0.5">{title}</p>
       <p className="text-gray-500 text-xs mt-0.5">{posts}</p>
     </div>
   );
@@ -758,11 +758,11 @@ function MarketplaceContent() {
   return (
     <div className="p-6">
       <div className="mb-8">
-                <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
-                  Plant Marketplace
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
+          Plant Marketplace
         </h1>
-                <p className="text-zinc-500 dark:text-gray-400">
-                  Discover beautiful plants from trusted sellers
+        <p className="text-zinc-500 dark:text-gray-400">
+          Discover beautiful plants from trusted sellers
         </p>
       </div>
 
@@ -795,8 +795,8 @@ function MarketplaceContent() {
             </div>
 
             <div className="p-4">
-                            <h3 className="font-medium text-zinc-900 dark:text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
-                              {plant.name}
+              <h3 className="font-medium text-zinc-900 dark:text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
+                {plant.name}
               </h3>
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="flex items-center gap-1">
@@ -811,8 +811,8 @@ function MarketplaceContent() {
                 by {plant.shop}
               </p>
               <div className="flex items-center justify-between">
-                                <span className="text-base font-bold text-zinc-900 dark:text-white">
-                                  {plant.price}
+                <span className="text-base font-bold text-zinc-900 dark:text-white">
+                  {plant.price}
                 </span>
                 <div className="flex items-center gap-1.5">
                   {(plant.listingType === "buy" || plant.listingType === "both") && (

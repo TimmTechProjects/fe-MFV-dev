@@ -76,7 +76,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
   }
 
   return (
-    <div className="min-h-screen botanical-gradient-light dark:botanical-gradient botanical-pattern text-zinc-900 dark:text-white px-10 py-10">
+    <div className="min-h-screen botanical-gradient-auto botanical-pattern text-zinc-900 dark:text-white px-10 py-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-2xl font-bold ml-4 flex items-center gap-3">
