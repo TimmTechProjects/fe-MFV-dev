@@ -75,7 +75,7 @@ export default function PublicAlbumsShowcase() {
             </div>
             <Link
               href="/plants?tab=albums"
-              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+              className="self-end sm:self-auto bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-1.5 px-3 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
             >
               Browse All Albums
             </Link>
@@ -112,7 +112,7 @@ export default function PublicAlbumsShowcase() {
           </div>
           <Link
             href="/plants?tab=albums"
-            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            className="self-end sm:self-auto bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-1.5 px-3 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
           >
             Browse All Albums
           </Link>

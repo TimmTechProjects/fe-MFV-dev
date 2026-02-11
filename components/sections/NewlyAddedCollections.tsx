@@ -15,7 +15,7 @@ export default function NewCollectionsSection() {
           </Link>
 
           <Link href="/plants">
-            <Button className="mt-4 sm:mt-0 bg-[#81a308] text-white font-medium py-2 px-6 rounded-[20px] uppercase text-sm tracking-wide">
+            <Button className="mt-3 sm:mt-0 self-end sm:self-auto bg-[#81a308] text-white font-medium py-1.5 px-3 sm:py-2 sm:px-4 rounded-[20px] uppercase text-xs sm:text-sm tracking-wide">
               Discover All Plants
             </Button>
           </Link>

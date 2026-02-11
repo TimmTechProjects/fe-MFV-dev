@@ -98,7 +98,7 @@ function DiscoveryContent() {
     });
 
   const totalPages = Math.ceil(total / pageSize);
-  const hasNextPage = page < totalPages && plants.length === pageSize;
+  const hasNextPage = page < totalPages && filtered.length === pageSize;
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
