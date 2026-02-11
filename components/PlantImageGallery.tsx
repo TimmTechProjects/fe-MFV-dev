@@ -167,11 +167,11 @@ export default function PlantImageGallery({
 
       {lightboxOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-3"
           onClick={closeLightbox}
         >
           <div
-            className="relative bg-zinc-900 border border-zinc-700/50 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="relative bg-zinc-900 border border-zinc-700/50 rounded-2xl shadow-2xl w-full max-w-[98vw] sm:max-w-[95vw] max-h-[98vh] sm:max-h-[95vh] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-700/50 bg-zinc-900/80">
@@ -209,7 +209,7 @@ export default function PlantImageGallery({
             </div>
 
             <div
-              className="relative flex-1 flex items-center justify-center overflow-hidden bg-zinc-950 min-h-0"
+              className="relative flex-1 flex items-center justify-center overflow-hidden bg-zinc-950 min-h-0 h-[80vh] sm:h-[85vh]"
               onWheel={handleWheel}
             >
               {images.length > 1 && (
@@ -237,12 +237,13 @@ export default function PlantImageGallery({
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                style={{ cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "default", minHeight: "60vh" }}
+                style={{ cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in" }}
               >
                 <img
                   src={selectedImage.url}
                   alt={alt}
-                  className="max-w-full max-h-[75vh] object-contain transition-transform duration-200 select-none"
+                  onClick={() => { if (zoom <= 1) handleZoomIn(); else { setZoom(1); setPan({ x: 0, y: 0 }); } }}
+                  className="max-w-full max-h-[80vh] sm:max-h-[85vh] object-contain transition-transform duration-200 select-none"
                   style={{
                     transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
                   }}
