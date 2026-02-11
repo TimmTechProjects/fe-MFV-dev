@@ -40,9 +40,14 @@ const ClientCollectionView = ({
   const router = useRouter();
 
   const isOwner = user?.username === username;
-  const { id: collectionId, name, description, thumbnailImage, coverImageUrl, plants } = collectionData;
+  const { id: collectionId, name, description, thumbnailImage, coverImageUrl, plants: initialPlants } = collectionData;
   const displayCoverUrl = coverImageUrl || thumbnailImage?.url || null;
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [plants, setPlants] = useState(initialPlants);
+
+  const handlePlantRemoved = (plantId: string) => {
+    setPlants((prev) => prev.filter((p) => p.id !== plantId));
+  };
 
   const plantImages = plants.flatMap((plant) =>
     plant.images.map((img) => ({
@@ -205,7 +210,16 @@ const ClientCollectionView = ({
                 console.warn("Missing plant author or originalSlug:", plant);
               }
 
-              return <PlantGridCard key={plant.id} plant={plant} />;
+              return (
+                <PlantGridCard
+                  key={plant.id}
+                  plant={plant}
+                  collectionId={collectionId}
+                  isAlbumOwner={isOwner}
+                  loggedInUsername={user?.username}
+                  onRemoved={handlePlantRemoved}
+                />
+              );
             })}
 
             {isOwner && (
