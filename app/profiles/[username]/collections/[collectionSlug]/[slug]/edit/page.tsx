@@ -250,9 +250,10 @@ const EditPlantPage = () => {
                   },
                 }}
                 appearance={{
-                  container: "border-2 border-dashed border-zinc-600 hover:border-emerald-500/50 bg-zinc-800/30 rounded-xl py-6 transition-colors cursor-pointer",
-                  label: "text-zinc-400 text-sm",
-                  button: "bg-emerald-600 hover:bg-emerald-500 ut-uploading:bg-emerald-700 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors border-0 mt-2",
+                  container: "border-2 border-dashed border-zinc-600 hover:border-emerald-500/50 bg-zinc-800/30 rounded-xl py-3 transition-colors cursor-pointer",
+                  label: "text-zinc-400 text-xs",
+                  uploadIcon: "w-6 h-6 text-zinc-500",
+                  button: "bg-emerald-600 hover:bg-emerald-500 ut-uploading:bg-emerald-700 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors border-0 mt-1",
                   allowedContent: "hidden",
                 }}
                 onClientUploadComplete={(res) => {
