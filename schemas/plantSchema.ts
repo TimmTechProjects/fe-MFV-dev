@@ -11,8 +11,8 @@ export const plantSchema = z.object({
   commonName: z.string().min(2, "Plant name is required"),
   botanicalName: z.string().min(2, "Scientific name is required"),
   type: z.string().optional(),
-  origin: z.string(),
-  family: z.string(),
+  origin: z.string().optional(),
+  family: z.string().optional(),
   isPublic: z.boolean(),
   description: z
     .string()

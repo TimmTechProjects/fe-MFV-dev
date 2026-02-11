@@ -28,6 +28,7 @@ import { plantSchema, PlantSchema } from "@/schemas/plantSchema";
 import ImageUploadField, { UploadedImage } from "./ImageUploadField";
 import { Tag } from "@/types/tags";
 import { getSuggestedTags, submitPlant } from "@/lib/utils";
+import { COUNTRIES } from "@/lib/countries";
 import { Switch } from "../ui/switch";
 import { uploadFiles } from "@/lib/uploadthingClient";
 import useAuth from "@/redux/hooks/useAuth";
@@ -47,6 +48,13 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
   const [suggestions, setSuggestions] = useState<Tag[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  // Country autocomplete
+  const [countryInput, setCountryInput] = useState("");
+  const [debouncedCountry, setDebouncedCountry] = useState("");
+  const [countrySuggestions, setCountrySuggestions] = useState<string[]>([]);
+  const [isCountryPopoverOpen, setIsCountryPopoverOpen] = useState(false);
+  const [selectedCountryIndex, setSelectedCountryIndex] = useState(-1);
 
   const router = useRouter();
   const { user } = useAuth();
@@ -105,7 +113,45 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
     fetchSuggestions();
   }, [debouncedQuery]);
 
-  const handleAddTag = (tag?: string) => {
+  // Debounce country input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedCountry(countryInput.trim().toLowerCase());
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [countryInput]);
+
+  // Filter country suggestions
+  useEffect(() => {
+    if (!debouncedCountry) {
+      setCountrySuggestions([]);
+      setIsCountryPopoverOpen(false);
+      return;
+    }
+
+    const filtered = COUNTRIES.filter((c) =>
+      c.toLowerCase().includes(debouncedCountry)
+    ).slice(0, 8);
+
+    if (filtered.length > 0) {
+      setCountrySuggestions(filtered);
+      setIsCountryPopoverOpen(true);
+    } else {
+      setCountrySuggestions([]);
+      setIsCountryPopoverOpen(false);
+    }
+  }, [debouncedCountry]);
+
+  const handleSelectCountry = (country: string) => {
+    form.setValue("origin", country);
+    setCountryInput(country);
+    setCountrySuggestions([]);
+    setIsCountryPopoverOpen(false);
+    setSelectedCountryIndex(-1);
+  };
+
+  const handleAddTag= (tag?: string) => {
     const trimmed = (tag ?? tagInput).trim();
     const currentTags = form.watch("tags") || [];
 
@@ -207,6 +253,11 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+              e.preventDefault();
+            }
+          }}
           className="space-y-6 border-hidden"
         >
           <FormField
@@ -283,7 +334,7 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>Type <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -311,9 +362,53 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
               name="origin"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Origin</FormLabel>
+                  <FormLabel>Country of Origin <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Mediterranean region" {...field} />
+                    <div className="relative">
+                      <Input
+                        placeholder="Search for a country..."
+                        value={countryInput}
+                        onChange={(e) => {
+                          setCountryInput(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            setSelectedCountryIndex((prev) =>
+                              Math.min(prev + 1, countrySuggestions.length - 1)
+                            );
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            setSelectedCountryIndex((prev) => Math.max(prev - 1, 0));
+                          } else if (e.key === "Enter" && selectedCountryIndex >= 0) {
+                            e.preventDefault();
+                            handleSelectCountry(countrySuggestions[selectedCountryIndex]);
+                          }
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => setIsCountryPopoverOpen(false), 150);
+                        }}
+                      />
+                      {isCountryPopoverOpen && countrySuggestions.length > 0 && (
+                        <div className="absolute top-full mt-2 z-50 w-full bg-[#2b2a2a] border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                          {countrySuggestions.map((country, idx) => (
+                            <button
+                              key={country}
+                              type="button"
+                              onClick={() => handleSelectCountry(country)}
+                              className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                                selectedCountryIndex === idx
+                                  ? "bg-[#3a3a3a] text-emerald-500"
+                                  : "text-white hover:bg-[#3a3a3a]"
+                              }`}
+                            >
+                              {country}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-500" />
                 </FormItem>
@@ -325,7 +420,7 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
               name="family"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Plant Family</FormLabel>
+                  <FormLabel>Plant Family <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
                   <FormControl>
                     <Input placeholder="Lamiaceae" {...field} />
                   </FormControl>
@@ -341,7 +436,7 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
               name="tags"
               render={() => (
                 <FormItem>
-                  <FormLabel>Tags (Limit up to 10 tags)</FormLabel>
+                  <FormLabel>Tags (Limit up to 10 tags) <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
