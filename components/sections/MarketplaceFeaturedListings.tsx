@@ -53,7 +53,43 @@ export default function MarketplaceFeaturedListings() {
     );
   }
 
-  if (listings.length === 0) return null;
+  if (listings.length === 0) {
+    return (
+      <section className="w-full bg-white dark:bg-[#0a0a0a] py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="w-6 h-6 text-[#81a308]" />
+              <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+                Featured Marketplace Listings
+              </h2>
+            </div>
+            <Link
+              href="/marketplace"
+              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            >
+              Browse Marketplace
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 p-12 text-center">
+            <ShoppingCart className="w-12 h-12 text-zinc-400 dark:text-zinc-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+              Marketplace Coming Soon
+            </h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
+              Buy, sell, and auction plants with fellow collectors. Be the first to list your plants!
+            </p>
+            <Link
+              href="/marketplace"
+              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            >
+              Explore Marketplace
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-white dark:bg-[#0a0a0a] py-16 px-4">

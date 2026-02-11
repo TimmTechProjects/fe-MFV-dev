@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Leaf } from "lucide-react";
-import { getPublicCollections } from "@/lib/utils";
+import { getPublicCollections, getAllPlants } from "@/lib/utils";
 import { Collection } from "@/types/collections";
 
 export default function PublicAlbumsShowcase() {
@@ -13,7 +13,29 @@ export default function PublicAlbumsShowcase() {
 
   useEffect(() => {
     getPublicCollections(8)
-      .then((data) => setCollections(data))
+      .then(async (data) => {
+        if (data.length > 0) {
+          setCollections(data);
+          return;
+        }
+        const plants = await getAllPlants();
+        const seen = new Map<string, Collection>();
+        for (const plant of plants) {
+          const col = plant.collection;
+          if (!col || !col.name || seen.has(col.id)) continue;
+          seen.set(col.id, {
+            id: col.id,
+            name: col.name,
+            slug: col.slug,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            coverImageUrl: plant.images?.[0]?.url || null,
+            user: plant.user || { username: "unknown" },
+            _count: { plants: 0 },
+          });
+        }
+        setCollections(Array.from(seen.values()).slice(0, 8));
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,7 +62,43 @@ export default function PublicAlbumsShowcase() {
     );
   }
 
-  if (collections.length === 0) return null;
+  if (collections.length === 0) {
+    return (
+      <section className="w-full bg-white dark:bg-[#0a0a0a] py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-[#81a308]" />
+              <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+                Explore Public Albums
+              </h2>
+            </div>
+            <Link
+              href="/the-vault"
+              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            >
+              Browse All Albums
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 p-12 text-center">
+            <BookOpen className="w-12 h-12 text-zinc-400 dark:text-zinc-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+              Discover Plant Albums
+            </h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
+              Browse curated plant collections from fellow enthusiasts. Create and share your own albums!
+            </p>
+            <Link
+              href="/the-vault"
+              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            >
+              Explore The Vault
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-white dark:bg-[#0a0a0a] py-16 px-4">
