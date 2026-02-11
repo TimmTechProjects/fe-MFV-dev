@@ -170,6 +170,11 @@ export async function checkUsernameAvailability(
       }
     );
 
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return { available: false, message: "Unable to check availability" };
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
