@@ -154,7 +154,7 @@ const ProfilePage= () => {
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
           {/* Cover Image with Dark Overlay */}
-          <div className="relative h-36 sm:h-48 md:h-80 group/banner">
+          <div className="relative h-36 sm:h-48 md:h-64 lg:h-80 group/banner">
             <img
               src={coverImage}
               alt="Garden cover"
@@ -182,11 +182,11 @@ const ProfilePage= () => {
           </div>
 
           {/* Profile Info Overlay */}
-          <div className="relative px-4 pb-4 -mt-14 sm:px-6 sm:pb-6 sm:-mt-20 z-10">
+          <div className="relative px-4 pb-4 -mt-14 sm:px-6 sm:pb-6 sm:-mt-20 md:px-8 md:pb-8 z-10">
             <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-6">
               {/* Avatar */}
               <div className="relative group/avatar cursor-pointer">
-                <Avatar className="w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 border-3 sm:border-4 border-[var(--botanical-forest)] shadow-xl">
+                <Avatar className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 border-2 sm:border-4 border-[var(--botanical-forest)] shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
                     alt={profileUser?.username}
@@ -279,7 +279,7 @@ const ProfilePage= () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 sm:mt-6">
+            <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6">
               <BotanicalStat
                 value={usersCollections.length}
                 label="Albums"
@@ -305,10 +305,10 @@ const ProfilePage= () => {
         </header>
 
         {/* Main Content Area - Two Column Layout */}
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6 md:p-8">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="grid grid-cols-2 gap-1 lg:flex lg:flex-col lg:space-y-1 lg:sticky lg:top-20">
+            <nav className="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 lg:flex lg:flex-col lg:space-y-1 lg:sticky lg:top-20">
               <SidebarNavItem
                 icon={<LayoutList className="w-5 h-5" />}
                 label="Posts"
@@ -508,7 +508,7 @@ const ProfilePage= () => {
                     }
                   />
                 ) : (
-                  <div className="grid grid-cols-2 gap-3 sm:gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                     {usersCollections.map((collection) => (
                       <CollectionBedCard
                         key={collection.id}
@@ -646,7 +646,7 @@ function GardenPlantCard({
         className="overflow-hidden group cursor-pointer"
         style={{ animationDelay: `${index * 50}ms` }}
       >
-        <div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[3/2] sm:aspect-[4/3] md:aspect-[3/2] overflow-hidden">
           {mainImage ? (
             <img
               src={mainImage.url}
@@ -661,7 +661,7 @@ function GardenPlantCard({
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
         </div>
 
-        <div className="p-2 sm:p-4">
+        <div className="p-2 sm:p-3 md:p-4">
           <h3 className="text-zinc-100 font-medium text-xs sm:text-sm mb-0.5 sm:mb-1 line-clamp-1">
             {plant.commonName}
           </h3>
@@ -708,7 +708,7 @@ function GardenPlantListItem({
     <Link href={`/plants/${plant.slug}`}>
       <BotanicalCard className="flex gap-2.5 sm:gap-4 p-2.5 sm:p-4">
         {mainImage ? (
-          <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
             <img
               src={mainImage.url}
               alt={plant.commonName}
@@ -716,7 +716,7 @@ function GardenPlantListItem({
             />
           </div>
         ) : (
-          <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center bg-zinc-800">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center bg-zinc-800">
             <Leaf className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-600" />
           </div>
         )}
@@ -748,12 +748,12 @@ function CollectionBedCard({
   return (
     <Link
       href={`/profiles/${username}/collections/${collection.slug}`}
-      className="collection-bed group cursor-pointer relative overflow-hidden !p-0 sm:!p-6"
+      className="collection-bed group cursor-pointer relative overflow-hidden !p-0 sm:!p-4 md:!p-6"
     >
       <LeafDecoration position="top-right" size="lg" />
       
       {/* Cover Image */}
-      <div className="relative aspect-[4/3] sm:h-40 sm:aspect-auto overflow-hidden">
+      <div className="relative aspect-[4/3] sm:aspect-[3/2] md:h-40 md:aspect-auto overflow-hidden sm:rounded-lg">
         <img
           src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
           alt={collection.name}
@@ -763,8 +763,8 @@ function CollectionBedCard({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 px-2.5 py-1.5 sm:px-0 sm:py-0 sm:mt-4">
-        <h3 className="text-xs sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
+      <div className="relative z-10 px-2.5 py-1.5 sm:px-0 sm:py-0 sm:mt-2 md:mt-4">
+        <h3 className="text-xs sm:text-sm md:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
           {collection.name}
         </h3>
         <span className="text-[10px] sm:text-xs text-emerald-500">
