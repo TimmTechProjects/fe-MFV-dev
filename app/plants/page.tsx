@@ -87,11 +87,9 @@ function DiscoveryContent() {
     const traitParams = searchParams.getAll("trait");
     if (typeParam) {
       setSelectedPrimaryType(typeParam);
-      setShowFilters(true);
     }
     if (traitParams.length > 0) {
       setSelectedTraitSlugs(traitParams);
-      setShowFilters(true);
     }
   }, [searchParams]);
 

@@ -239,29 +239,28 @@ export default async function PlantDetailPage({ params }: PageProps) {
                     </dd>
                   </div>
                 </dl>
-              </CollapsibleSection>
 
-              {/* Tags Card */}
-              {plant.tags && plant.tags.length > 0 && (
-                <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
-                  <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                    <Tag className="w-5 h-5 text-emerald-400" />
-                    Tags
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {plant.tags.map((tag, i) => (
-                      <Link
-                        href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
-                        key={i}
-                      >
-                        <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
-                          {tag.name}
-                        </span>
-                      </Link>
-                    ))}
+                {plant.tags && plant.tags.length > 0 && (
+                  <div className="pt-3 border-t border-zinc-700/50">
+                    <dt className="flex items-center gap-2 text-zinc-400 text-sm mb-2">
+                      <Tag className="w-4 h-4" />
+                      Tags
+                    </dt>
+                    <dd className="flex flex-wrap gap-2">
+                      {plant.tags.map((tag, i) => (
+                        <Link
+                          href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
+                          key={i}
+                        >
+                          <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
+                            {tag.name}
+                          </span>
+                        </Link>
+                      ))}
+                    </dd>
                   </div>
-                </div>
-              )}
+                )}
+              </CollapsibleSection>
 
               {/* Traits Card */}
               {plant.plantTraits && plant.plantTraits.length > 0 && (
