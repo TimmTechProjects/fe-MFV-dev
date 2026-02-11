@@ -176,7 +176,7 @@ const SignUp = () => {
               className="space-y-4"
               noValidate
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
                   name="firstName"
@@ -225,54 +225,56 @@ const SignUp = () => {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm font-medium">
-                      Username
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
-                        <Input
-                          placeholder="Choose a unique username"
-                          autoComplete="username"
-                          {...field}
-                          className="botanical-input w-full pl-10 h-12 text-sm sm:text-base"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-red-400 text-xs flex items-center gap-1.5 mt-1" />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm font-medium">
+                        Username
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                          <Input
+                            placeholder="Choose a username"
+                            autoComplete="username"
+                            {...field}
+                            className="botanical-input w-full pl-10 h-12 text-sm sm:text-base"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs flex items-center gap-1.5 mt-1" />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm font-medium">
-                      Email Address
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
-                        <Input
-                          type="email"
-                          placeholder="you@example.com"
-                          autoComplete="email"
-                          {...field}
-                          className="botanical-input w-full pl-10 h-12 text-sm sm:text-base"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-red-400 text-xs flex items-center gap-1.5 mt-1" />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm font-medium">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                          <Input
+                            type="email"
+                            placeholder="you@example.com"
+                            autoComplete="email"
+                            {...field}
+                            className="botanical-input w-full pl-10 h-12 text-sm sm:text-base"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs flex items-center gap-1.5 mt-1" />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
