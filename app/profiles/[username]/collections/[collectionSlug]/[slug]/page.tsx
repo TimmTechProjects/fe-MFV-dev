@@ -248,7 +248,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
                     <dd className="flex flex-wrap gap-2">
                       {plant.tags.map((tag, i) => (
                         <Link
-                          href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
+                          href={`/plants?search=${encodeURIComponent(tag.name)}`}
                           key={i}
                         >
                           <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">

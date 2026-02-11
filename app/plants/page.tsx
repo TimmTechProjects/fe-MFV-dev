@@ -384,7 +384,7 @@ function DiscoveryContent() {
                   return (
                     <Link
                       key={plant.id}
-                      href={`/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`}
+                      href={`/profiles/${plant.user?.username}/collections/${plant.collectionId}/${plant.slug}`}
                       className="group rounded-2xl overflow-hidden bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800/50 hover:border-[#81a308]/30 transition-all hover:shadow-lg hover:shadow-[#81a308]/5"
                     >
                       <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800 relative">

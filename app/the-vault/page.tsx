@@ -665,7 +665,7 @@ function PlantPost({ plant }: { plant: Plant }) {
                 {plant.tags.map((tag) => (
                   <Link
                     key={tag.id}
-                    href={`/the-vault/results?tag=${tag.name}`}
+                    href={`/plants?search=${tag.name}`}
                     className="text-[#81a308] hover:text-[#9ec20a] text-xs"
                   >
                     #{tag.name}
@@ -741,7 +741,7 @@ function PlantPost({ plant }: { plant: Plant }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const url = `${window.location.origin}/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`;
+                  const url = `${window.location.origin}/plants?search=${plant.tags?.[0]?.name || plant.slug}`;
                   if (navigator.share) {
                     navigator.share({ title: plant.commonName || plant.botanicalName, text: plant.description?.substring(0, 100), url });
                   } else {
