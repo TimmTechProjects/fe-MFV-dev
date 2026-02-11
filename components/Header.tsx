@@ -12,6 +12,7 @@ import { searchEverything } from "../lib/utils";
 import { authUserLinks, navLinks } from "@/constants/navLinks";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -361,26 +362,30 @@ const Header = () => {
             <div className="mt-6 px-3 space-y-0.5">
               {user && (
                 <div className="pb-4 border-b border-[#2a2a2a]">
-                  <Link href={`/profiles/${user.username}`}>
-                    <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
-                      <Avatar className="h-8 w-8 mr-3">
-                        <AvatarImage
-                          src={user.avatarUrl || "/default-avatar.png"}
-                        />
-                        <AvatarFallback className="bg-[#81a308] text-white text-sm">
-                          {user.firstName?.[0]}
-                          {user.lastName?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-[15px] font-medium">My Profile</span>
-                    </div>
-                  </Link>
-                  {authUserLinks.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
-                        {link.label}
+                    <SheetClose asChild>
+                    <Link href={`/profiles/${user.username}`}>
+                      <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        <Avatar className="h-8 w-8 mr-3">
+                          <AvatarImage
+                            src={user.avatarUrl || "/default-avatar.png"}
+                          />
+                          <AvatarFallback className="bg-[#81a308] text-white text-sm">
+                            {user.firstName?.[0]}
+                            {user.lastName?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-[15px] font-medium">My Profile</span>
                       </div>
                     </Link>
+                  </SheetClose>
+                  {authUserLinks.map((link) => (
+                    <SheetClose asChild key={link.href}>
+                      <Link href={link.href}>
+                        <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                          {link.label}
+                        </div>
+                      </Link>
+                    </SheetClose>
                   ))}
                 </div>
               )}
@@ -393,11 +398,13 @@ const Header = () => {
                     : link.href;
 
                 return (
-                  <Link key={link.href} href={href}>
-                    <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
-                      {link.label}
-                    </div>
-                  </Link>
+                  <SheetClose asChild key={link.href}>
+                    <Link href={href}>
+                      <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        {link.label}
+                      </div>
+                    </Link>
+                  </SheetClose>
                 );
               })}
 
@@ -412,11 +419,13 @@ const Header = () => {
                 </div>
               ) : (
                 <div className="px-1 mt-6">
-                  <Link href={`/login?redirect=${pathname}`}>
-                    <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] active:bg-[#5a7508] text-white rounded-full py-2.5 text-[15px] font-semibold shadow-sm hover:shadow-md hover:shadow-[#81a308]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]">
-                      Login
-                    </Button>
-                  </Link>
+                  <SheetClose asChild>
+                    <Link href={`/login?redirect=${pathname}`}>
+                      <Button className="w-full bg-[#81a308] hover:bg-[#6c8a0a] active:bg-[#5a7508] text-white rounded-full py-2.5 text-[15px] font-semibold shadow-sm hover:shadow-md hover:shadow-[#81a308]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]">
+                        Login
+                      </Button>
+                    </Link>
+                  </SheetClose>
                 </div>
               )}
             </div>
