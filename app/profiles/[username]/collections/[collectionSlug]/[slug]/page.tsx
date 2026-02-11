@@ -149,18 +149,6 @@ export default async function PlantDetailPage({ params }: PageProps) {
               </Link>
             </div>
 
-            {typeLabel && (
-              <div className="flex flex-wrap items-center gap-2">
-                <Link href={`/plants?type=${encodeURIComponent(plant.primaryType || plant.type)}`}>
-                  <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-sm font-semibold px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-500/50 transition-all cursor-pointer">
-                    {PLANT_TYPE_ICONS[plant.primaryType || plant.type] || (
-                      <Leaf className="w-4 h-4" />
-                    )}
-                    {typeLabel}
-                  </span>
-                </Link>
-              </div>
-            )}
           </div>
 
           <div className="h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent mb-8" />
@@ -216,8 +204,19 @@ export default async function PlantDetailPage({ params }: PageProps) {
                       <Tag className="w-4 h-4" />
                       Type
                     </dt>
-                    <dd className="text-white font-medium text-sm">
-                      {typeLabel || "Unknown"}
+                    <dd>
+                      {typeLabel ? (
+                        <Link href={`/plants?type=${encodeURIComponent(plant.primaryType || plant.type)}`}>
+                          <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-sm font-semibold px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-500/50 transition-all cursor-pointer">
+                            {PLANT_TYPE_ICONS[plant.primaryType || plant.type] || (
+                              <Leaf className="w-4 h-4" />
+                            )}
+                            {typeLabel}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span className="text-white font-medium text-sm">Unknown</span>
+                      )}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-zinc-700/50">
