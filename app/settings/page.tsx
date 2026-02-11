@@ -602,7 +602,7 @@ const SettingsPage = () => {
                       className="p-4 rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-emerald-500/40 transition-all text-center group"
                     >
                       <p className="text-2xl font-bold text-zinc-100 group-hover:text-emerald-300 transition-colors">
-                        $2.99
+                        $7
                       </p>
                       <p className="text-xs text-zinc-400">per month</p>
                     </button>
@@ -612,10 +612,10 @@ const SettingsPage = () => {
                       className="p-4 rounded-xl bg-zinc-800/80 border border-emerald-500/30 hover:border-emerald-500/50 transition-all text-center relative group"
                     >
                       <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500 text-white">
-                        SAVE 72%
+                        SAVE 40%
                       </span>
                       <p className="text-2xl font-bold text-emerald-300 group-hover:text-emerald-200 transition-colors">
-                        $0.99
+                        $50
                       </p>
                       <p className="text-xs text-zinc-400">per year</p>
                     </button>
