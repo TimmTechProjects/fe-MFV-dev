@@ -66,7 +66,7 @@ export default function MarketplaceFeaturedListings() {
             </div>
             <Link
               href="/marketplace"
-              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
             >
               Browse Marketplace
             </Link>
@@ -81,7 +81,7 @@ export default function MarketplaceFeaturedListings() {
             </p>
             <Link
               href="/marketplace"
-              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
             >
               Explore Marketplace
             </Link>
@@ -103,7 +103,7 @@ export default function MarketplaceFeaturedListings() {
           </div>
           <Link
             href="/marketplace"
-            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
           >
             Browse Marketplace
           </Link>

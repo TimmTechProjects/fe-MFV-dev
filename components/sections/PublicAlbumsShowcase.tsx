@@ -22,7 +22,7 @@ export default function PublicAlbumsShowcase() {
         const seen = new Map<string, Collection>();
         for (const plant of plants) {
           const col = plant.collection;
-          if (!col || !col.name || seen.has(col.id)) continue;
+          if (!col || seen.has(col.id)) continue;
           seen.set(col.id, {
             id: col.id,
             name: col.name,
@@ -74,8 +74,8 @@ export default function PublicAlbumsShowcase() {
               </h2>
             </div>
             <Link
-              href="/the-vault"
-              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+              href="/plants?tab=albums"
+              className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
             >
               Browse All Albums
             </Link>
@@ -89,10 +89,10 @@ export default function PublicAlbumsShowcase() {
               Browse curated plant collections from fellow enthusiasts. Create and share your own albums!
             </p>
             <Link
-              href="/the-vault"
-              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+              href="/plants?tab=albums"
+              className="inline-block mt-6 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
             >
-              Explore The Vault
+              Explore Albums
             </Link>
           </div>
         </div>
@@ -111,8 +111,8 @@ export default function PublicAlbumsShowcase() {
             </h2>
           </div>
           <Link
-            href="/the-vault"
-            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
+            href="/plants?tab=albums"
+            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25"
           >
             Browse All Albums
           </Link>

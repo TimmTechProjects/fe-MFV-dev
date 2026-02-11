@@ -105,7 +105,7 @@ export default function CommunityHighlights() {
           </div>
           <Link
             href="/the-vault"
-            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-full text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25 inline-flex items-center gap-2"
+            className="bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-xs sm:text-sm uppercase tracking-wide transition-all hover:shadow-lg hover:shadow-[#81a308]/25 inline-flex items-center gap-1.5 sm:gap-2"
           >
             Join the Conversation
             <ArrowRight className="w-4 h-4" />

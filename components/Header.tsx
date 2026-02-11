@@ -48,7 +48,7 @@ const Header = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery.trim().toLowerCase());
-    }, 500);
+    }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -85,8 +85,11 @@ const Header = () => {
     e.preventDefault();
     const trimmed = searchQuery.trim();
     if (trimmed) {
-      router.push(`/plants?search=${encodeURIComponent(trimmed)}`);
       setIsPopoverOpen(false);
+      setPlantSuggestions([]);
+      setUserSuggestions([]);
+      setDebouncedQuery("");
+      router.push(`/plants?search=${encodeURIComponent(trimmed)}`);
     }
   };
 

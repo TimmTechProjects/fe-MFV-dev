@@ -153,7 +153,7 @@ export default function FeaturedPlantsOfTheWeek() {
                     </p>
                     <Link
                       href={plantUrl}
-                      className="mt-3 inline-flex items-center justify-center bg-[#81a308]/10 hover:bg-[#81a308] text-[#81a308] hover:text-white font-medium py-2 px-4 rounded-xl text-sm transition-all duration-200"
+                      className="mt-3 inline-flex items-center justify-center bg-[#81a308]/10 hover:bg-[#81a308] text-[#81a308] hover:text-white font-medium py-1.5 px-3 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm transition-all duration-200"
                     >
                       View Details
                     </Link>
