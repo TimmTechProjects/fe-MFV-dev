@@ -4,6 +4,7 @@ import PlantImageGallery from "@/components/PlantImageGallery";
 import Link from "next/link";
 import PlantActions from "@/components/PlantActions";
 import RelatedPlants from "@/components/RelatedPlants";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import {
   Leaf,
   Calendar,
@@ -56,9 +57,11 @@ export default async function PlantDetailPage({ params }: PageProps) {
     );
   }
 
-  const typeLabel = plant.type
-    ? plant.type.charAt(0).toUpperCase() + plant.type.slice(1)
-    : null;
+  const typeLabel = plant.primaryType
+    ? plant.primaryType.replace("_", " / ")
+    : plant.type
+      ? plant.type.charAt(0).toUpperCase() + plant.type.slice(1)
+      : null;
 
   return (
     <div className="min-h-screen">
@@ -72,7 +75,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
       />
 
       <div className="relative">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-8">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm mb-6">
             <Link
@@ -109,7 +112,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
             </span>
           </nav>
 
-          {/* ── Plant Header ── */}
+          {/* Plant Header */}
           <div className="mb-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
               <div>
@@ -136,40 +139,11 @@ export default async function PlantDetailPage({ params }: PageProps) {
                 </span>
               </Link>
             </div>
-
-            {/* Type Badge + Tags */}
-            <div className="flex flex-wrap items-center gap-2">
-              {typeLabel && (
-                <Link
-                  href={`/the-vault/results?tag=${encodeURIComponent(plant.type)}`}
-                >
-                  <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-sm font-semibold px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-500/50 transition-all cursor-pointer">
-                    {PLANT_TYPE_ICONS[plant.type] || (
-                      <Leaf className="w-4 h-4" />
-                    )}
-                    {typeLabel}
-                  </span>
-                </Link>
-              )}
-
-              {plant.tags &&
-                plant.tags.length > 0 &&
-                plant.tags.map((tag) => (
-                  <Link
-                    key={tag.id}
-                    href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
-                  >
-                    <span className="inline-block bg-zinc-800 text-zinc-300 text-sm px-3 py-1 rounded-full border border-zinc-700 hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30 transition-all cursor-pointer">
-                      {tag.name}
-                    </span>
-                  </Link>
-                ))}
-            </div>
           </div>
 
           <div className="h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent mb-8" />
 
-          {/* ── Photo + Quick Facts ── */}
+          {/* Photo + Quick Facts */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
             <div className="lg:col-span-3">
               <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800">
@@ -181,11 +155,10 @@ export default async function PlantDetailPage({ params }: PageProps) {
             </div>
 
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
-                <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                  <Leaf className="w-5 h-5 text-emerald-400" />
-                  Quick Facts
-                </h3>
+              <CollapsibleSection
+                title="Quick Facts"
+                icon={<Leaf className="w-5 h-5 text-emerald-400" />}
+              >
                 <dl className="space-y-3">
                   {plant.botanicalName && (
                     <div className="flex items-center justify-between py-2 border-b border-zinc-700/50">
@@ -244,7 +217,51 @@ export default async function PlantDetailPage({ params }: PageProps) {
                     </dd>
                   </div>
                 </dl>
-              </div>
+              </CollapsibleSection>
+
+              {/* Tags Card */}
+              {plant.tags && plant.tags.length > 0 && (
+                <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
+                  <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-emerald-400" />
+                    Tags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {plant.tags.map((tag, i) => (
+                      <Link
+                        href={`/the-vault/results?tag=${encodeURIComponent(tag.name)}`}
+                        key={i}
+                      >
+                        <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
+                          {tag.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Traits Card */}
+              {plant.plantTraits && plant.plantTraits.length > 0 && (
+                <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
+                  <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+                    <Leaf className="w-5 h-5 text-emerald-400" />
+                    Traits
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {plant.plantTraits.map(({ trait }) => (
+                      <Link
+                        key={trait.id}
+                        href={`/plants?trait=${trait.slug}`}
+                      >
+                        <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
+                          {trait.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
                 <PlantActions
@@ -256,7 +273,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* ── Description / Notes ── */}
+          {/* Description / Notes */}
           {plant.description && (
             <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-zinc-800 mb-8">
               <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-3">

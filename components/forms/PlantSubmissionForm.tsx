@@ -32,6 +32,7 @@ import { COUNTRIES } from "@/lib/countries";
 import { Switch } from "../ui/switch";
 import { uploadFiles } from "@/lib/uploadthingClient";
 import useAuth from "@/redux/hooks/useAuth";
+import TraitSelector from "./TraitSelector";
 
 const PlantEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
   ssr: false,
@@ -66,6 +67,8 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
       commonName: "",
       botanicalName: "",
       type: "",
+      primaryType: "",
+      traitIds: [],
       origin: "",
       family: "",
       description: "",
@@ -332,25 +335,27 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField
               control={form.control}
-              name="type"
+              name="primaryType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
+                  <FormLabel>Primary Type <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="w-[300px] sm:w-full bg-transparent border text-white rounded-md">
-                      <SelectValue placeholder="Select a type" />
+                      <SelectValue placeholder="Select primary type" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#2b2a2a] text-white">
-                      <SelectItem value="herb">Herb</SelectItem>
-                      <SelectItem value="shrub">Shrub</SelectItem>
-                      <SelectItem value="flower">Flower</SelectItem>
-                      <SelectItem value="tree">Tree</SelectItem>
-                      <SelectItem value="vine">Vine</SelectItem>
-                      <SelectItem value="succulent">Succulent</SelectItem>
-                      <SelectItem value="fungus">Fungus</SelectItem>
+                      <SelectItem value="TREE">Tree</SelectItem>
+                      <SelectItem value="SHRUB">Shrub</SelectItem>
+                      <SelectItem value="HERBACEOUS">Herbaceous</SelectItem>
+                      <SelectItem value="VINE_CLIMBER">Vine / Climber</SelectItem>
+                      <SelectItem value="FERN">Fern</SelectItem>
+                      <SelectItem value="SUCCULENT">Succulent</SelectItem>
+                      <SelectItem value="GRASS">Grass</SelectItem>
+                      <SelectItem value="FUNGUS">Fungus</SelectItem>
+                      <SelectItem value="AQUATIC">Aquatic</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -430,6 +435,23 @@ const PlantSubmissionForm = ({ collectionId }: PlantSubmissionFormProps) => {
               )}
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="traitIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Secondary Traits <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span></FormLabel>
+                <FormControl>
+                  <TraitSelector
+                    selectedTraitIds={field.value || []}
+                    onChange={(ids) => field.onChange(ids)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
