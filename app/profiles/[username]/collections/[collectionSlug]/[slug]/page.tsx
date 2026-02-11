@@ -130,7 +130,9 @@ export default async function PlantDetailPage({ params }: PageProps) {
                       Type
                     </span>
                     <span className="text-white font-medium text-sm">
-                      {plant.type || "Unknown"}
+                      {plant.primaryType
+                        ? plant.primaryType.replace("_", " / ")
+                        : plant.type || "Unknown"}
                     </span>
                   </div>
 
@@ -171,6 +173,28 @@ export default async function PlantDetailPage({ params }: PageProps) {
                       >
                         <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
                           {tag.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Traits Card */}
+              {plant.plantTraits && plant.plantTraits.length > 0 && (
+                <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
+                  <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+                    <Leaf className="w-5 h-5 text-emerald-400" />
+                    Traits
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {plant.plantTraits.map(({ trait }) => (
+                      <Link
+                        key={trait.id}
+                        href={`/plants?trait=${trait.slug}`}
+                      >
+                        <span className="inline-block bg-emerald-500/10 text-emerald-400 text-sm px-3 py-1.5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-200">
+                          {trait.name}
                         </span>
                       </Link>
                     ))}

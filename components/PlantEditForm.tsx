@@ -11,6 +11,14 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { UploadButton } from "@/lib/uploadthing";
 import { updatePlant, decodeHtmlEntities } from "@/lib/utils";
+import TraitSelector from "./forms/TraitSelector";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const TiptapEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
   ssr: false,
@@ -30,6 +38,8 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
       botanicalName: plant.botanicalName || "",
       description: decodeHtmlEntities(plant.description),
       type: plant.type || "",
+      primaryType: plant.primaryType || "",
+      traitIds: plant.plantTraits?.map((pt) => pt.traitId) || [],
       origin: plant.origin || "",
       family: plant.family || "",
       tags: plant.tags.map((tag) => tag.name) || [],
@@ -79,6 +89,28 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
+          <label className="text-sm text-muted-foreground">Primary Type</label>
+          <Select
+            onValueChange={(val) => setValue("primaryType", val)}
+            defaultValue={watch("primaryType")}
+          >
+            <SelectTrigger className="w-full bg-transparent border text-white rounded-md">
+              <SelectValue placeholder="Select primary type" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#2b2a2a] text-white">
+              <SelectItem value="TREE">Tree</SelectItem>
+              <SelectItem value="SHRUB">Shrub</SelectItem>
+              <SelectItem value="HERBACEOUS">Herbaceous</SelectItem>
+              <SelectItem value="VINE_CLIMBER">Vine / Climber</SelectItem>
+              <SelectItem value="FERN">Fern</SelectItem>
+              <SelectItem value="SUCCULENT">Succulent</SelectItem>
+              <SelectItem value="GRASS">Grass</SelectItem>
+              <SelectItem value="FUNGUS">Fungus</SelectItem>
+              <SelectItem value="AQUATIC">Aquatic</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
           <label className="text-sm text-muted-foreground">Origin</label>
           <Input {...register("origin" as const)} />
         </div>
@@ -86,6 +118,13 @@ const PlantEditForm = ({ plant, onCancel, onSave }: PlantEditFormProps) => {
           <label className="text-sm text-muted-foreground">Family</label>
           <Input {...register("family" as const)} />
         </div>
+      </div>
+      <div>
+        <label className="text-sm text-muted-foreground">Secondary Traits</label>
+        <TraitSelector
+          selectedTraitIds={watch("traitIds") || []}
+          onChange={(ids) => setValue("traitIds", ids)}
+        />
       </div>
       <div>
         <label className="text-sm text-muted-foreground">Tags</label>
