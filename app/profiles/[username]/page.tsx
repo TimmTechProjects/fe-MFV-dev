@@ -401,8 +401,8 @@ const ProfilePage = () => {
                       <h2 className="text-xl font-semibold text-zinc-100">
                         {isOwnProfile ? "My Garden" : `${profileUser.username}'s Garden`}
                       </h2>
-                                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                                              All plants across collections
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        All plants across collections
                       </p>
                     </div>
                   </div>
