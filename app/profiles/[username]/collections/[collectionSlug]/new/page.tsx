@@ -27,6 +27,7 @@ import { plantSchema, PlantSchema } from "@/schemas/plantSchema";
 import ImageUploadField, { UploadedImage } from "@/components/forms/ImageUploadField";
 import { Tag } from "@/types/tags";
 import { getCollectionBySlug, getSuggestedTags, submitPlant } from "@/lib/utils";
+import { COUNTRIES } from "@/lib/countries";
 import { Switch } from "@/components/ui/switch";
 import { uploadFiles } from "@/lib/uploadthingClient";
 import useAuth from "@/redux/hooks/useAuth";
@@ -100,6 +101,13 @@ const NewPlantPage = () => {
   const [suggestions, setSuggestions] = useState<Tag[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  // Country autocomplete
+  const [countryInput, setCountryInput] = useState("");
+  const [debouncedCountry, setDebouncedCountry] = useState("");
+  const [countrySuggestions, setCountrySuggestions] = useState<string[]>([]);
+  const [isCountryPopoverOpen, setIsCountryPopoverOpen] = useState(false);
+  const [selectedCountryIndex, setSelectedCountryIndex] = useState(-1);
 
   const isFreeUser = user?.plan === "free";
 
@@ -198,7 +206,45 @@ const NewPlantPage = () => {
     fetchSuggestions();
   }, [debouncedQuery]);
 
-  const handleAddTag = (tag?: string) => {
+  // Debounce country input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedCountry(countryInput.trim().toLowerCase());
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [countryInput]);
+
+  // Filter country suggestions
+  useEffect(() => {
+    if (!debouncedCountry) {
+      setCountrySuggestions([]);
+      setIsCountryPopoverOpen(false);
+      return;
+    }
+
+    const filtered = COUNTRIES.filter((c) =>
+      c.toLowerCase().includes(debouncedCountry)
+    ).slice(0, 8);
+
+    if (filtered.length > 0) {
+      setCountrySuggestions(filtered);
+      setIsCountryPopoverOpen(true);
+    } else {
+      setCountrySuggestions([]);
+      setIsCountryPopoverOpen(false);
+    }
+  }, [debouncedCountry]);
+
+  const handleSelectCountry = (country: string) => {
+    form.setValue("origin", country);
+    setCountryInput(country);
+    setCountrySuggestions([]);
+    setIsCountryPopoverOpen(false);
+    setSelectedCountryIndex(-1);
+  };
+
+  const handleAddTag= (tag?: string) => {
     const trimmed = (tag ?? tagInput).trim();
     const currentTags = form.watch("tags") || [];
 
@@ -387,7 +433,14 @@ const NewPlantPage = () => {
 
         {/* Form */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+                e.preventDefault();
+              }
+            }}
+          >
             <BotanicalCard className="p-6 relative overflow-hidden">
               <LeafDecoration position="top-right" size="lg" />
               
@@ -546,7 +599,7 @@ const NewPlantPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-emerald-500">
-                            Plant Type
+                            Plant Type <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span>
                           </FormLabel>
                           <Select
                             onValueChange={field.onChange}
@@ -580,14 +633,55 @@ const NewPlantPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-emerald-500 flex items-center gap-1">
-                            <MapPin className="w-3 h-3" /> Origin
+                            <MapPin className="w-3 h-3" /> Country of Origin <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span>
                           </FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="e.g., Mediterranean"
-                              className="botanical-input"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Input
+                                placeholder="Search for a country..."
+                                className="botanical-input"
+                                value={countryInput}
+                                onChange={(e) => {
+                                  setCountryInput(e.target.value);
+                                  field.onChange(e.target.value);
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "ArrowDown") {
+                                    e.preventDefault();
+                                    setSelectedCountryIndex((prev) =>
+                                      Math.min(prev + 1, countrySuggestions.length - 1)
+                                    );
+                                  } else if (e.key === "ArrowUp") {
+                                    e.preventDefault();
+                                    setSelectedCountryIndex((prev) => Math.max(prev - 1, 0));
+                                  } else if (e.key === "Enter" && selectedCountryIndex >= 0) {
+                                    e.preventDefault();
+                                    handleSelectCountry(countrySuggestions[selectedCountryIndex]);
+                                  }
+                                }}
+                                onBlur={() => {
+                                  setTimeout(() => setIsCountryPopoverOpen(false), 150);
+                                }}
+                              />
+                              {isCountryPopoverOpen && countrySuggestions.length > 0 && (
+                                <div className="absolute top-full mt-2 z-50 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                                  {countrySuggestions.map((country, idx) => (
+                                    <button
+                                      key={country}
+                                      type="button"
+                                      onClick={() => handleSelectCountry(country)}
+                                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                                        selectedCountryIndex === idx
+                                          ? "bg-emerald-500/15 text-emerald-500"
+                                          : "text-zinc-100 hover:bg-zinc-800"
+                                      }`}
+                                    >
+                                      {country}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </FormControl>
                           <FormMessage className="text-red-400" />
                         </FormItem>
@@ -600,7 +694,7 @@ const NewPlantPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-emerald-500">
-                            Plant Family
+                            Plant Family <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span>
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -656,7 +750,7 @@ const NewPlantPage = () => {
                   {/* Tags Input */}
                   <div className="space-y-3">
                     <label className="text-sm font-medium text-emerald-500">
-                      Tags (up to 10)
+                      Tags (up to 10) <span className="text-zinc-500 opacity-70 font-normal">(Optional)</span>
                     </label>
                     <div className="relative">
                       <Input
