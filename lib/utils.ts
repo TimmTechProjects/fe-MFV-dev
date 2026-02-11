@@ -154,6 +154,43 @@ export async function getCurrentUser() {
   return data ? JSON.parse(data) : null;
 }
 
+export async function checkUsernameAvailability(
+  username: string
+): Promise<{ available: boolean; message?: string }> {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `${baseUrl}/api/users/check-username/${encodeURIComponent(username)}`,
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    );
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return { available: false, message: "Unable to check availability" };
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        available: false,
+        message: data.message || "Username is not available",
+      };
+    }
+
+    return { available: data.available, message: data.message };
+  } catch (error) {
+    console.error("Error checking username availability:", error);
+    return { available: false, message: "Unable to check availability" };
+  }
+}
+
 export async function getUserByUsername(
   username: string
 ): Promise<User | null> {
@@ -447,6 +484,41 @@ export async function savePlantToAlbum(
     }
 
     return { success: true, message: "Plant saved to album successfully." };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function removePlantFromAlbum(
+  collectionId: string,
+  plantId: string
+): Promise<{ success: boolean; message: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "No token found" };
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/collections/${collectionId}/remove-plant`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ plantId }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Failed to remove plant" };
+    }
+
+    return { success: true, message: "Plant removed from album successfully." };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, message: error.message };

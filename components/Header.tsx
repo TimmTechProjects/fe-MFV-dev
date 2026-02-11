@@ -333,6 +333,7 @@ const Header = () => {
           <SheetContent
             side="right"
             className="bg-white dark:bg-[#1a1a1a] text-zinc-900 dark:text-white border-l border-gray-200 dark:border-[#2a2a2a] p-0"
+            onOpenAutoFocus={(e) => e.preventDefault()}
           >
             <SheetHeader>
               <SheetTitle className="text-2xl">
@@ -358,7 +359,34 @@ const Header = () => {
             </form>
 
             <div className="mt-6 px-3 space-y-0.5">
+              {user && (
+                <div className="pb-4 border-b border-[#2a2a2a]">
+                  <Link href={`/profiles/${user.username}`}>
+                    <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                      <Avatar className="h-8 w-8 mr-3">
+                        <AvatarImage
+                          src={user.avatarUrl || "/default-avatar.png"}
+                        />
+                        <AvatarFallback className="bg-[#81a308] text-white text-sm">
+                          {user.firstName?.[0]}
+                          {user.lastName?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-[15px] font-medium">My Profile</span>
+                    </div>
+                  </Link>
+                  {authUserLinks.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        {link.label}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
               {navLinks.map((link) => {
+                if (link.protected && !user) return null;
                 const href =
                   link.label === "Albums" && user
                     ? `/profiles/${user.username}/collections`
@@ -374,37 +402,14 @@ const Header = () => {
               })}
 
               {user ? (
-                <>
-                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#2a2a2a]">
-                    <Link href={`/profiles/${user.username}`}>
-                      <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
-                        <Avatar className="h-8 w-8 mr-3">
-                          <AvatarImage
-                            src={user.avatarUrl || "/default-avatar.png"}
-                          />
-                          <AvatarFallback className="bg-[#81a308] text-white text-sm">
-                            {user.firstName?.[0]}
-                            {user.lastName?.[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-[15px] font-medium">My Profile</span>
-                      </div>
-                    </Link>
-                    {authUserLinks.map((link) => (
-                      <Link key={link.href} href={link.href}>
-                        <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
-                          {link.label}
-                        </div>
-                      </Link>
-                    ))}
-                    <div
-                      onClick={LogoutUser}
-                      className="py-3 px-4 rounded-xl text-[15px] font-medium text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer mt-2"
-                    >
-                      Logout
-                    </div>
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#2a2a2a]">
+                  <div
+                    onClick={LogoutUser}
+                    className="py-3 px-4 rounded-xl text-[15px] font-medium text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer mt-2"
+                  >
+                    Logout
                   </div>
-                </>
+                </div>
               ) : (
                 <div className="px-1 mt-6">
                   <Link href={`/login?redirect=${pathname}`}>

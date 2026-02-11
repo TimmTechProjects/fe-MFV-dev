@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,7 +32,12 @@ import {
   Shield,
   CreditCard,
   ExternalLink,
+  AtSign,
+  X,
+  AlertCircle,
+  Calendar,
 } from "lucide-react";
+import { checkUsernameAvailability } from "@/lib/utils";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -60,6 +65,7 @@ const SettingsPage = () => {
     user,
     EditProfile,
     ChangePassword,
+    ChangeUsername,
     CreateCheckoutSession,
     ManageSubscription,
   } = useAuth();
@@ -69,6 +75,14 @@ const SettingsPage = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "taken" | "invalid" | "same"
+  >("idle");
+  const [usernameMessage, setUsernameMessage] = useState("");
+  const [isUsernameSaving, setIsUsernameSaving] = useState(false);
+  const [showUsernameConfirm, setShowUsernameConfirm] = useState(false);
+  const usernameCheckTimer = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -147,6 +161,97 @@ const SettingsPage = () => {
     multiple: false,
     maxSize: 4 * 1024 * 1024,
   });
+
+  const validateUsernameFormat = (username: string): string | null => {
+    if (!username) return null;
+    if (username.length < 3) return "Username must be at least 3 characters";
+    if (username.length > 30) return "Username must be at most 30 characters";
+    if (!/^[a-zA-Z]/.test(username)) return "Username must start with a letter";
+    if (!/^[a-zA-Z0-9_-]+$/.test(username))
+      return "Only letters, numbers, underscores, and hyphens allowed";
+    return null;
+  };
+
+  const handleUsernameChange = (value: string) => {
+    const trimmed = value.trim();
+    setNewUsername(trimmed);
+
+    if (usernameCheckTimer.current) {
+      clearTimeout(usernameCheckTimer.current);
+    }
+
+    if (!trimmed) {
+      setUsernameStatus("idle");
+      setUsernameMessage("");
+      return;
+    }
+
+    if (trimmed.toLowerCase() === user?.username?.toLowerCase()) {
+      setUsernameStatus("same");
+      setUsernameMessage("This is your current username");
+      return;
+    }
+
+    const formatError = validateUsernameFormat(trimmed);
+    if (formatError) {
+      setUsernameStatus("invalid");
+      setUsernameMessage(formatError);
+      return;
+    }
+
+    setUsernameStatus("checking");
+    setUsernameMessage("Checking availability...");
+
+    usernameCheckTimer.current = setTimeout(async () => {
+      const result = await checkUsernameAvailability(trimmed);
+      if (result.available) {
+        setUsernameStatus("available");
+        setUsernameMessage(result.message || "Username is available");
+      } else {
+        setUsernameStatus("taken");
+        setUsernameMessage(result.message || "Username is not available");
+      }
+    }, 500);
+  };
+
+  const getUsernameCooldownDaysLeft = (): number | null => {
+    if (!user?.usernameLastChangedAt) return null;
+    const lastChanged = new Date(user.usernameLastChangedAt);
+    const now = new Date();
+    const diffMs = now.getTime() - lastChanged.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays >= 30) return null;
+    return 30 - diffDays;
+  };
+
+  const cooldownDaysLeft = getUsernameCooldownDaysLeft();
+  const isOnCooldown = cooldownDaysLeft !== null;
+
+  const onUsernameSubmit = async () => {
+    if (usernameStatus !== "available" || !newUsername || isOnCooldown) return;
+    setShowUsernameConfirm(true);
+  };
+
+  const confirmUsernameChange = async () => {
+    setShowUsernameConfirm(false);
+    setIsUsernameSaving(true);
+    try {
+      const res = await ChangeUsername(newUsername);
+      if (res) {
+        toast.success("Username changed successfully!");
+        setNewUsername("");
+        setUsernameStatus("idle");
+        setUsernameMessage("");
+        router.push(`/profiles/${newUsername}`);
+      } else {
+        toast.error("Failed to change username. Please try again.");
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setIsUsernameSaving(false);
+    }
+  };
 
   const onProfileSubmit = async (values: ProfileFormValues) => {
     setIsProfileSaving(true);
@@ -395,6 +500,175 @@ const SettingsPage = () => {
 
           <section className="garden-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
+              <AtSign className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-100">
+                Change Username
+              </h2>
+            </div>
+
+            <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+              <p className="text-sm text-zinc-400 mb-1">
+                Current username
+              </p>
+              <p className="text-zinc-100 font-medium">@{user.username}</p>
+            </div>
+
+            {isOnCooldown ? (
+              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="w-4 h-4 text-amber-400" />
+                  <p className="text-sm font-medium text-amber-300">
+                    Username change unavailable
+                  </p>
+                </div>
+                <p className="text-sm text-zinc-400">
+                  You can only change your username once every 30 days. You can
+                  change it again in{" "}
+                  <span className="text-amber-300 font-medium">
+                    {cooldownDaysLeft} {cooldownDaysLeft === 1 ? "day" : "days"}
+                  </span>
+                  .
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="p-3 rounded-xl bg-zinc-800/40 border border-zinc-700/30">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-3.5 h-3.5 text-zinc-400" />
+                    <p className="text-xs text-zinc-400">
+                      You can only change your username once every 30 days.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-zinc-300">
+                    New Username
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-500 select-none pointer-events-none">
+                      @
+                    </span>
+                    <Input
+                      value={newUsername}
+                      onChange={(e) => handleUsernameChange(e.target.value)}
+                      placeholder="Enter new username"
+                      className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                      style={{ paddingLeft: "1.75rem" }}
+                      maxLength={30}
+                    />
+                    {usernameStatus === "checking" && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 animate-spin" />
+                    )}
+                    {usernameStatus === "available" && (
+                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                    )}
+                    {(usernameStatus === "taken" || usernameStatus === "invalid") && (
+                      <X className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-400" />
+                    )}
+                    {usernameStatus === "same" && (
+                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
+                    )}
+                  </div>
+                  {usernameMessage && (
+                    <p
+                      className={`text-xs ${
+                        usernameStatus === "available"
+                          ? "text-emerald-400"
+                          : usernameStatus === "checking"
+                            ? "text-zinc-400"
+                            : usernameStatus === "same"
+                              ? "text-amber-400"
+                              : "text-red-400"
+                      }`}
+                    >
+                      {usernameMessage}
+                    </p>
+                  )}
+                  <p className="text-xs text-zinc-500">
+                    3-30 characters. Letters, numbers, underscores, and hyphens
+                    only. Must start with a letter.
+                  </p>
+                </div>
+
+                <Button
+                  onClick={onUsernameSubmit}
+                  disabled={
+                    isUsernameSaving ||
+                    usernameStatus !== "available" ||
+                    !newUsername
+                  }
+                  className="w-full botanical-btn text-white font-semibold py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUsernameSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Change Username"
+                  )}
+                </Button>
+              </>
+            )}
+
+            {showUsernameConfirm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div className="w-full max-w-md mx-4 p-6 rounded-2xl bg-zinc-900 border border-zinc-700 shadow-xl space-y-4">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-amber-400" />
+                    <h3 className="text-lg font-semibold text-zinc-100">
+                      Confirm Username Change
+                    </h3>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm text-zinc-300">
+                      Are you sure you want to change your username?
+                    </p>
+                    <div className="p-3 rounded-lg bg-zinc-800/80 border border-zinc-700/50 space-y-1">
+                      <p className="text-xs text-zinc-400">
+                        Current:{" "}
+                        <span className="text-zinc-200">@{user.username}</span>
+                      </p>
+                      <p className="text-xs text-zinc-400">
+                        New:{" "}
+                        <span className="text-emerald-400">@{newUsername}</span>
+                      </p>
+                    </div>
+                    <p className="text-xs text-amber-400">
+                      You will not be able to change your username again for 30
+                      days.
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setShowUsernameConfirm(false)}
+                      className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={confirmUsernameChange}
+                      disabled={isUsernameSaving}
+                      className="flex-1 botanical-btn text-white font-semibold"
+                    >
+                      {isUsernameSaving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Changing...
+                        </>
+                      ) : (
+                        "Confirm Change"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
               <Shield className="w-4 h-4 text-emerald-400" />
               <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Security</h2>
             </div>
@@ -602,7 +876,7 @@ const SettingsPage = () => {
                       className="p-4 rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-emerald-500/40 transition-all text-center group"
                     >
                       <p className="text-2xl font-bold text-zinc-100 group-hover:text-emerald-300 transition-colors">
-                        $2.99
+                        $7
                       </p>
                       <p className="text-xs text-zinc-400">per month</p>
                     </button>
@@ -612,10 +886,10 @@ const SettingsPage = () => {
                       className="p-4 rounded-xl bg-zinc-800/80 border border-emerald-500/30 hover:border-emerald-500/50 transition-all text-center relative group"
                     >
                       <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500 text-white">
-                        SAVE 72%
+                        SAVE 40%
                       </span>
                       <p className="text-2xl font-bold text-emerald-300 group-hover:text-emerald-200 transition-colors">
-                        $0.99
+                        $50
                       </p>
                       <p className="text-xs text-zinc-400">per year</p>
                     </button>
