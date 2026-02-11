@@ -41,9 +41,9 @@ export default async function PlantDetailPage({ params }: PageProps) {
 
       <div className="relative">
         {/* Hero Section */}
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="max-w-7xl mx-auto px-6 pt-6 pb-8">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm mb-8">
+          <nav className="flex items-center gap-2 text-sm mb-4">
             <Link href={`/profiles/${username}`} className="text-zinc-400 hover:text-emerald-400 transition">
               @{username}
             </Link>
@@ -67,21 +67,20 @@ export default async function PlantDetailPage({ params }: PageProps) {
           </nav>
 
           {/* Header */}
-          <div className="mb-10">
-            <div className="flex items-center gap-2 mb-3">
-              <Leaf className="w-5 h-5 text-emerald-400" />
-              <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Plant Details</span>
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-1">
+              <Leaf className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-400 text-xs font-medium uppercase tracking-wider">Plant Details</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white">
               {plant.commonName || plant.botanicalName}
             </h1>
             {plant.commonName && plant.botanicalName && (
-              <h2 className="text-xl md:text-2xl italic text-emerald-400/70 font-light">
+              <h2 className="text-base md:text-lg italic text-emerald-400/70 font-light">
                 {plant.botanicalName}
               </h2>
             )}
-            {/* Decorative line */}
-            <div className="mt-6 h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent max-w-xl" />
+            <div className="mt-3 h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent max-w-xl" />
           </div>
 
           {/* Main Content Grid */}
