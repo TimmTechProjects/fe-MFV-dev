@@ -454,16 +454,16 @@ const ProfilePage= () => {
             {/* Collections Section - Garden Beds */}
             {activeSection === "collections" && (
               <section className="animate-fade-in-up">
-                <div className="flex items-center justify-between mb-3 sm:mb-6">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="p-1.5 sm:p-2 rounded-lg bg-emerald-500/10">
-                      <TreeDeciduous className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-500" />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <TreeDeciduous className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-xl font-semibold text-zinc-100">
+                      <h2 className="text-xl font-semibold text-zinc-100">
                         Albums
                       </h2>
-                      <p className="text-xs sm:text-sm text-zinc-400 hidden sm:block">
+                      <p className="text-sm text-zinc-400">
                         Organized plant albums
                       </p>
                     </div>
@@ -753,7 +753,7 @@ function CollectionBedCard({
       <LeafDecoration position="top-right" size="lg" />
       
       {/* Cover Image */}
-      <div className="relative aspect-[4/3] sm:h-40 sm:aspect-auto rounded-lg sm:rounded-xl overflow-hidden mb-1.5 sm:mb-4">
+      <div className="relative aspect-[3/2] sm:h-40 sm:aspect-auto rounded-lg sm:rounded-xl overflow-hidden mb-1 sm:mb-4">
         <img
           src={collection.thumbnailImage?.url || "/api/placeholder/400/200"}
           alt={collection.name}
@@ -764,10 +764,10 @@ function CollectionBedCard({
 
       {/* Content */}
       <div className="relative z-10">
-        <h3 className="text-sm sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
+        <h3 className="text-xs sm:text-lg font-semibold text-zinc-100 group-hover:text-emerald-500 transition-colors line-clamp-1">
           {collection.name}
         </h3>
-        <span className="text-xs sm:text-xs text-emerald-500">
+        <span className="text-[10px] sm:text-xs text-emerald-500">
           {collection.plants?.length || 0} plants
         </span>
       </div>
