@@ -408,7 +408,9 @@ html:not(.dark) .garden-header::after {
   background: rgba(39, 39, 42, 0.6);
   border: 1px solid rgba(113, 113, 122, 0.3);
   border-radius: 0.75rem;
-  padding: 0.875rem 1rem;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+  padding-right: 1rem;
   color: #fafafa;
   transition: all 0.2s ease;
 }
