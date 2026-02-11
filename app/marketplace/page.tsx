@@ -598,14 +598,14 @@ const MarketplacePage = () => {
   ];
 
   return (
-    <div className="bg-black min-h-screen text-white">
+    <div className="bg-white dark:bg-black min-h-screen text-zinc-900 dark:text-white">
       {showFilters && (
         <>
           <div
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowFilters(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-zinc-950 shadow-2xl flex flex-col rounded-r-2xl border-r border-zinc-800">
+          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-zinc-950 shadow-2xl flex flex-col rounded-r-2xl border-r border-gray-200 dark:border-zinc-800">
             <div className="flex items-center justify-between p-6">
               <h2 className="text-xl font-bold text-white">Filters</h2>
               <button
@@ -652,7 +652,7 @@ const MarketplacePage = () => {
                 <select
                   value={selectedPrice || ""}
                   onChange={(e) => setSelectedPrice(e.target.value || null)}
-                  className="w-full bg-zinc-900 text-zinc-100 rounded-xl px-3 py-2.5 border border-zinc-800 focus:outline-none focus:border-[#81a308]/50 text-sm"
+                  className="w-full bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl px-3 py-2.5 border border-gray-300 dark:border-zinc-800 focus:outline-none focus:border-[#81a308]/50 text-sm"
                 >
                   <option value="">Any Price</option>
                   {uniquePrices.map((price) => (
@@ -693,7 +693,7 @@ const MarketplacePage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-1">
+            <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-1">
               Plant <span className="text-[#81a308]">Marketplace</span>
             </h1>
             <p className="text-zinc-500 text-sm">
@@ -712,7 +712,7 @@ const MarketplacePage = () => {
           )}
 
           {user && !isPremium && (
-            <div className="text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2">
+            <div className="text-xs text-zinc-500 bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-3 py-2">
               Upgrade to{" "}
               <span className="text-[#81a308] font-medium">Premium</span> to
               sell
@@ -763,12 +763,12 @@ const MarketplacePage = () => {
               placeholder="Search marketplace..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-zinc-900/60 text-white text-sm rounded-full border border-zinc-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-zinc-500"
+              className="w-full pl-9 pr-3 py-2 bg-gray-100 dark:bg-zinc-900/60 text-zinc-900 dark:text-white text-sm rounded-full border border-gray-200 dark:border-zinc-800/50 focus:outline-none focus:border-[#81a308]/30 transition-all placeholder-zinc-500"
             />
           </div>
           <button
             onClick={() => setShowFilters(true)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900/60 text-zinc-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-zinc-800/50"
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-zinc-900/60 text-zinc-700 dark:text-zinc-300 rounded-full text-sm hover:bg-[#81a308]/10 hover:text-[#81a308] transition-all border border-gray-200 dark:border-zinc-800/50"
           >
             <Filter size={14} />
             <span className="hidden sm:inline">Filters</span>
@@ -776,7 +776,7 @@ const MarketplacePage = () => {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-zinc-900/60 text-zinc-300 text-sm rounded-full px-3 py-2 border border-zinc-800/50 focus:outline-none cursor-pointer hidden sm:block"
+            className="bg-white dark:bg-zinc-900/60 text-zinc-900 dark:text-zinc-300 text-sm rounded-full px-3 py-2 border border-gray-300 dark:border-zinc-800/50 focus:outline-none cursor-pointer hidden sm:block"
           >
             {Object.entries(sortLabels).map(([key, label]) => (
               <option key={key} value={key}>
@@ -805,7 +805,7 @@ const MarketplacePage = () => {
             {sortedListings.map((listing) => (
               <div
                 key={listing.id}
-                className="bg-zinc-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-zinc-800/30 hover:border-[#81a308]/20 hover:shadow-lg hover:shadow-[#81a308]/5"
+                className="bg-white dark:bg-zinc-900/40 rounded-2xl overflow-hidden transition-all duration-200 group border border-gray-200 dark:border-zinc-800/30 hover:border-[#81a308]/20 hover:shadow-lg hover:shadow-[#81a308]/5"
               >
                 <div className="relative aspect-square overflow-hidden">
                   <img
@@ -841,7 +841,7 @@ const MarketplacePage = () => {
                 </div>
 
                 <div className="p-3 sm:p-4">
-                  <h3 className="font-medium text-white text-sm mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer">
+                  <h3 className="font-medium text-zinc-900 dark:text-white text-sm mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer">
                     {listing.plantName}
                   </h3>
 

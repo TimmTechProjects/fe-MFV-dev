@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const SellerProtection = () => {
   return (
-    <div className="max-w-3xl mx-auto py-12 px-6 text-sm leading-relaxed">
-      <h1 className="text-2xl font-bold mb-4">Seller Protection Program</h1>
-      <p>Last updated: February 11, 2026</p>
+    <div className="max-w-3xl mx-auto py-12 px-6 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">
+      <h1 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-white">Seller Protection Program</h1>
+      <p className="text-zinc-500 dark:text-zinc-400">Last updated: February 11, 2026</p>
 
       <p className="mt-4">
         FloraVault is committed to creating a safe and trustworthy marketplace
@@ -157,7 +157,7 @@ const SellerProtection = () => {
       <div className="mt-8 p-4 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
         <p className="text-xs text-zinc-500">
           See also:{" "}
-          <Link href="/buyer-protection" className="underline hover:text-zinc-300">
+          <Link href="/buyer-protection" className="underline hover:text-[#81a308]">
             Buyer Protection Program
           </Link>
           {" | "}

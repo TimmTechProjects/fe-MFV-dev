@@ -72,15 +72,15 @@ const SignUp = () => {
 
   return (
     <div className="flex min-h-[80vh] pt-5 items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6 md:p-8 shadow-xl shadow-black/20">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 p-6 md:p-8 shadow-xl shadow-black/10 dark:shadow-black/20">
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-full bg-[#81a308]/15 flex items-center justify-center mx-auto mb-4">
             <svg className="w-6 h-6 text-[#81a308]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
           </div>
-          <h2 className="text-2xl font-bold text-zinc-100">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
             Create Your Account
           </h2>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Join Floral Vault and start your botanical journey
           </p>
         </div>
@@ -96,9 +96,9 @@ const SignUp = () => {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className="text-zinc-300 text-sm">First name</FormLabel>
+                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">First name</FormLabel>
                     <FormControl>
-                      <Input {...field} className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
+                      <Input {...field} className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                     </FormControl>
                     <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
@@ -109,9 +109,9 @@ const SignUp = () => {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className="text-zinc-300 text-sm">Last name</FormLabel>
+                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Last name</FormLabel>
                     <FormControl>
-                      <Input {...field} className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
+                      <Input {...field} className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                     </FormControl>
                     <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
@@ -124,9 +124,9 @@ const SignUp = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300 text-sm">Username</FormLabel>
+                  <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Username</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
+                    <Input type="text" {...field} className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11" />
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs" />
                 </FormItem>
@@ -139,12 +139,12 @@ const SignUp = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className="text-zinc-300 text-sm">Email Address</FormLabel>
+                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Email Address</FormLabel>
                     <FormControl>
                                             <Input
                                               type="email"
                                               {...field}
-                                              className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
+                                              className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
                                             />
                     </FormControl>
                     <FormMessage className="text-red-400 text-xs" />
@@ -157,13 +157,13 @@ const SignUp = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className="text-zinc-300 text-sm">Password</FormLabel>
+                    <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Password</FormLabel>
                     <FormControl>
                       <div className="relative">
                                                 <Input
                                                   type={showPassword ? "text" : "password"}
                                                   {...field}
-                                                  className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
+                                                  className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
                                                 />
                         <button
                           type="button"
@@ -199,10 +199,10 @@ const SignUp = () => {
 
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-700" />
+                <div className="w-full border-t border-gray-200 dark:border-zinc-700" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-zinc-900 px-3 text-zinc-500">or continue with</span>
+                <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-500">or continue with</span>
               </div>
             </div>
 
@@ -213,7 +213,7 @@ const SignUp = () => {
           </form>
         </Form>
 
-        <div className="mt-6 text-center text-sm text-zinc-400">
+        <div className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Already have an account?{" "}
           <Link
             href="/login"
@@ -235,7 +235,7 @@ const OAuthButton = ({
   label: string;
 }) => (
   <button
-    className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 hover:border-zinc-600 transition-all duration-200"
+    className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-700 hover:border-gray-400 dark:hover:border-zinc-600 transition-all duration-200"
     type="button"
   >
     {icon}

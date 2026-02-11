@@ -229,7 +229,7 @@ const SettingsPage = () => {
     (user.avatarUrl?.includes("googleusercontent.com") ?? false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-zinc-900 dark:text-zinc-100">
       <div className="botanical-pattern leaf-pattern">
         <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
           <div className="flex items-center gap-3 mb-2">
@@ -237,10 +237,10 @@ const SettingsPage = () => {
               <Leaf className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-zinc-50">
+              <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
                 Account Settings
               </h1>
-              <p className="text-sm text-zinc-400 mt-1">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                 Manage your profile, security, and subscription
               </p>
             </div>
@@ -249,7 +249,7 @@ const SettingsPage = () => {
           <section className="garden-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
               <User className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-lg font-semibold text-zinc-100">Profile</h2>
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Profile</h2>
             </div>
 
             <div className="flex flex-col items-center gap-4">
@@ -299,7 +299,7 @@ const SettingsPage = () => {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel className="text-zinc-300">
+                        <FormLabel className="text-zinc-700 dark:text-zinc-300">
                           First Name
                         </FormLabel>
                         <FormControl>
@@ -317,7 +317,7 @@ const SettingsPage = () => {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel className="text-zinc-300">
+                        <FormLabel className="text-zinc-700 dark:text-zinc-300">
                           Last Name
                         </FormLabel>
                         <FormControl>
@@ -337,7 +337,7 @@ const SettingsPage = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-zinc-300">Email</FormLabel>
+                      <FormLabel className="text-zinc-700 dark:text-zinc-300">Email</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
@@ -361,7 +361,7 @@ const SettingsPage = () => {
                   name="bio"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-zinc-300">Bio</FormLabel>
+                      <FormLabel className="text-zinc-700 dark:text-zinc-300">Bio</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
@@ -396,7 +396,7 @@ const SettingsPage = () => {
           <section className="garden-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
               <Shield className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-lg font-semibold text-zinc-100">Security</h2>
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Security</h2>
             </div>
 
             {isGoogleUser ? (
@@ -418,7 +418,7 @@ const SettingsPage = () => {
                     name="currentPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-300">
+                        <FormLabel className="text-zinc-700 dark:text-zinc-300">
                           Current Password
                         </FormLabel>
                         <FormControl>
@@ -442,7 +442,7 @@ const SettingsPage = () => {
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel className="text-zinc-300">
+                          <FormLabel className="text-zinc-700 dark:text-zinc-300">
                             New Password
                           </FormLabel>
                           <FormControl>
@@ -461,7 +461,7 @@ const SettingsPage = () => {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel className="text-zinc-300">
+                          <FormLabel className="text-zinc-700 dark:text-zinc-300">
                             Confirm Password
                           </FormLabel>
                           <FormControl>
@@ -499,7 +499,7 @@ const SettingsPage = () => {
           <section className="garden-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
               <CreditCard className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-lg font-semibold text-zinc-100">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 Subscription
               </h2>
             </div>
@@ -519,7 +519,7 @@ const SettingsPage = () => {
                 )}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-zinc-100">
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">
                   {isPremium ? "Premium" : "Free"} Plan
                 </p>
                 <p className="text-sm text-zinc-400">
@@ -586,7 +586,7 @@ const SettingsPage = () => {
                 <div className="p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 via-zinc-800/50 to-amber-500/5 border border-emerald-500/20">
                   <div className="flex items-center gap-2 mb-3">
                     <Crown className="w-5 h-5 text-amber-400" />
-                    <h3 className="font-semibold text-zinc-100">
+                    <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
                       Upgrade to Premium
                     </h3>
                   </div>

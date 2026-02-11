@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut } from "lucide-react";
+import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ResultsCard from "./cards/ResultsCard";
@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { UserResult } from "@/types/users";
 import useAuth from "@/redux/hooks/useAuth";
+import { useTheme } from "@/context/ThemeContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,6 +42,7 @@ const Header = () => {
   const { user, LogoutUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname() || "/";
+  const { theme, toggleTheme } = useTheme();
 
   // Debounce search input
   useEffect(() => {
@@ -92,11 +94,11 @@ const Header = () => {
     plantSuggestions.length > 0 || userSuggestions.length > 0;
 
   return (
-    <header className="bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 border-b border-[#3a3a3a]">
+    <header className="bg-white dark:bg-[#2b2a2a] w-full h-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 border-b border-gray-200 dark:border-[#3a3a3a]">
       {/* Logo - Responsive sizing */}
       <Link href="/" className="flex-shrink-0">
-        <h1 className="text-2xl sm:text-3xl text-white font-bold tracking-tight">
-          <span className="text-[#ecfaec]">My</span>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          <span className="text-emerald-800 dark:text-[#ecfaec]">My</span>
           <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
             Floral
           </span>
@@ -116,7 +118,7 @@ const Header = () => {
               onFocus={() => hasSuggestions && setIsPopoverOpen(true)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
               onBlur={() => setTimeout(() => setIsPopoverOpen(false), 100)}
-              className="w-full pr-10 rounded-2xl bg-white border-0 focus-visible:ring-2 focus-visible:ring-[#81a308]"
+              className="w-full pr-10 rounded-2xl bg-gray-100 dark:bg-white border-0 focus-visible:ring-2 focus-visible:ring-[#81a308] text-zinc-900"
             />
             <button
               type="submit"
@@ -130,24 +132,24 @@ const Header = () => {
           {isPopoverOpen && (
             <div
               onMouseDown={(e) => e.preventDefault()}
-              className="absolute top-full mt-1 w-full bg-[#3a3a3a] rounded-lg shadow-xl border border-[#4a4a4a] overflow-hidden z-50"
+              className="absolute top-full mt-1 w-full bg-white dark:bg-[#3a3a3a] rounded-lg shadow-xl border border-gray-200 dark:border-[#4a4a4a] overflow-hidden z-50"
             >
               {isLoading ? (
                 <div className="p-3 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#81a308]"></div>
-                  <span className="ml-2 text-white text-sm">Loading...</span>
+                  <span className="ml-2 text-zinc-700 dark:text-white text-sm">Loading...</span>
                 </div>
               ) : (
                 <div className="max-h-[70vh] overflow-y-auto">
                   {plantSuggestions.length > 0 && (
                     <div className="py-1">
-                      <p className="px-3 py-1 text-xs text-gray-400  sticky top-0">
+                      <p className="px-3 py-1 text-xs text-gray-500 dark:text-gray-400 sticky top-0">
                         Plants
                       </p>
                       {plantSuggestions.map((plant) => (
                         <div
                           key={plant.id}
-                          className="hover:bg-[#4a4a4a] transition-colors  my-2 "
+                          className="hover:bg-gray-100 dark:hover:bg-[#4a4a4a] transition-colors my-2"
                           onClick={() => setIsPopoverOpen(false)}
                         >
                           <ResultsCard plant={plant} compact />
@@ -158,13 +160,13 @@ const Header = () => {
 
                   {userSuggestions.length > 0 && (
                     <div className="py-1">
-                      <p className="px-3 py-1 text-xs text-gray-400   sticky top-0">
+                      <p className="px-3 py-1 text-xs text-gray-500 dark:text-gray-400 sticky top-0">
                         Users
                       </p>
                       {userSuggestions.map((user) => (
                         <div
                           key={user.id}
-                          className="hover:bg-[#4a4a4a] transition-colors my-2"
+                          className="hover:bg-gray-100 dark:hover:bg-[#4a4a4a] transition-colors my-2"
                           onClick={() => setIsPopoverOpen(false)}
                         >
                           <ResultsCard user={user} compact />
@@ -190,12 +192,24 @@ const Header = () => {
 
           return (
             <Link key={link.href} href={href}>
-              <span className="text-white/90 hover:text-[#81a308] transition-colors text-sm md:text-base">
+              <span className="text-zinc-700 dark:text-white/90 hover:text-[#81a308] transition-colors text-sm md:text-base">
                 {link.label}
               </span>
             </Link>
           );
         })}
+
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-zinc-600" />
+          )}
+        </button>
 
         {user ? (
           <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
@@ -211,9 +225,8 @@ const Header = () => {
               </Avatar>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="flex flex-col bg-zinc-900 text-white cursor-pointer rounded-xl w-64 mt-1 mr-5 border border-zinc-800 p-1.5 scrollbar-none">
-              {/* Dropdown header with avatar */}
-              <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-3">
+            <DropdownMenuContent className="flex flex-col bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white cursor-pointer rounded-xl w-64 mt-1 mr-5 border border-gray-200 dark:border-zinc-800 p-1.5 scrollbar-none">
+              <div className="px-4 py-3 border-b border-gray-200 dark:border-zinc-800 flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatarUrl || "/default-avatar.png"} />
                   <AvatarFallback className="bg-white text-[#2b2a2a]">
@@ -222,12 +235,12 @@ const Header = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-100 truncate">
+                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                     {user?.firstName && user?.lastName
                       ? `${user.firstName} ${user.lastName}`
                       : user?.username}
                   </p>
-                  <p className="text-xs text-zinc-400 truncate">@{user?.username}</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">@{user?.username}</p>
                 </div>
               </div>
 
@@ -294,25 +307,36 @@ const Header = () => {
         )}
       </nav>
 
-      {/* Mobile Navigation */}
-      <div className="flex lg:hidden">
+      <div className="flex lg:hidden items-center gap-2">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-zinc-600" />
+          )}
+        </button>
+
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="text-white hover:bg-[#3a3a3a]"
+              className="text-zinc-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#3a3a3a]"
             >
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="bg-[#1a1a1a] text-white border-l border-[#2a2a2a] p-0"
+            className="bg-white dark:bg-[#1a1a1a] text-zinc-900 dark:text-white border-l border-gray-200 dark:border-[#2a2a2a] p-0"
           >
             <SheetHeader>
-              <SheetTitle className="text-2xl text-white">
-                <span className="text-[#ecfaec]">My</span>
+              <SheetTitle className="text-2xl">
+                <span className="text-emerald-800 dark:text-[#ecfaec]">My</span>
                 <span className="bg-gradient-to-r from-[#dab9df] to-[#e5b3ec] bg-clip-text text-transparent">
                   Floral
                 </span>
@@ -327,7 +351,7 @@ const Header = () => {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pr-10 rounded-full bg-[#2a2a2a] text-white border border-[#3a3a3a] placeholder-gray-500 focus-visible:ring-1 focus-visible:ring-[#81a308]"
+                  className="w-full pr-10 rounded-full bg-gray-100 dark:bg-[#2a2a2a] text-zinc-900 dark:text-white border border-gray-200 dark:border-[#3a3a3a] placeholder-gray-500 focus-visible:ring-1 focus-visible:ring-[#81a308]"
                 />
                 <Search className="absolute right-7 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
               </div>
@@ -342,7 +366,7 @@ const Header = () => {
 
                 return (
                   <Link key={link.href} href={href}>
-                    <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                    <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                       {link.label}
                     </div>
                   </Link>
@@ -351,7 +375,7 @@ const Header = () => {
 
               {user ? (
                 <>
-                  <div className="mt-4 pt-4 border-t border-[#2a2a2a]">
+                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#2a2a2a]">
                     <Link href={`/profiles/${user.username}`}>
                       <div className="flex items-center py-3 px-4 rounded-xl hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                         <Avatar className="h-8 w-8 mr-3">
@@ -368,7 +392,7 @@ const Header = () => {
                     </Link>
                     {authUserLinks.map((link) => (
                       <Link key={link.href} href={link.href}>
-                        <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
                           {link.label}
                         </div>
                       </Link>

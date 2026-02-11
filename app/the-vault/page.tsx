@@ -139,9 +139,9 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
       <div className="max-w-6xl mx-auto flex">
-        <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-800/50 h-screen sticky top-0">
+        <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-200 dark:border-gray-800/50 h-screen sticky top-0">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
@@ -175,7 +175,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               Create Post
             </Link>
 
-            <div className="mt-8 p-4 rounded-xl bg-gray-900/50 border border-gray-800/50">
+            <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
               <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-sm">
@@ -195,8 +195,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           </div>
         </aside>
 
-        <main className="flex-1 border-r border-gray-800/50 pb-20 lg:pb-0">
-          <div className="sticky top-0 bg-black/90 backdrop-blur-xl border-b border-gray-800/50 z-10">
+        <main className="flex-1 border-r border-gray-200 dark:border-gray-800/50 pb-20 lg:pb-0">
+          <div className="sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10">
             <div className="p-4">
               {showMarketplaceContent && (
                 <h1 className="text-xl font-bold">Marketplace</h1>
@@ -228,7 +228,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             )}
           </div>
 
-          <div className="hidden lg:block p-4 border-b border-gray-800/50">
+          <div className="hidden lg:block p-4 border-b border-gray-200 dark:border-gray-800/50">
             <div className="flex gap-3">
               <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#81a308]/30 to-emerald-500/20 flex-shrink-0 flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-[#81a308]" />
@@ -237,7 +237,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 <input
                   type="text"
                   placeholder="Share something with the community..."
-                  className="w-full bg-gray-900/60 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-800/50 transition-all"
+                  className="w-full bg-gray-100 dark:bg-gray-900/60 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-200 dark:border-gray-800/50 transition-all"
                 />
               </div>
             </div>
@@ -335,7 +335,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           )}
 
           {mobileTab !== "search" && !showMarketplaceContent ? (
-            <div className="divide-y divide-gray-800/50">
+            <div className="divide-y divide-gray-200 dark:divide-gray-800/50">
               {loading ? (
                 <Loading />
               ) : fetchError ? (
@@ -371,7 +371,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           ) : null}
 
           {!loading && totalPages > 1 && !showMarketplaceContent && (
-            <div className="p-4 border-t border-gray-800/50">
+            <div className="p-4 border-t border-gray-200 dark:border-gray-800/50">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -389,11 +389,11 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               placeholder="Search plants, people..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-900/60 border border-gray-800/50 rounded-lg outline-none text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all text-sm"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800/50 rounded-lg outline-none text-zinc-900 dark:text-white placeholder-gray-500 focus:border-[#81a308]/40 transition-all text-sm"
             />
           </div>
 
-          <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
+          <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-[#81a308]" />
               <h2 className="font-bold text-base">Trending</h2>
@@ -422,7 +422,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           </div>
 
-          <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/30">
+          <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-4 h-4 text-emerald-400" />
               <h2 className="font-bold text-base">Suggested Growers</h2>

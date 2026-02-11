@@ -91,15 +91,15 @@ const SignInForm = () => {
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6 md:p-8 shadow-xl shadow-black/20">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 p-6 md:p-8 shadow-xl shadow-black/10 dark:shadow-black/20">
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-full bg-[#81a308]/15 flex items-center justify-center mx-auto mb-4">
             <svg className="w-6 h-6 text-[#81a308]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
           </div>
-          <h2 className="text-2xl font-bold text-zinc-100">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
             Welcome Back
           </h2>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Sign in to your Floral Vault account
           </p>
         </div>
@@ -120,11 +120,11 @@ const SignInForm = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300 text-sm">Username or Email</FormLabel>
+                  <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Username or Email</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
+                      className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11"
                     />
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs" />
@@ -137,13 +137,13 @@ const SignInForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300 text-sm">Password</FormLabel>
+                  <FormLabel className="text-zinc-700 dark:text-zinc-300 text-sm">Password</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
                         {...field}
-                        className="bg-zinc-800 border-zinc-700 text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
+                        className="bg-gray-50 dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:border-[#81a308]/50 focus-visible:ring-[#81a308]/30 rounded-xl h-11 pr-10"
                       />
                       <button
                         type="button"
@@ -181,16 +181,16 @@ const SignInForm = () => {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-zinc-700" />
+            <div className="w-full border-t border-gray-200 dark:border-zinc-700" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-zinc-900 px-3 text-zinc-500">or continue with</span>
+            <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-500">or continue with</span>
           </div>
         </div>
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 hover:border-zinc-600 transition-all duration-200"
+          className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-700 hover:border-gray-400 dark:hover:border-zinc-600 transition-all duration-200"
           disabled={btnLoadings.google}
         >
           {btnLoadings.google ? (
@@ -206,7 +206,7 @@ const SignInForm = () => {
           )}
         </button>
 
-        <div className="mt-6 text-center text-sm text-zinc-400">
+        <div className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"

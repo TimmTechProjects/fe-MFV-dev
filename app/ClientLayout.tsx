@@ -12,14 +12,14 @@ export default function ClientLayout({
 
   if (loading || !initialized) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#121212] z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-[#121212] z-50">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#81a308] border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#121212] ">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#121212] text-zinc-900 dark:text-white">
       <Header />
       <main className="flex-grow">{children}</main>
       <Footer />

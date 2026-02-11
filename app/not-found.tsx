@@ -8,10 +8,10 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#121212] px-6 text-white text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-[#121212] px-6 text-zinc-900 dark:text-white text-center">
       <h1 className="text-7xl font-bold text-[#81a308] mb-2">404</h1>
       <p className="text-xl font-semibold mb-1">Page not found</p>
-      <p className="text-sm text-gray-400 mb-8">
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
 
@@ -19,7 +19,7 @@ export default function NotFound() {
         <Button
           variant="outline"
           onClick={() => router.back()}
-          className="flex items-center gap-2 border-gray-700 text-white hover:bg-gray-800 transition rounded-full px-6"
+          className="flex items-center gap-2 border-gray-300 dark:border-gray-700 text-zinc-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition rounded-full px-6"
         >
           <ArrowLeft className="w-4 h-4" />
           Go Back

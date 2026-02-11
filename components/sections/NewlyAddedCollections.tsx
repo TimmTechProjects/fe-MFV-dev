@@ -4,12 +4,12 @@ import PlantCarousel from "./PlantCarousel";
 
 export default function NewCollectionsSection() {
   return (
-    <div className="w-full bg-[#121212] text-white py-12 px-4">
+    <div className="w-full bg-gray-50 dark:bg-[#121212] text-zinc-900 dark:text-white py-12 px-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Heading and View All Button */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4">
           <Link href="/the-vault">
-            <h2 className="text-3xl font-bold text-white cursor-pointer">
+            <h2 className="text-3xl font-bold text-zinc-900 dark:text-white cursor-pointer">
               Newly Added Albums
             </h2>
           </Link>
