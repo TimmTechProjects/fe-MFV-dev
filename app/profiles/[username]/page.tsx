@@ -134,7 +134,7 @@ const ProfilePage= () => {
       <div className="min-h-screen botanical-gradient botanical-pattern flex items-center justify-center">
         <BotanicalEmptyState
           icon={<Sprout className="w-10 h-10 text-[var(--botanical-sage)]" />}
-          title="Gardener not found"
+          title="Garden not found"
           description="This garden doesn't exist or has been moved."
           action={
             <BotanicalButton onClick={() => router.push("/")}>
