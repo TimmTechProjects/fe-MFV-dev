@@ -133,6 +133,22 @@ const useAuth = () => {
     }
   };
 
+  const ChangeUsername = async (newUsername) => {
+    try {
+      const res = await apiput(`api/v1/auth/change-username`, {
+        username: newUsername,
+      });
+      if (res?.data?.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        dispatch(setUser(res.data.user));
+      }
+      return res?.data || null;
+    } catch (error) {
+      console.error("API Error:", error);
+      return null;
+    }
+  };
+
   return {
     user,
     getLogin,
@@ -144,6 +160,7 @@ const useAuth = () => {
     EditProfile,
     GetProfile,
     ChangePassword,
+    ChangeUsername,
     CreateCheckoutSession,
     ManageSubscription,
   };

@@ -12,6 +12,7 @@ export interface User {
   subscriptionId?: string;
   subscriptionEndsAt?: string | Date;
   authProvider?: string;
+  usernameLastChangedAt?: string | Date;
 }
 
 export interface UserCredentials extends Pick<User, "id" | "username"> {
