@@ -11,6 +11,7 @@ import {
   cn,
   getUserCollectionsWithAuth,
   savePlantToAlbum,
+  removePlantFromAlbum,
   togglePlantLike,
   getPlantLikeStatus,
 } from "@/lib/utils";
@@ -63,12 +64,23 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   }, [user, plantId, router]);
 
   const handleTogglePlant = async (collectionId: string) => {
-    const result = await savePlantToAlbum(collectionId, plantId);
+    const isCurrentlyInAlbum = plantAlbumMap[collectionId];
 
     setPlantAlbumMap((prev) => ({
       ...prev,
       [collectionId]: !prev[collectionId],
     }));
+
+    const result = isCurrentlyInAlbum
+      ? await removePlantFromAlbum(collectionId, plantId)
+      : await savePlantToAlbum(collectionId, plantId);
+
+    if (!result.success) {
+      setPlantAlbumMap((prev) => ({
+        ...prev,
+        [collectionId]: isCurrentlyInAlbum,
+      }));
+    }
 
     toast[result.success ? "success" : "error"](result.message);
   };
