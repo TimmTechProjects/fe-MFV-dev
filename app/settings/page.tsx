@@ -553,7 +553,8 @@ const SettingsPage = () => {
                       value={newUsername}
                       onChange={(e) => handleUsernameChange(e.target.value)}
                       placeholder="Enter new username"
-                      className="botanical-input border-zinc-700 focus:border-emerald-500/50 pl-10 pr-10"
+                      className="botanical-input border-zinc-700 focus:border-emerald-500/50"
+                      style={{ paddingLeft: "2.5rem" }}
                       maxLength={30}
                     />
                     {usernameStatus === "checking" && (
