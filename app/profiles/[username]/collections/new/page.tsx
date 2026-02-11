@@ -158,12 +158,12 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Link
-            href={username ? `/profiles/${username}?section=collections` : "/"}
+          <button
+            onClick={() => router.back()}
             className="p-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-emerald-500" />
-          </Link>
+          </button>
           <div>
             <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
               <TreeDeciduous className="w-6 h-6 text-emerald-500" />
