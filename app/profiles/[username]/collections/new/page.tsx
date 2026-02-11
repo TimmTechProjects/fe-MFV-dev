@@ -160,7 +160,9 @@ const NewCollectionPage = ({ params }: NewCollectionPageProps) => {
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => {
-              if (window.history.length > 1) {
+              if (redirectTo) {
+                router.push(redirectTo);
+              } else if (window.history.length > 1) {
                 router.back();
               } else {
                 router.push("/");
