@@ -817,6 +817,27 @@ export async function deleteCareReminder(id: string): Promise<boolean> {
   }
 }
 
+export async function togglePlantGarden(
+  plantId: string
+): Promise<{ id: string; isGarden: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/plants/${plantId}/garden`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error toggling plant garden status:", error);
+    return null;
+  }
+}
+
 export async function togglePlantLike(
   plantId: string
 ): Promise<{ liked: boolean } | null> {

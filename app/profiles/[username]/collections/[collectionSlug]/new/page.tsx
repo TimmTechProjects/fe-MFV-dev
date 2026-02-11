@@ -111,6 +111,8 @@ const NewPlantPage = () => {
 
   const isFreeUser = user?.plan === "free";
 
+  const [stepErrors, setStepErrors] = useState<string[]>([]);
+
   const form = useForm<PlantSchema>({
     resolver: zodResolver(plantSchema),
     defaultValues: {
@@ -123,6 +125,7 @@ const NewPlantPage = () => {
       tags: [],
       images: [],
       isPublic: true,
+      isGarden: false,
     },
   });
 
@@ -348,13 +351,41 @@ const NewPlantPage = () => {
     }
   };
 
+  const validateStep = (): string[] => {
+    const values = form.getValues();
+    const errors: string[] = [];
+    switch (currentStep) {
+      case 0:
+        if (values.images.length === 0) errors.push("At least one photo is required");
+        break;
+      case 1:
+        if (!values.commonName || values.commonName.trim().length < 2) errors.push("Common name is required (min 2 characters)");
+        if (!values.botanicalName || values.botanicalName.trim().length < 2) errors.push("Botanical name is required (min 2 characters)");
+        if (!values.description || values.description.replace(/<[^>]*>/g, "").trim().length < 10) errors.push("Description must be at least 10 characters");
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
+    return errors;
+  };
+
   const nextStep = () => {
+    const errors = validateStep();
+    if (errors.length > 0) {
+      setStepErrors(errors);
+      errors.forEach((err) => toast.error(err));
+      return;
+    }
+    setStepErrors([]);
     if (currentStep < WIZARD_STEPS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     }
   };
 
   const prevStep = () => {
+    setStepErrors([]);
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     }
@@ -366,11 +397,11 @@ const NewPlantPage = () => {
       case 0:
         return values.images.length > 0;
       case 1:
-        return values.commonName.trim() !== "";
+        return values.commonName.trim().length >= 2 && values.botanicalName.trim().length >= 2 && values.description.replace(/<[^>]*>/g, "").trim().length >= 10;
       case 2:
-        return true; // Optional fields
+        return true;
       case 3:
-        return true; // Optional fields
+        return true;
       default:
         return true;
     }
@@ -479,6 +510,17 @@ const NewPlantPage = () => {
                     )}
                   />
 
+                  {stepErrors.length > 0 && currentStep === 0 && (
+                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 space-y-1">
+                      {stepErrors.map((err, i) => (
+                        <p key={i} className="text-sm text-red-400 flex items-center gap-2">
+                          <X className="w-4 h-4 flex-shrink-0" />
+                          {err}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
                     <Info className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-zinc-400">
@@ -494,6 +536,16 @@ const NewPlantPage = () => {
               )}
 
               {/* Step 2: Basic Info */}
+              {stepErrors.length > 0 && currentStep === 1 && (
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 mb-6 space-y-1">
+                  {stepErrors.map((err, i) => (
+                    <p key={i} className="text-sm text-red-400 flex items-center gap-2">
+                      <X className="w-4 h-4 flex-shrink-0" />
+                      {err}
+                    </p>
+                  ))}
+                </div>
+              )}
               {currentStep === 1 && (
                 <div className="space-y-6 animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-6">
@@ -861,6 +913,48 @@ const NewPlantPage = () => {
                       )}
                     />
                   </div>
+
+                  {/* Garden Toggle */}
+                  <div className="pt-6 border-t border-zinc-700/50">
+                    <FormField
+                      control={form.control}
+                      name="isGarden"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg transition-colors ${
+                                field.value
+                                  ? "bg-emerald-500/15"
+                                  : "bg-zinc-800/50"
+                              }`}>
+                                <Sprout className={`w-5 h-5 ${
+                                  field.value ? "text-emerald-500" : "text-zinc-500"
+                                }`} />
+                              </div>
+                              <div>
+                                <FormLabel className="text-zinc-100 font-medium cursor-pointer">
+                                  Add to My Garden
+                                </FormLabel>
+                                <p className="text-sm text-zinc-500">
+                                  {field.value
+                                    ? "This plant will appear in your Garden"
+                                    : "This plant will not be in your Garden"}
+                                </p>
+                              </div>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value ?? false}
+                                onCheckedChange={field.onChange}
+                                className="data-[state=checked]:bg-emerald-600"
+                              />
+                            </FormControl>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               )}
 
@@ -882,7 +976,20 @@ const NewPlantPage = () => {
                     <button
                       key={index}
                       type="button"
-                      onClick={() => setCurrentStep(index)}
+                      onClick={() => {
+                        if (index > currentStep) {
+                          const errors = validateStep();
+                          if (errors.length > 0) {
+                            setStepErrors(errors);
+                            errors.forEach((err) => toast.error(err));
+                            return;
+                          }
+                          setStepErrors([]);
+                        } else {
+                          setStepErrors([]);
+                        }
+                        setCurrentStep(index);
+                      }}
                       className={`w-2 h-2 rounded-full transition-all ${
                         index === currentStep
                           ? "w-6 bg-emerald-500"
@@ -905,7 +1012,8 @@ const NewPlantPage = () => {
                   </BotanicalButton>
                 ) : (
                   <BotanicalButton
-                    type="submit"
+                    type="button"
+                    onClick={() => form.handleSubmit(onSubmit)()}
                     disabled={isSubmitting || !canProceed()}
                   >
                     {isSubmitting ? (
