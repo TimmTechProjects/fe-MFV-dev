@@ -546,7 +546,7 @@ const SettingsPage = () => {
                     New Username
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-500 select-none pointer-events-none">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-500 select-none pointer-events-none">
                       @
                     </span>
                     <Input
@@ -554,7 +554,7 @@ const SettingsPage = () => {
                       onChange={(e) => handleUsernameChange(e.target.value)}
                       placeholder="Enter new username"
                       className="botanical-input border-zinc-700 focus:border-emerald-500/50"
-                      style={{ paddingLeft: "2.5rem" }}
+                      style={{ paddingLeft: "1.75rem" }}
                       maxLength={30}
                     />
                     {usernameStatus === "checking" && (
