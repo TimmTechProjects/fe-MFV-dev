@@ -14,9 +14,9 @@ export default function NewCollectionsSection() {
             </h2>
           </Link>
 
-          <Link href="/the-vault">
+          <Link href="/plants">
             <Button className="mt-4 sm:mt-0 bg-[#81a308] text-white font-medium py-2 px-6 rounded-[20px] uppercase text-sm tracking-wide">
-              See All Newest Listings
+              Discover All Plants
             </Button>
           </Link>
         </div>
