@@ -23,6 +23,9 @@ interface Collection {
   thumbnailImage?: {
     url: string;
   } | null;
+  _count?: {
+    plants: number;
+  };
   plants?: {
     images: {
       url: string;
@@ -176,7 +179,7 @@ const CollectionsPage = ({ params }: CollectionsPageProps) => {
                         </p>
                       )}
                       <div className="mt-auto text-white/80 text-xs">
-                        {(collection.plants?.length || 0)} {(collection.plants?.length || 0) === 1 ? "plant" : "plants"}
+                        {(collection._count?.plants ?? collection.plants?.length ?? 0)} {(collection._count?.plants ?? collection.plants?.length ?? 0) === 1 ? "plant" : "plants"}
                       </div>
                     </div>
                   </div>
