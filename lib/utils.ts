@@ -455,6 +455,41 @@ export async function savePlantToAlbum(
   }
 }
 
+export async function removePlantFromAlbum(
+  collectionId: string,
+  plantId: string
+): Promise<{ success: boolean; message: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "No token found" };
+
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/collections/${collectionId}/remove-plant`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ plantId }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Failed to remove plant" };
+    }
+
+    return { success: true, message: "Plant removed from album successfully." };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
 export async function setCollectionThumbnail(
   collectionId: string,
   plantImageId: string
