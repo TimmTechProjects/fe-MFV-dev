@@ -22,18 +22,27 @@ import {
 
 const PLANT_TYPE_ICONS: Record<string, React.ReactNode> = {
   tree: <TreeDeciduous className="w-4 h-4" />,
+  TREE: <TreeDeciduous className="w-4 h-4" />,
   shrub: <TreeDeciduous className="w-4 h-4" />,
+  SHRUB: <TreeDeciduous className="w-4 h-4" />,
   herb: <Leaf className="w-4 h-4" />,
+  HERBACEOUS: <Leaf className="w-4 h-4" />,
   flower: <Flower2 className="w-4 h-4" />,
   succulent: <Sun className="w-4 h-4" />,
+  SUCCULENT: <Sun className="w-4 h-4" />,
   cactus: <Sun className="w-4 h-4" />,
   fern: <Leaf className="w-4 h-4" />,
+  FERN: <Leaf className="w-4 h-4" />,
   bamboo: <Sprout className="w-4 h-4" />,
   grass: <Wheat className="w-4 h-4" />,
+  GRASS: <Wheat className="w-4 h-4" />,
   vine: <Sprout className="w-4 h-4" />,
+  VINE_CLIMBER: <Sprout className="w-4 h-4" />,
   bulb: <Flower2 className="w-4 h-4" />,
   aquatic: <Droplets className="w-4 h-4" />,
+  AQUATIC: <Droplets className="w-4 h-4" />,
   mushroom: <Sprout className="w-4 h-4" />,
+  FUNGUS: <Sprout className="w-4 h-4" />,
 };
 
 type PageProps = {
@@ -139,6 +148,19 @@ export default async function PlantDetailPage({ params }: PageProps) {
                 </span>
               </Link>
             </div>
+
+            {typeLabel && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Link href={`/plants?type=${encodeURIComponent(plant.primaryType || plant.type)}`}>
+                  <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-sm font-semibold px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-500/50 transition-all cursor-pointer">
+                    {PLANT_TYPE_ICONS[plant.primaryType || plant.type] || (
+                      <Leaf className="w-4 h-4" />
+                    )}
+                    {typeLabel}
+                  </span>
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="h-px bg-gradient-to-r from-emerald-500/50 via-emerald-500/20 to-transparent mb-8" />
