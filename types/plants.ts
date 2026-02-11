@@ -1,3 +1,32 @@
+export type PlantPrimaryType =
+  | "TREE"
+  | "SHRUB"
+  | "HERBACEOUS"
+  | "VINE_CLIMBER"
+  | "FERN"
+  | "SUCCULENT"
+  | "GRASS"
+  | "FUNGUS"
+  | "AQUATIC";
+
+export type TraitCategory =
+  | "BLOOMING_LIFECYCLE"
+  | "ENVIRONMENT_GROWTH"
+  | "USE_ORIGIN";
+
+export interface Trait {
+  id: string;
+  name: string;
+  slug: string;
+  category: TraitCategory;
+}
+
+export interface PlantTrait {
+  plantId: string;
+  traitId: string;
+  trait: Trait;
+}
+
 export interface Plant {
   id: string;
   botanicalName: string;
@@ -28,6 +57,7 @@ export interface Plant {
     | "bulb"
     | "aquatic"
     | "mushroom";
+  primaryType?: PlantPrimaryType;
   description: string;
   views: number;
   createdAt: Date;
@@ -43,6 +73,8 @@ export interface Plant {
     id: string;
     name: string;
   }[];
+
+  plantTraits?: PlantTrait[];
 
   images: {
     id: string;
