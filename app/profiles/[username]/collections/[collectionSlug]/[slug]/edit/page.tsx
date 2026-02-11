@@ -236,9 +236,22 @@ const EditPlantPage = () => {
                 </div>
               ))}
             </div>
-            <div className="mt-3 [&_label]:bg-emerald-600 [&_label]:hover:bg-emerald-500 [&_label]:text-white [&_label]:text-xs [&_label]:font-medium [&_label]:px-4 [&_label]:py-2 [&_label]:rounded-xl [&_label]:cursor-pointer [&_label]:transition-colors [&_label]:border-0 [&>div]:items-start [&_[data-ut-element=allowed-content]]:hidden">
+            <div className="mt-3">
               <UploadButton
                 endpoint="plantImageUploader"
+                content={{
+                  button({ ready }) {
+                    return ready ? "Upload Photos" : "Preparing...";
+                  },
+                  allowedContent() {
+                    return "";
+                  },
+                }}
+                appearance={{
+                  button:
+                    "bg-emerald-600 hover:bg-emerald-500 ut-uploading:bg-emerald-700 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors border-0 cursor-pointer",
+                  allowedContent: "hidden",
+                }}
                 onClientUploadComplete={(res) => {
                   const newImages = res.map((file) => ({
                     url: file.url,
