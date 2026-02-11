@@ -205,7 +205,7 @@ export default async function PlantDetailPage({ params }: PageProps) {
 
               {/* Actions */}
               <div className="bg-zinc-900/60 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800">
-                <PlantActions plantId={plant.id} />
+                <PlantActions plantId={plant.id} initialIsGarden={plant.isGarden} plantOwnerUsername={plant.user?.username} />
               </div>
             </div>
           </div>

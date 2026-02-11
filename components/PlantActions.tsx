@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Heart, Plus, Check } from "lucide-react";
+import { Heart, Plus, Check, Sprout } from "lucide-react";
 import {
   cn,
   getUserCollectionsWithAuth,
@@ -14,6 +14,7 @@ import {
   removePlantFromAlbum,
   togglePlantLike,
   getPlantLikeStatus,
+  togglePlantGarden,
 } from "@/lib/utils";
 import { Collection } from "@/types/collections";
 import { toast } from "sonner";
@@ -21,17 +22,27 @@ import Link from "next/link";
 import useAuth from "@/redux/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 
-export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
+interface PlantActionsProps {
+  plantId: string;
+  initialIsGarden?: boolean;
+  plantOwnerUsername?: string;
+}
+
+export default function SaveToAlbumButton({ plantId, initialIsGarden, plantOwnerUsername }: PlantActionsProps) {
   const { user } = useAuth();
   const username = user?.username;
   const router = useRouter();
   const pathname = usePathname();
   const [liked, setLiked] = useState(false);
+  const [inGarden, setInGarden] = useState(initialIsGarden ?? false);
+  const [gardenLoading, setGardenLoading] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);
   const [plantAlbumMap, setPlantAlbumMap] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const isOwner = user?.username === plantOwnerUsername;
 
   useEffect(() => {
     if (!user) return;
@@ -63,6 +74,28 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
       toast.error("Failed to update like.");
     }
   }, [user, plantId, router]);
+
+  const handleToggleGarden = useCallback(async () => {
+    if (!user) {
+      router.push("/login");
+      toast.error("You must be logged in to manage your garden.");
+      return;
+    }
+
+    setGardenLoading(true);
+    const prev = inGarden;
+    setInGarden(!prev);
+
+    const result = await togglePlantGarden(plantId);
+    if (result) {
+      setInGarden(result.isGarden);
+      toast.success(result.isGarden ? "Added to your Garden" : "Removed from your Garden");
+    } else {
+      setInGarden(prev);
+      toast.error("Failed to update garden status.");
+    }
+    setGardenLoading(false);
+  }, [user, plantId, inGarden, router]);
 
   const handleTogglePlant = async (collectionId: string) => {
     const isCurrentlyInAlbum = plantAlbumMap[collectionId];
@@ -123,7 +156,7 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
   }, [plantId, user]);
 
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex flex-wrap gap-3 items-center">
       <button
         onClick={handleToggleLike}
         className={cn(
@@ -140,6 +173,23 @@ export default function SaveToAlbumButton({ plantId }: { plantId: string }) {
         )}
         Like
       </button>
+
+      {isOwner && (
+        <button
+          onClick={handleToggleGarden}
+          disabled={gardenLoading}
+          className={cn(
+            "flex items-center gap-2 px-3 py-1 rounded border transition cursor-pointer",
+            inGarden
+              ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+              : "bg-transparent border-zinc-600 text-zinc-300 hover:bg-white/10",
+            gardenLoading && "opacity-50 cursor-not-allowed"
+          )}
+        >
+          <Sprout className={cn("w-4 h-4", inGarden && "text-emerald-400")} />
+          {gardenLoading ? "Updating..." : inGarden ? "In Garden" : "Add to Garden"}
+        </button>
+      )}
 
       <Popover>
         <PopoverTrigger asChild>
