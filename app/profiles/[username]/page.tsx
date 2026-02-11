@@ -89,7 +89,7 @@ const ProfilePage = () => {
   const sectionParam = searchParams.get("section");
   const initialSection = (["garden", "collections", "posts", "marketplace"].includes(sectionParam || "") 
     ? sectionParam 
-    : "garden") as "garden" | "collections" | "posts" | "marketplace";
+    : "posts") as "garden" | "collections" | "posts" | "marketplace";
 
   const [usersCollections, setUsersCollections] = useState<Collection[]>([]);
   const [posts, setPosts] = useState(DUMMY_POSTS);
@@ -342,12 +342,12 @@ const ProfilePage = () => {
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="flex overflow-x-auto gap-1 pb-2 lg:flex-col lg:overflow-x-visible lg:pb-0 lg:space-y-1 sticky top-6">
+            <nav className="grid grid-cols-2 gap-1 lg:flex lg:flex-col lg:space-y-1 lg:sticky lg:top-20">
               <SidebarNavItem
-                icon={<Sprout className="w-5 h-5" />}
-                label="My Garden"
-                active={activeSection === "garden"}
-                onClick={() => setActiveSection("garden")}
+                icon={<LayoutList className="w-5 h-5" />}
+                label="Posts"
+                active={activeSection === "posts"}
+                onClick={() => setActiveSection("posts")}
               />
               <SidebarNavItem
                 icon={<TreeDeciduous className="w-5 h-5" />}
@@ -357,10 +357,10 @@ const ProfilePage = () => {
                 badge={usersCollections.length}
               />
               <SidebarNavItem
-                icon={<LayoutList className="w-5 h-5" />}
-                label="Posts"
-                active={activeSection === "posts"}
-                onClick={() => setActiveSection("posts")}
+                icon={<Sprout className="w-5 h-5" />}
+                label="My Garden"
+                active={activeSection === "garden"}
+                onClick={() => setActiveSection("garden")}
               />
               <SidebarNavItem
                 icon={<ShoppingCart className="w-5 h-5" />}
@@ -694,7 +694,7 @@ function SidebarNavItem({
   return (
     <button
       onClick={onClick}
-      className={`botanical-nav-item w-full text-left whitespace-nowrap flex-shrink-0 lg:flex-shrink lg:whitespace-normal ${active ? "active" : ""}`}
+      className={`botanical-nav-item w-full text-left ${active ? "active" : ""}`}
     >
       {icon}
       <span className="flex-1">{label}</span>
