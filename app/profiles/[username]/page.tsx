@@ -455,21 +455,21 @@ const ProfilePage= () => {
             {activeSection === "collections" && (
               <section className="animate-fade-in-up">
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <TreeDeciduous className="w-6 h-6 text-emerald-500" />
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-emerald-500/10 flex-shrink-0">
+                      <TreeDeciduous className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
                     </div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-zinc-100">
+                    <div className="min-w-0">
+                      <h2 className="text-base sm:text-xl font-semibold text-zinc-100">
                         Albums
                       </h2>
-                      <p className="text-sm text-zinc-400">
+                      <p className="hidden sm:block text-sm text-zinc-400">
                         Organized plant albums
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
                     <Link href={`/profiles/${profileUser.username}/collections`}>
                       <button className="px-2 py-1 text-[11px] sm:px-3 sm:py-1.5 sm:text-xs font-medium rounded-md border border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/10 transition-colors whitespace-nowrap">
                         View All
