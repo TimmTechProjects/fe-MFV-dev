@@ -474,9 +474,9 @@ const ProfilePage = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {photoPosts.map((post) => (
-                      <PlantListItem
+                    <div className="space-y-2 sm:space-y-4">
+                      {photoPosts.map((post) => (
+                        <PlantListItem
                         key={post.id}
                         post={post}
                         profileUser={profileUser}
@@ -827,9 +827,9 @@ function PlantListItem({
   };
 
   return (
-    <BotanicalCard className="flex gap-4 p-4">
+    <BotanicalCard className="flex gap-2.5 sm:gap-4 p-2.5 sm:p-4">
       {post.image && (
-        <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0">
+        <div className="w-16 h-16 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
           <img
             src={post.image}
             alt="Plant"
@@ -838,38 +838,32 @@ function PlantListItem({
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-2">
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
-            <AvatarFallback className="bg-emerald-600 text-white text-xs">
-              {profileUser.username?.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm text-emerald-500">
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+          <span className="text-xs sm:text-sm text-emerald-500 truncate">
             @{profileUser.username}
           </span>
           <span className="text-zinc-600">·</span>
-          <span className="text-sm text-zinc-500">
+          <span className="text-xs sm:text-sm text-zinc-500">
             {timeAgo(post.createdAt)}
           </span>
         </div>
         {post.text && (
-          <p className="text-zinc-100 mb-3">{post.text}</p>
+          <p className="text-zinc-100 text-sm sm:text-base line-clamp-2 sm:line-clamp-none mb-1.5 sm:mb-3">{post.text}</p>
         )}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={handleLike}
-            className="flex items-center gap-1 text-sm text-zinc-500 hover:text-red-400 transition-colors"
+            className="flex items-center gap-1 text-xs sm:text-sm text-zinc-500 hover:text-red-400 transition-colors"
           >
-            <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+            <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
             {likeCount}
           </button>
-          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
-            <MessageCircle className="w-4 h-4" />
+          <button className="flex items-center gap-1 text-xs sm:text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
+            <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             {post.comments?.length || 0}
           </button>
-          <button className="flex items-center gap-1 text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
-            <Share className="w-4 h-4" />
+          <button className="flex items-center gap-1 text-xs sm:text-sm text-zinc-500 hover:text-emerald-500 transition-colors">
+            <Share className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
