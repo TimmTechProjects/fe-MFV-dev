@@ -206,7 +206,7 @@ interface BotanicalStatProps {
 
 export const BotanicalStat = ({ value, label, icon: Icon }: BotanicalStatProps) => (
   <div className="botanical-stat">
-    {Icon && <Icon className="w-5 h-5 text-emerald-500 mb-1" />}
+    {Icon && <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 mb-0.5 sm:mb-1" />}
     <span className="botanical-stat-value">{value}</span>
     <span className="botanical-stat-label">{label}</span>
   </div>

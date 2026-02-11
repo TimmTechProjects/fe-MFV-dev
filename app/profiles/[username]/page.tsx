@@ -188,7 +188,7 @@ const ProfilePage = () => {
         {/* Garden Header - Botanical Mosaic Style */}
         <header className="relative garden-header rounded-b-3xl overflow-hidden">
           {/* Cover Image with Dark Overlay */}
-          <div className="relative h-64 md:h-80 group/banner">
+          <div className="relative h-36 sm:h-48 md:h-80 group/banner">
             <img
               src={coverImage}
               alt="Garden cover"
@@ -207,25 +207,25 @@ const ProfilePage = () => {
             )}
 
             {/* Decorative leaf patterns */}
-            <div className="absolute top-4 left-4 opacity-20">
+            <div className="absolute top-4 left-4 opacity-20 hidden sm:block">
               <LeafIcon className="w-16 h-16 text-[var(--botanical-sage)] animate-sway" />
             </div>
-            <div className="absolute top-8 right-8 opacity-15">
+            <div className="absolute top-8 right-8 opacity-15 hidden sm:block">
               <Flower2 className="w-12 h-12 text-[var(--botanical-sage)]" />
             </div>
           </div>
 
           {/* Profile Info Overlay */}
-          <div className="relative px-6 pb-6 -mt-20 z-10">
-            <div className="flex flex-col md:flex-row md:items-end gap-6">
+          <div className="relative px-4 pb-4 -mt-14 sm:px-6 sm:pb-6 sm:-mt-20 z-10">
+            <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-6">
               {/* Avatar */}
               <div className="relative group/avatar cursor-pointer">
-                <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-[var(--botanical-forest)] shadow-xl">
+                <Avatar className="w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 border-3 sm:border-4 border-[var(--botanical-forest)] shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
                     alt={profileUser?.username}
                   />
-                  <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)] text-3xl font-bold">
+                  <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)] text-xl sm:text-3xl font-bold">
                     {profileUser?.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -244,20 +244,20 @@ const ProfilePage = () => {
                     </>
                   )}
                 {/* Online indicator */}
-                <div className="absolute bottom-2 right-2 w-5 h-5 bg-[var(--botanical-sage)] border-2 border-[var(--botanical-forest)] rounded-full" />
+                <div className="absolute bottom-1 right-1 w-3.5 h-3.5 sm:bottom-2 sm:right-2 sm:w-5 sm:h-5 bg-[var(--botanical-sage)] border-2 border-[var(--botanical-forest)] rounded-full" />
               </div>
 
               {/* Profile Details */}
-              <div className="flex-1 space-y-3">
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1 space-y-2 sm:space-y-3">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 sm:gap-4">
                   <div>
-                    <h1 className="text-3xl font-bold text-[var(--botanical-cream)]">
+                    <h1 className="text-xl sm:text-3xl font-bold text-[var(--botanical-cream)]">
                       {profileUser.firstName && profileUser.lastName
                         ? `${profileUser.firstName} ${profileUser.lastName}`
                         : profileUser.username}
                     </h1>
-                    <p className="text-[var(--botanical-sage)] flex items-center gap-2">
-                      <Sprout className="w-4 h-4" />
+                    <p className="text-[var(--botanical-sage)] flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+                      <Sprout className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       @{profileUser.username}
                     </p>
                   </div>
@@ -289,9 +289,9 @@ const ProfilePage = () => {
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-zinc-400">
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     Joined{" "}
                     {profileUser?.joinedAt
                       ? new Date(profileUser.joinedAt).toLocaleDateString(
@@ -301,11 +301,11 @@ const ProfilePage = () => {
                       : "Unknown"}
                   </span>
                   <span className="flex items-center gap-1">
-                      <TreeDeciduous className="w-4 h-4" />
+                      <TreeDeciduous className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       {usersCollections.length} Albums
                   </span>
                   <span className="flex items-center gap-1">
-                    <Leaf className="w-4 h-4" />
+                    <Leaf className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     {posts.length} Plants documented
                   </span>
                 </div>
@@ -313,7 +313,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 sm:mt-6">
               <BotanicalStat
                 value={usersCollections.length}
                 label="Albums"
@@ -339,10 +339,10 @@ const ProfilePage = () => {
         </header>
 
         {/* Main Content Area - Two Column Layout */}
-        <div className="flex flex-col lg:flex-row gap-6 p-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
           {/* Sidebar Navigation */}
           <aside className="lg:w-64 flex-shrink-0">
-            <nav className="space-y-1 sticky top-6">
+            <nav className="flex overflow-x-auto gap-1 pb-2 lg:flex-col lg:overflow-x-visible lg:pb-0 lg:space-y-1 sticky top-6">
               <SidebarNavItem
                 icon={<Sprout className="w-5 h-5" />}
                 label="My Garden"
@@ -371,7 +371,7 @@ const ProfilePage = () => {
 
               {/* Quick Actions */}
               {isOwnProfile && (
-                <div className="pt-6 space-y-2">
+                <div className="hidden lg:block pt-6 space-y-2">
                   <p className="text-xs uppercase tracking-wider text-zinc-500 px-3">
                     Quick Actions
                   </p>
@@ -694,7 +694,7 @@ function SidebarNavItem({
   return (
     <button
       onClick={onClick}
-      className={`botanical-nav-item w-full text-left ${active ? "active" : ""}`}
+      className={`botanical-nav-item w-full text-left whitespace-nowrap flex-shrink-0 lg:flex-shrink lg:whitespace-normal ${active ? "active" : ""}`}
     >
       {icon}
       <span className="flex-1">{label}</span>
