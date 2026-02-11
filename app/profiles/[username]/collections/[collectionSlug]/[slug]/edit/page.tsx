@@ -24,6 +24,9 @@ import {
   ImageIcon,
   X,
   Save,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
 } from "lucide-react";
 
 const PlantEditor = dynamic(() => import("@/components/editor/PlantEditor"), {
@@ -39,6 +42,7 @@ const EditPlantPage = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editorContent, setEditorContent] = useState("");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const form = useForm<PlantSchema>({
     resolver: zodResolver(plantSchema),
@@ -205,7 +209,8 @@ const EditPlantPage = () => {
               {watch("images").map((img, i) => (
                 <div
                   key={String("id" in img && img.id ? img.id : i)}
-                  className="relative aspect-square rounded-lg overflow-hidden group/img"
+                  className="relative aspect-square rounded-lg overflow-hidden group/img cursor-pointer"
+                  onClick={() => setLightboxIndex(i)}
                 >
                   <Image
                     src={"url" in img && img.url ? img.url : "/fallback.png"}
@@ -213,10 +218,13 @@ const EditPlantPage = () => {
                     fill
                     className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
+                    <ZoomIn className="w-5 h-5 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
+                  </div>
                   <button
                     type="button"
-                    onClick={() => handleRemoveImage(i)}
-                    className="absolute top-1 right-1 p-1 rounded-full bg-black/70 text-white opacity-0 group-hover/img:opacity-100 hover:bg-red-600 transition-all"
+                    onClick={(e) => { e.stopPropagation(); handleRemoveImage(i); }}
+                    className="absolute top-1 right-1 p-1 rounded-full bg-black/70 text-white opacity-0 group-hover/img:opacity-100 hover:bg-red-600 transition-all z-10"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -228,7 +236,7 @@ const EditPlantPage = () => {
                 </div>
               ))}
             </div>
-            <div className="mt-3">
+            <div className="mt-3 [&_label]:bg-emerald-600 [&_label]:hover:bg-emerald-500 [&_label]:text-white [&_label]:text-xs [&_label]:font-medium [&_label]:px-4 [&_label]:py-2 [&_label]:rounded-xl [&_label]:cursor-pointer [&_label]:transition-colors [&_label]:border-0 [&>div]:items-start [&_[data-ut-element=allowed-content]]:hidden">
               <UploadButton
                 endpoint="plantImageUploader"
                 onClientUploadComplete={(res) => {
@@ -390,6 +398,56 @@ const EditPlantPage = () => {
           </div>
         </form>
       </div>
+
+      {lightboxIndex !== null && (() => {
+        const images = watch("images");
+        const img = images[lightboxIndex];
+        const src = img && "url" in img && img.url ? img.url : "/fallback.png";
+        return (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setLightboxIndex(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-white transition-colors z-10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + images.length) % images.length); }}
+                  className="absolute left-4 p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-white transition-colors z-10"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % images.length); }}
+                  className="absolute right-4 p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-white transition-colors z-10"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+            <div className="relative max-w-4xl max-h-[85vh] w-full h-full" onClick={(e) => e.stopPropagation()}>
+              <Image
+                src={src}
+                alt={`Plant image ${lightboxIndex + 1}`}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 80vw"
+              />
+            </div>
+            <span className="absolute bottom-4 text-sm text-zinc-400">
+              {lightboxIndex + 1} / {images.length}
+            </span>
+          </div>
+        );
+      })()}
     </div>
   );
 };
