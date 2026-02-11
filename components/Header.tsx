@@ -40,6 +40,7 @@ const Header = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const { user, LogoutUser } = useAuth();
   const router = useRouter();
@@ -98,6 +99,7 @@ const Header = () => {
       setSuppressSuggestions(true);
       setSearchQuery("");
       setTimeout(() => setSuppressSuggestions(false), 600);
+      setSheetOpen(false);
       router.push(`/plants?search=${encodeURIComponent(trimmed)}`);
     }
   };
@@ -332,7 +334,7 @@ const Header = () => {
           )}
         </button>
 
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"

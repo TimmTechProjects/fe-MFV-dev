@@ -87,11 +87,9 @@ function DiscoveryContent() {
     const traitParams = searchParams.getAll("trait");
     if (typeParam) {
       setSelectedPrimaryType(typeParam);
-      setShowFilters(true);
     }
     if (traitParams.length > 0) {
       setSelectedTraitSlugs(traitParams);
-      setShowFilters(true);
     }
   }, [searchParams]);
 
@@ -386,7 +384,7 @@ function DiscoveryContent() {
                   return (
                     <Link
                       key={plant.id}
-                      href={`/the-vault/results?tag=${plant.tags?.[0]?.name || plant.slug}`}
+                      href={`/profiles/${plant.user?.username}/collections/${plant.collectionId}/${plant.slug}`}
                       className="group rounded-2xl overflow-hidden bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800/50 hover:border-[#81a308]/30 transition-all hover:shadow-lg hover:shadow-[#81a308]/5"
                     >
                       <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
@@ -421,17 +419,27 @@ function DiscoveryContent() {
                         )}
                         <div className="flex items-center gap-1.5 mt-1.5 sm:mt-2 flex-wrap">
                           {plant.primaryType && (
-                            <span className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30">
+                            <span
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/plants?type=${encodeURIComponent(plant.primaryType)}`); }}
+                              className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30 hover:bg-green-200 dark:hover:bg-green-800/60 cursor-pointer transition-colors"
+                            >
                               {PRIMARY_TYPES.find(pt => pt.value === plant.primaryType)?.label || plant.primaryType}
                             </span>
                           )}
                           {!plant.primaryType && plant.type && (
-                            <span className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30">
+                            <span
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/plants?type=${encodeURIComponent(plant.type)}`); }}
+                              className="text-[9px] sm:text-[10px] bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-1.5 sm:px-2 py-0.5 rounded-full border border-green-200 dark:border-green-800/30 hover:bg-green-200 dark:hover:bg-green-800/60 cursor-pointer transition-colors"
+                            >
                               {plant.type}
                             </span>
                           )}
                           {plant.tags && plant.tags.slice(0, 1).map((tag) => (
-                            <span key={tag.id} className="text-[9px] sm:text-[10px] text-[#81a308]">
+                            <span
+                              key={tag.id}
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/plants?search=${encodeURIComponent(tag.name)}`); }}
+                              className="text-[9px] sm:text-[10px] text-[#81a308] hover:text-[#6c8a0a] cursor-pointer transition-colors"
+                            >
                               #{tag.name}
                             </span>
                           ))}

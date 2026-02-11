@@ -48,7 +48,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
               {plant.tags.slice(0, 2).map((tag, i) => (
                 <Link
                   key={i}
-                  href={`/the-vault/results?tag=${encodeURIComponent(
+                  href={`/plants?search=${encodeURIComponent(
                     tag.name
                   )}`}
                   onClick={(e) => e.stopPropagation()}
@@ -111,7 +111,7 @@ const PlantCarouselCard = ({ plant }: PlantCarouselCardProps) => {
               {plant.tags.slice(2, 5).map((tag, i) => (
                 <Link
                   key={i}
-                  href={`/the-vault/results?tag=${encodeURIComponent(
+                  href={`/plants?search=${encodeURIComponent(
                     tag.name
                   )}`}
                 >

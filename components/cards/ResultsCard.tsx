@@ -118,7 +118,7 @@ const ResultsCard = ({
                 >
                   {plant!.tags.slice(0, 3).map((tag, i) => (
                     <Link
-                      href={`/the-vault/results?tag=${encodeURIComponent(
+                      href={`/plants?search=${encodeURIComponent(
                         tag.name
                       )}`}
                       key={i}
