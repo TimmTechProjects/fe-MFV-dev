@@ -139,7 +139,7 @@ const PlantGridCard = ({
           {showEditMenu && (
             <button
               onClick={handleEditClick}
-              className="absolute right-full mr-1 top-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-sm border border-zinc-600/50 text-zinc-200 hover:bg-zinc-700/80 hover:text-white transition-all duration-200 whitespace-nowrap text-sm cursor-pointer"
+              className="absolute right-full mr-2 top-0 flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600/90 backdrop-blur-sm border border-emerald-400/30 text-white shadow-lg shadow-emerald-900/30 hover:bg-emerald-500 hover:shadow-emerald-800/40 transition-all duration-200 whitespace-nowrap text-sm font-medium cursor-pointer"
             >
               <Pencil className="w-3 h-3" />
               Edit
