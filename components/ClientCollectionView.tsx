@@ -96,14 +96,14 @@ const ClientCollectionView = ({
               )}
               
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Leaf className="w-5 h-5 text-emerald-400" />
-                  <span className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Album</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+                  <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                  <span className="text-emerald-400 text-xs sm:text-sm font-medium uppercase tracking-wider">Album</span>
                 </div>
-                <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
+                <h1 className="text-lg sm:text-3xl md:text-4xl font-bold text-white mb-0.5 sm:mb-2">
                   {name}
                 </h1>
-                <p className="text-sm sm:text-base text-zinc-400">
+                <p className="text-xs sm:text-base text-zinc-400">
                   by{" "}
                   <Link
                     href={`/profiles/${username}`}
@@ -115,9 +115,9 @@ const ClientCollectionView = ({
                   <span>{plants.length} {plants.length === 1 ? 'plant' : 'plants'}</span>
                 </p>
                 {description && (
-                  <div className="mt-3 max-w-xl relative">
+                  <div className="mt-2 sm:mt-3 max-w-xl relative">
                     <div className={descriptionExpanded ? "" : "relative"}>
-                      <p className={`text-zinc-300 leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
+                      <p className={`text-zinc-300 text-sm sm:text-base leading-relaxed ${descriptionExpanded ? "" : "line-clamp-2"}`}>
                         {description}
                       </p>
                       {!descriptionExpanded && (
