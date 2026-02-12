@@ -901,6 +901,25 @@ export async function getPlantLikeStatus(
   }
 }
 
+export async function getUserMarketplaceListings(
+  username: string
+): Promise<{ id: string; title: string; price: number; image?: string; status: "active" | "sold" | "draft"; views?: number; likes?: number; createdAt: string }[]> {
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/marketplace/users/${username}/listings`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      return [];
+    }
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.listings || [];
+  } catch (err) {
+    console.error("Error fetching marketplace listings:", err);
+    return [];
+  }
+}
+
 export function formatRelativeTime(dateString: string) {
   const now = new Date();
   const date = new Date(dateString);

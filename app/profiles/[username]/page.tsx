@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { User } from "@/types/users";
-import { getUserByUsername, getUserCollections, getUserPlants } from "@/lib/utils";
+import { getUserByUsername, getUserCollections, getUserPlants, getUserMarketplaceListings } from "@/lib/utils";
 import Link from "next/link";
 import {
   Plus,
@@ -29,6 +29,11 @@ import {
   LayoutList,
   ExternalLink,
   Camera,
+  Lock,
+  Crown,
+  AlertCircle,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { Collection } from "@/types/collections";
@@ -209,8 +214,6 @@ const ProfilePage= () => {
                       </div>
                     </>
                   )}
-                {/* Online indicator */}
-                <div className="absolute bottom-1 right-1 w-3.5 h-3.5 sm:bottom-2 sm:right-2 sm:w-5 sm:h-5 bg-[var(--botanical-sage)] border-2 border-[var(--botanical-forest)] rounded-full" />
               </div>
 
               {/* Profile Details */}
@@ -562,35 +565,11 @@ const ProfilePage= () => {
 
             {/* Marketplace Section */}
             {activeSection === "marketplace" && (
-              <section className="animate-fade-in-up">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-lg bg-emerald-500/10">
-                    <ShoppingCart className="w-6 h-6 text-emerald-500" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-zinc-100">
-                      Plant Market
-                    </h2>
-                    <p className="text-sm text-zinc-400">
-                      Plants and cuttings for sale or trade
-                    </p>
-                  </div>
-                </div>
-
-                <BotanicalEmptyState
-                  icon={<ShoppingCart className="w-10 h-10 text-[var(--botanical-sage)]" />}
-                  title="No listings yet"
-                  description="Plants and cuttings for sale or trade will appear here."
-                  action={
-                    isOwnProfile && (
-                      <BotanicalButton onClick={() => router.push("/marketplace")}>
-                        <ExternalLink className="w-4 h-4" />
-                        Visit Marketplace
-                      </BotanicalButton>
-                    )
-                  }
-                />
-              </section>
+              <MarketplaceSection
+                profileUser={profileUser}
+                isOwnProfile={isOwnProfile}
+                currentUser={user}
+              />
             )}
           </main>
         </div>
@@ -775,6 +754,483 @@ function CollectionBedCard({
       {/* Hover indicator */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
     </Link>
+  );
+}
+
+// Post Card Component (Journal Style)
+function PostCard({
+  post,
+  profileUser,
+  onLike,
+  timeAgo,
+}: {
+  post: Post;
+  profileUser: User;
+  onLike: (id: number) => void;
+  timeAgo: (date: string) => string;
+}) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.upvotes || 0);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+    onLike(post.id);
+  };
+
+  return (
+    <BotanicalCard className="p-4">
+      <div className="flex gap-4">
+        <Avatar className="w-10 h-10 flex-shrink-0">
+          <AvatarImage src={profileUser.avatarUrl} alt={profileUser.username} />
+          <AvatarFallback className="bg-emerald-600 text-white">
+            {profileUser.username?.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-medium text-zinc-100">
+              {profileUser.firstName && profileUser.lastName
+                ? `${profileUser.firstName} ${profileUser.lastName}`
+                : profileUser.username}
+            </span>
+            <span className="text-sm text-zinc-500">
+              @{profileUser.username}
+            </span>
+            <span className="text-zinc-600">·</span>
+            <span className="text-sm text-zinc-500">
+              {timeAgo(post.createdAt)}
+            </span>
+            <button className="ml-auto p-1 rounded-lg hover:bg-zinc-800 transition-colors">
+              <MoreHorizontal className="w-4 h-4 text-zinc-500" />
+            </button>
+          </div>
+
+          {post.text && (
+            <p className="text-zinc-100 mb-3 leading-relaxed">
+              {post.text}
+            </p>
+          )}
+
+          {post.image && (
+            <div className="rounded-xl overflow-hidden mb-3 border border-zinc-700/50">
+              <img
+                src={post.image}
+                alt="Post media"
+                className="w-full max-h-96 object-cover"
+              />
+            </div>
+          )}
+
+          <div className="flex items-center gap-6">
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-red-400 transition-colors group"
+            >
+              <div className="p-2 rounded-full group-hover:bg-red-500/10 transition-colors">
+                <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+              </div>
+              {likeCount}
+            </button>
+            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
+              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
+                <MessageCircle className="w-4 h-4" />
+              </div>
+              {post.comments?.length || 0}
+            </button>
+            <button className="flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-500 transition-colors group">
+              <div className="p-2 rounded-full group-hover:bg-emerald-500/10 transition-colors">
+                <Share className="w-4 h-4" />
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </BotanicalCard>
+  );
+}
+
+function MarketplaceSection({
+  profileUser,
+  isOwnProfile,
+  currentUser,
+}: {
+  profileUser: User;
+  isOwnProfile: boolean;
+  currentUser: User | null;
+}) {
+  const [listings, setListings] = useState<MarketplaceListing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const isPaidUser =
+    isOwnProfile &&
+    currentUser?.subscriptionTier === "premium" &&
+    currentUser?.plan === "premium";
+
+  const isExpiredSubscription =
+    isOwnProfile &&
+    currentUser?.subscriptionEndsAt &&
+    new Date(currentUser.subscriptionEndsAt) < new Date() &&
+    currentUser?.plan !== "premium";
+
+  const isFreeUser = isOwnProfile && !isPaidUser;
+
+  const fetchListings = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const data = await getUserMarketplaceListings(profileUser.username);
+      setListings(data);
+    } catch {
+      if (isOwnProfile) {
+        setListings([]);
+      } else {
+        setError(true);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchListings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileUser.username]);
+
+  return (
+    <section className="animate-fade-in-up">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 rounded-lg bg-emerald-500/10">
+          <ShoppingCart className="w-6 h-6 text-emerald-500" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-zinc-100">
+            Plant Market
+          </h2>
+          <p className="text-sm text-zinc-400">
+            Plants and cuttings for sale or trade
+          </p>
+        </div>
+      </div>
+
+      {loading ? (
+        <MarketplaceLoadingSkeleton />
+      ) : error ? (
+        <MarketplaceError onRetry={fetchListings} />
+      ) : !isOwnProfile ? (
+        <MarketplacePublicView
+          listings={listings}
+          username={profileUser.username}
+        />
+      ) : isExpiredSubscription ? (
+        <MarketplaceExpiredView />
+      ) : isFreeUser ? (
+        <MarketplaceFreeUserView />
+      ) : listings.length > 0 ? (
+        <MarketplacePaidWithListings listings={listings} />
+      ) : (
+        <MarketplacePaidEmptyView />
+      )}
+    </section>
+  );
+}
+
+type MarketplaceListing = {
+  id: string;
+  title: string;
+  price: number;
+  image?: string;
+  status: "active" | "sold" | "draft";
+  views?: number;
+  likes?: number;
+  createdAt: string;
+};
+
+function MarketplaceLoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="h-8 w-48 bg-zinc-800 rounded-lg animate-pulse" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+            <div className="aspect-[4/3] bg-zinc-800 animate-pulse" />
+            <div className="p-4 space-y-2">
+              <div className="h-4 w-3/4 bg-zinc-800 rounded animate-pulse" />
+              <div className="h-4 w-1/3 bg-zinc-800 rounded animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarketplaceError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <BotanicalEmptyState
+      icon={<AlertCircle className="w-10 h-10 text-red-400" />}
+      title="Could not load listings"
+      description="Something went wrong while fetching marketplace listings. Please try again."
+      action={
+        <BotanicalButton variant="outline" onClick={onRetry}>
+          <RefreshCw className="w-4 h-4" />
+          Retry
+        </BotanicalButton>
+      }
+    />
+  );
+}
+
+function MarketplacePublicView({
+  listings,
+  username,
+}: {
+  listings: MarketplaceListing[];
+  username: string;
+}) {
+  const activeListings = listings.filter((l) => l.status === "active");
+
+  if (activeListings.length === 0) {
+    return (
+      <BotanicalEmptyState
+        icon={<ShoppingCart className="w-10 h-10 text-[var(--botanical-sage)]" />}
+        title="No listings yet"
+        description={`${username} hasn't listed any plants for sale yet.`}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-zinc-400 mb-4">
+        {activeListings.length} active listing{activeListings.length !== 1 ? "s" : ""}
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {activeListings.map((listing) => (
+          <MarketplaceListingCard key={listing.id} listing={listing} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarketplaceFreeUserView() {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+        <Lock className="w-10 h-10 text-amber-400" />
+      </div>
+      <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+        Upgrade to List Your Plants
+      </h3>
+      <p className="text-zinc-400 max-w-sm mb-6">
+        Create marketplace listings and sell your plants to the MFV community.
+      </p>
+      <BotanicalButton onClick={() => router.push("/settings")}>
+        <Crown className="w-4 h-4" />
+        Upgrade to Premium
+      </BotanicalButton>
+    </div>
+  );
+}
+
+function MarketplaceExpiredView() {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+        <AlertCircle className="w-10 h-10 text-amber-400" />
+      </div>
+      <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+        Your Subscription Has Ended
+      </h3>
+      <p className="text-zinc-400 max-w-sm mb-6">
+        Upgrade to create new listings and continue selling your plants on the marketplace.
+      </p>
+      <BotanicalButton onClick={() => router.push("/settings")}>
+        <Crown className="w-4 h-4" />
+        Re-subscribe to Premium
+      </BotanicalButton>
+    </div>
+  );
+}
+
+function MarketplacePaidWithListings({
+  listings,
+}: {
+  listings: MarketplaceListing[];
+}) {
+  const router = useRouter();
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price" | "status">("newest");
+
+  const activeListings = listings.filter((l) => l.status !== "draft");
+  const draftListings = listings.filter((l) => l.status === "draft");
+
+  const sortedListings = [...activeListings].sort((a, b) => {
+    switch (sortBy) {
+      case "newest":
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case "oldest":
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      case "price":
+        return b.price - a.price;
+      case "status":
+        return a.status.localeCompare(b.status);
+      default:
+        return 0;
+    }
+  });
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+        <p className="text-sm text-zinc-400">
+          My Marketplace Listings ({activeListings.length})
+        </p>
+        <div className="flex items-center gap-3">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="text-sm bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500/50"
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="price">Price</option>
+            <option value="status">Status</option>
+          </select>
+          <BotanicalButton
+            size="sm"
+            onClick={() => router.push("/marketplace")}
+          >
+            <Plus className="w-4 h-4" />
+            Create New Listing
+          </BotanicalButton>
+        </div>
+      </div>
+
+      {draftListings.length > 0 && (
+        <div className="mb-6 p-4 rounded-xl bg-amber-500/5 border border-amber-500/15">
+          <p className="text-sm text-amber-400 mb-2">
+            You have {draftListings.length} draft listing{draftListings.length !== 1 ? "s" : ""}
+          </p>
+          <BotanicalButton
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/marketplace")}
+          >
+            Complete Draft{draftListings.length !== 1 ? "s" : ""}
+          </BotanicalButton>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sortedListings.map((listing) => (
+          <MarketplaceListingCard
+            key={listing.id}
+            listing={listing}
+            showActions
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarketplacePaidEmptyView() {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
+        <Leaf className="w-10 h-10 text-emerald-500" />
+      </div>
+      <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+        Start Selling Your Plants
+      </h3>
+      <p className="text-zinc-400 max-w-sm mb-6">
+        You haven&apos;t created any listings yet. Share your plants with the community!
+      </p>
+      <BotanicalButton onClick={() => router.push("/marketplace")}>
+        <Plus className="w-4 h-4" />
+        Create Your First Listing
+      </BotanicalButton>
+    </div>
+  );
+}
+
+function MarketplaceListingCard({
+  listing,
+  showActions = false,
+}: {
+  listing: MarketplaceListing;
+  showActions?: boolean;
+}) {
+  const statusColors = {
+    active: "bg-emerald-500/15 text-emerald-500 border-emerald-500/20",
+    sold: "bg-zinc-500/15 text-zinc-400 border-zinc-500/20",
+    draft: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+  };
+
+  return (
+    <BotanicalCard className="overflow-hidden group cursor-pointer">
+      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-800">
+        {listing.image ? (
+          <img
+            src={listing.image}
+            alt={listing.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <ShoppingCart className="w-8 h-8 text-zinc-600" />
+          </div>
+        )}
+        <div className="absolute top-3 right-3">
+          <span
+            className={`px-2 py-1 text-xs rounded-full border ${statusColors[listing.status]}`}
+          >
+            {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+          </span>
+        </div>
+      </div>
+      <div className="p-4">
+        <h4 className="text-sm font-medium text-zinc-100 truncate mb-1">
+          {listing.title}
+        </h4>
+        <p className="text-emerald-500 font-semibold">
+          ${listing.price.toFixed(2)}
+        </p>
+        {(listing.views !== undefined || listing.likes !== undefined) && (
+          <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500">
+            {listing.views !== undefined && (
+              <span>{listing.views} views</span>
+            )}
+            {listing.likes !== undefined && (
+              <span className="flex items-center gap-1">
+                <Heart className="w-3 h-3" />
+                {listing.likes}
+              </span>
+            )}
+          </div>
+        )}
+        {showActions && (
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-zinc-800">
+            <button className="text-xs text-zinc-400 hover:text-emerald-500 transition-colors">
+              Edit
+            </button>
+            <span className="text-zinc-700">|</span>
+            <button className="text-xs text-zinc-400 hover:text-red-400 transition-colors">
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
+    </BotanicalCard>
   );
 }
 
