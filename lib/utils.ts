@@ -1131,3 +1131,167 @@ export async function getForumPosts(
     return [];
   }
 }
+
+// Push Notification functions
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+  if (!('serviceWorker' in navigator)) {
+    console.log('Service workers are not supported');
+    return null;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+    });
+    console.log('Service worker registered:', registration);
+    return registration;
+  } catch (error) {
+    console.error('Service worker registration failed:', error);
+    return null;
+  }
+}
+
+export async function subscribeToPushNotifications(userId: string): Promise<boolean> {
+  const token = localStorage.getItem("token");
+  if (!token) return false;
+
+  try {
+    // Request notification permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.log('Notification permission denied');
+      return false;
+    }
+
+    // Register service worker
+    const registration = await registerServiceWorker();
+    if (!registration) {
+      console.log('Service worker registration failed');
+      return false;
+    }
+
+    // Wait for service worker to be ready
+    await navigator.serviceWorker.ready;
+
+    // Subscribe to push notifications
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    });
+
+    // Send subscription to backend
+    const response = await fetch(`${baseUrl}/api/notifications/push/subscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId,
+        subscription: subscription.toJSON(),
+      }),
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('Error subscribing to push notifications:', error);
+    return false;
+  }
+}
+
+export async function unsubscribeFromPushNotifications(userId: string, endpoint: string): Promise<boolean> {
+  const token = localStorage.getItem("token");
+  if (!token) return false;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/notifications/push/unsubscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId, endpoint }),
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('Error unsubscribing from push notifications:', error);
+    return false;
+  }
+}
+
+export interface NotificationPreferences {
+  id: string;
+  userId: string;
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+  quietStart: string | null;
+  quietEnd: string | null;
+  enabledTypes: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getNotificationPreferences(userId: string): Promise<NotificationPreferences | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/notifications/preferences/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error('Error getting notification preferences:', error);
+    return null;
+  }
+}
+
+export async function updateNotificationPreferences(
+  userId: string,
+  preferences: Partial<NotificationPreferences>
+): Promise<NotificationPreferences | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/notifications/preferences/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(preferences),
+    });
+
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating notification preferences:', error);
+    return null;
+  }
+}
+
+export async function snoozeCareReminder(id: string, snoozeHours = 24): Promise<CareReminder | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/care-reminders/${id}/snooze`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ snoozeHours }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
