@@ -14,7 +14,7 @@ import Heading from "@tiptap/extension-heading";
 // import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PlantEditorProps {
@@ -60,6 +60,7 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
   });
 
   const [toolbarOpen, setToolbarOpen] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
@@ -161,7 +162,7 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
           "flex-wrap gap-1.5 items-center justify-start p-3 sm:flex",
           toolbarOpen ? "flex border-t border-zinc-700 sm:border-t-0" : "hidden"
         )}>
-          {buttons.map(({ label, command, active }) => (
+          {!isPreview && buttons.map(({ label, command, active }) => (
             <button
               key={label}
               onClick={command}
@@ -176,10 +177,36 @@ const PlantEditor = ({ content, onChange }: PlantEditorProps) => {
               {label}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setIsPreview(!isPreview)}
+            className={cn(
+              "text-xs font-medium px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5",
+              isPreview
+                ? "bg-amber-600 text-white shadow-sm"
+                : "bg-zinc-800 text-zinc-300 hover:bg-amber-500/20 hover:text-amber-400 border border-zinc-700",
+              isPreview && "ml-auto"
+            )}
+          >
+            {isPreview ? <Pencil className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+            {isPreview ? "Edit" : "Preview"}
+          </button>
         </div>
       </div>
       <div className="text-white rounded-xl bg-zinc-900/50 border border-zinc-700 shadow-sm">
-        <EditorContent editor={editor} />
+        {isPreview ? (
+          <div
+            className={cn(
+              "tiptap prose dark:prose-invert prose-sm sm:prose lg:prose-lg",
+              "px-4 py-3 min-h-[300px]",
+              "bg-transparent dark:bg-zinc-800 text-foreground",
+              "rounded-md text-white"
+            )}
+            dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
+          />
+        ) : (
+          <EditorContent editor={editor} />
+        )}
       </div>
     </div>
   );
