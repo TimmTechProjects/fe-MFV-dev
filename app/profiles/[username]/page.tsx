@@ -40,6 +40,7 @@ import { Collection } from "@/types/collections";
 import { Plant } from "@/types/plants";
 import useAuth from "@/redux/hooks/useAuth";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
+import ProfileImageUploadModal from "@/components/ProfileImageUploadModal";
 import {
   BotanicalCard,
   BotanicalButton,
@@ -78,6 +79,8 @@ const ProfilePage= () => {
     "garden" | "collections" | "posts" | "marketplace"
   >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isProfileImageModalOpen, setIsProfileImageModalOpen] = useState(false);
+  const [isBannerImageModalOpen, setIsBannerImageModalOpen] = useState(false);
 
   // Update active section when URL param changes (e.g., back navigation)
   useEffect(() => {
@@ -169,12 +172,15 @@ const ProfilePage= () => {
             
             {/* Banner edit overlay (own profile only) */}
             {isOwnProfile && (
-              <div className="absolute bottom-4 right-4 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 z-[5]">
-                <div className="flex items-center gap-2 bg-black/60 px-4 py-2 rounded-full border border-emerald-500/40 shadow-sm">
+              <button
+                onClick={() => setIsBannerImageModalOpen(true)}
+                className="absolute bottom-4 right-4 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 z-[5] hover:scale-105 transform transition-transform"
+              >
+                <div className="flex items-center gap-2 bg-black/60 hover:bg-black/70 px-4 py-2 rounded-full border border-emerald-500/40 hover:border-emerald-500/60 shadow-lg">
                   <Camera className="w-5 h-5 text-emerald-400" />
                   <span className="text-white text-sm font-medium">Edit Cover Image</span>
                 </div>
-              </div>
+              </button>
             )}
 
             {/* Decorative leaf patterns */}
@@ -190,7 +196,10 @@ const ProfilePage= () => {
           <div className="relative px-4 pb-4 -mt-14 sm:px-6 sm:pb-6 sm:-mt-20 md:px-8 md:pb-8 z-10">
             <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-6">
               {/* Avatar */}
-              <div className="relative group/avatar cursor-pointer">
+              <div
+                className="relative group/avatar cursor-pointer"
+                onClick={() => isOwnProfile && setIsProfileImageModalOpen(true)}
+              >
                 <Avatar className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 border-2 sm:border-4 border-[var(--botanical-forest)] shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
@@ -574,6 +583,25 @@ const ProfilePage= () => {
           </main>
         </div>
       </div>
+
+      {isOwnProfile && profileUser && (
+        <>
+          <ProfileImageUploadModal
+            open={isProfileImageModalOpen}
+            onOpenChange={setIsProfileImageModalOpen}
+            username={profileUser.username}
+            type="profile"
+            currentImageUrl={profileUser.avatarUrl}
+          />
+          <ProfileImageUploadModal
+            open={isBannerImageModalOpen}
+            onOpenChange={setIsBannerImageModalOpen}
+            username={profileUser.username}
+            type="banner"
+            currentImageUrl={null}
+          />
+        </>
+      )}
     </div>
   );
 };

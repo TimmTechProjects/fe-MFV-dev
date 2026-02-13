@@ -1658,3 +1658,79 @@ export async function searchForumThreads(
     return { threads: [], total: 0, page: 1, totalPages: 0 };
   }
 }
+
+export async function uploadProfileImage(
+  username: string,
+  imageUrl: string,
+  imageKey: string
+): Promise<{ success: boolean; message?: string; avatarUrl?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/users/${username}/avatar`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatarUrl: imageUrl, avatarKey: imageKey }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to upload profile picture",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Profile picture updated successfully",
+      avatarUrl: data.avatarUrl || imageUrl,
+    };
+  } catch (err) {
+    console.error("Error uploading profile image:", err);
+    return { success: false, message: "Unexpected error occurred" };
+  }
+}
+
+export async function uploadBannerImage(
+  username: string,
+  imageUrl: string,
+  imageKey: string
+): Promise<{ success: boolean; message?: string; bannerUrl?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/users/${username}/banner`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ bannerUrl: imageUrl, bannerKey: imageKey }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to upload banner image",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Banner image updated successfully",
+      bannerUrl: data.bannerUrl || imageUrl,
+    };
+  } catch (err) {
+    console.error("Error uploading banner image:", err);
+    return { success: false, message: "Unexpected error occurred" };
+  }
+}
