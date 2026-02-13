@@ -36,7 +36,10 @@ import {
   X,
   AlertCircle,
   Calendar,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 import { checkUsernameAvailability } from "@/lib/utils";
 
 const profileSchema = z.object({
@@ -86,6 +89,7 @@ const SettingsPage = () => {
 
   const router = useRouter();
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   const { startUpload } = useUploadThing("imageUploader");
 
@@ -768,6 +772,40 @@ const SettingsPage = () => {
                 </form>
               </Form>
             )}
+          </section>
+
+          <section className="garden-card p-6 space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Sun className="w-4 h-4 text-emerald-400" />
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Appearance</h2>
+            </div>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Choose how My Floral Vault looks for you.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => { if (theme !== "dark") toggleTheme(); }}
+                className={`p-4 rounded-xl border transition-all text-center ${
+                  theme === "dark"
+                    ? "bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20"
+                    : "bg-zinc-100 dark:bg-zinc-800/80 border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600"
+                }`}
+              >
+                <Moon className={`w-6 h-6 mx-auto mb-2 ${theme === "dark" ? "text-emerald-400" : "text-zinc-400"}`} />
+                <p className={`text-sm font-medium ${theme === "dark" ? "text-emerald-300" : "text-zinc-600 dark:text-zinc-300"}`}>Dark</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Easy on the eyes</p>
+              </button>
+              <button
+                onClick={() => { if (theme !== "light") toggleTheme(); }}
+                className={`p-4 rounded-xl border transition-all text-center ${
+                  theme === "light"
+                    ? "bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20"
+                    : "bg-zinc-100 dark:bg-zinc-800/80 border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600"
+                }`}
+              >
+                <Sun className={`w-6 h-6 mx-auto mb-2 ${theme === "light" ? "text-emerald-400" : "text-zinc-400"}`} />
+                <p className={`text-sm font-medium ${theme === "light" ? "text-emerald-300" : "text-zinc-600 dark:text-zinc-300"}`}>Light</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Classic bright look</p>
+              </button>
+            </div>
           </section>
 
           <section className="garden-card p-6 space-y-6">
