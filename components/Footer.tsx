@@ -20,6 +20,9 @@ const Footer = () => {
           <a href="/buyer-protection" className="hover:underline">
             Buyer Protection
           </a>
+          <a href="/contact" className="hover:underline">
+            Contact Us
+          </a>
         </div>
       </div>
     </footer>

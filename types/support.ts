@@ -45,3 +45,38 @@ export interface TicketsResponse {
   page: number;
   totalPages: number;
 }
+
+export interface InternalNote {
+  id: string;
+  content: string;
+  author: {
+    id: string;
+    username: string;
+    avatarUrl?: string;
+  };
+  createdAt: string;
+}
+
+export interface TicketStats {
+  total: number;
+  open: number;
+  inProgress: number;
+  resolved: number;
+  closed: number;
+}
+
+export interface ContactFormInput {
+  name: string;
+  email: string;
+  subject: string;
+  category: TicketCategory;
+  message: string;
+}
+
+export interface AdminTicketFilters {
+  status?: TicketStatus | "all";
+  priority?: TicketPriority | "all";
+  category?: TicketCategory | "all";
+  search?: string;
+  page?: number;
+}

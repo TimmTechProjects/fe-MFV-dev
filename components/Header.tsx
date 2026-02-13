@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut, Sun, Moon, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ResultsCard from "./cards/ResultsCard";
@@ -303,6 +303,15 @@ const Header = () => {
                   Settings
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setUserMenuOpen(false)} className="px-4 py-2 rounded-lg hover:bg-[#81a308]/10 focus:bg-[#81a308]/10 hover:text-[#81a308] focus:text-[#81a308] transition-colors">
+                <Link
+                  href="/support"
+                  className="flex items-center gap-3 w-full cursor-pointer"
+                >
+                  <LifeBuoy className="w-4 h-4" />
+                  Support
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="px-4 py-2 rounded-lg hover:bg-red-500/10 focus:bg-red-500/10 text-red-400 hover:text-red-300 focus:text-red-300 cursor-pointer transition-colors"
                 onClick={() => { setUserMenuOpen(false); LogoutUser(); }}
@@ -400,6 +409,13 @@ const Header = () => {
                       </Link>
                     </SheetClose>
                   ))}
+                  <SheetClose asChild>
+                    <Link href="/support">
+                      <div className="py-3 px-4 rounded-xl text-[15px] font-medium text-zinc-700 dark:text-gray-200 hover:bg-[#81a308]/10 hover:text-[#81a308] transition-colors">
+                        Support
+                      </div>
+                    </Link>
+                  </SheetClose>
                 </div>
               )}
 
