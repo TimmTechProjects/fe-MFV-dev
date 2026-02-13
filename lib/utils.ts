@@ -1658,3 +1658,118 @@ export async function searchForumThreads(
     return { threads: [], total: 0, page: 1, totalPages: 0 };
   }
 }
+
+export async function updateUserProfile(
+  username: string,
+  updates: {
+    firstName?: string;
+    lastName?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
+  }
+): Promise<{ success: boolean; message?: string; user?: User }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/users/${username}/profile`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updates),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to update profile",
+      };
+    }
+
+    return { success: true, message: "Profile updated successfully", user: data.user || data };
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    return { success: false, message: "Unexpected error occurred" };
+  }
+}
+
+export async function uploadProfileImage(
+  username: string,
+  imageUrl: string,
+  imageKey: string
+): Promise<{ success: boolean; message?: string; avatarUrl?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/users/${username}/avatar`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatarUrl: imageUrl, avatarKey: imageKey }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to upload profile picture",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Profile picture updated successfully",
+      avatarUrl: data.avatarUrl || imageUrl,
+    };
+  } catch (err) {
+    console.error("Error uploading profile image:", err);
+    return { success: false, message: "Unexpected error occurred" };
+  }
+}
+
+export async function uploadBannerImage(
+  username: string,
+  imageUrl: string,
+  imageKey: string
+): Promise<{ success: boolean; message?: string; bannerUrl?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/users/${username}/banner`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ bannerUrl: imageUrl, bannerKey: imageKey }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to upload banner image",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Banner image updated successfully",
+      bannerUrl: data.bannerUrl || imageUrl,
+    };
+  } catch (err) {
+    console.error("Error uploading banner image:", err);
+    return { success: false, message: "Unexpected error occurred" };
+  }
+}
