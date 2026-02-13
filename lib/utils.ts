@@ -7,6 +7,23 @@ import {
   MarketplaceResponse,
 } from "@/types/marketplace";
 import { Plant, Trait } from "@/types/plants";
+import {
+  Post,
+  PostComment,
+  CreatePostInput,
+  UpdatePostInput,
+  PostsResponse,
+  CommentsResponse,
+} from "@/types/posts";
+import {
+  ForumCategory,
+  ForumThread,
+  ForumReply,
+  CreateThreadInput,
+  ThreadsResponse,
+  RepliesResponse,
+  ThreadSortOption,
+} from "@/types/forums";
 import { RegisterUser, User, UserCredentials, UserResult } from "@/types/users";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -1121,13 +1138,523 @@ export async function getForumPosts(
 > {
   try {
     const res = await fetch(
-      `${baseUrl}/api/forum/posts?limit=${limit}`,
+      `${baseUrl}/api/forum/threads?limit=${limit}`,
       { cache: "no-store" }
     );
     if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : data.posts || [];
+    const json = await res.json();
+    const threads = json.data || json.threads || (Array.isArray(json) ? json : []);
+    return threads.map((t: Record<string, unknown>) => ({
+      id: t.id as string,
+      title: t.title as string,
+      author: t.user || t.author || { username: "unknown" },
+      createdAt: t.createdAt as string,
+      replyCount: (t._count as Record<string, number>)?.replies ?? t.replyCount ?? 0,
+      category: (t.category as Record<string, string>)?.name || t.category || undefined,
+    }));
   } catch {
     return [];
+  }
+}
+
+export async function getPosts(
+  page = 1,
+  limit = 20,
+  sort: "recent" | "popular" = "recent"
+): Promise<PostsResponse> {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/posts?page=${page}&limit=${limit}&sort=${sort}`,
+      {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+    if (!res.ok) return { posts: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        posts: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { posts: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function getUserPosts(
+  username: string,
+  page = 1,
+  limit = 20
+): Promise<PostsResponse> {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/posts/user/${username}?page=${page}&limit=${limit}`,
+      {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+    if (!res.ok) return { posts: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        posts: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { posts: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function createPost(
+  input: CreatePostInput
+): Promise<{ success: boolean; post?: Post; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(input),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to create post" };
+    return { success: true, post: data.data || data.post || data };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function updatePost(
+  postId: string,
+  input: UpdatePostInput
+): Promise<{ success: boolean; post?: Post; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(input),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to update post" };
+    return { success: true, post: data.data || data.post || data };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function deletePost(
+  postId: string
+): Promise<{ success: boolean; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to delete post" };
+    return { success: true, message: data.message };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function togglePostLike(
+  postId: string
+): Promise<{ liked: boolean; likes: number } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}/like`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function togglePostSave(
+  postId: string
+): Promise<{ saved: boolean } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}/save`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getPostComments(
+  postId: string,
+  page = 1,
+  limit = 20
+): Promise<CommentsResponse> {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/posts/${postId}/comments?page=${page}&limit=${limit}`,
+      {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+    if (!res.ok) return { comments: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        comments: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { comments: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function createComment(
+  postId: string,
+  content: string,
+  parentId?: string
+): Promise<{ success: boolean; comment?: PostComment; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content, parentId }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to add comment" };
+    return { success: true, comment: data.data || data.comment || data };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function deleteComment(
+  postId: string,
+  commentId: string
+): Promise<{ success: boolean; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}/comments/${commentId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to delete comment" };
+    return { success: true, message: data.message };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function sharePost(
+  postId: string
+): Promise<{ success: boolean; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/posts/${postId}/share`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to share post" };
+    return { success: true, message: data.message };
+  } catch {
+    return { success: false, message: "Unexpected error" };
+  }
+}
+
+export async function getForumCategories(): Promise<ForumCategory[]> {
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/categories`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return Array.isArray(json) ? json : json.data || json.categories || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getForumThreads(
+  category?: string,
+  page = 1,
+  limit = 20,
+  sort: ThreadSortOption = "hot"
+): Promise<ThreadsResponse> {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    sort,
+  });
+  if (category) params.set("category", category);
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/threads?${params}`, {
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) return { threads: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        threads: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { threads: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function getForumThread(
+  threadId: string
+): Promise<ForumThread | null> {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/threads/${threadId}`, {
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data || json;
+  } catch {
+    return null;
+  }
+}
+
+export async function createForumThread(
+  input: CreateThreadInput
+): Promise<{ success: boolean; thread?: ForumThread; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/threads`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(input),
+    });
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to create thread" };
+    return { success: true, thread: data.data || data.thread || data };
+  } catch {
+    return { success: false, message: "Unexpected error creating thread" };
+  }
+}
+
+export async function getThreadReplies(
+  threadId: string,
+  page = 1,
+  limit = 20
+): Promise<RepliesResponse> {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/forum/threads/${threadId}/replies?page=${page}&limit=${limit}`,
+      {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+    if (!res.ok) return { replies: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        replies: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { replies: [], total: 0, page: 1, totalPages: 0 };
+  }
+}
+
+export async function createThreadReply(
+  threadId: string,
+  content: string,
+  parentId?: string
+): Promise<{ success: boolean; reply?: ForumReply; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/threads/${threadId}/replies`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content, parentId }),
+    });
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to post reply" };
+    return { success: true, reply: data.data || data.reply || data };
+  } catch {
+    return { success: false, message: "Unexpected error posting reply" };
+  }
+}
+
+export async function voteOnThread(
+  threadId: string,
+  vote: "up" | "down"
+): Promise<{ upvotes: number; downvotes: number; userVote: "up" | "down" | null } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/threads/${threadId}/vote`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ vote }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function voteOnReply(
+  replyId: string,
+  vote: "up" | "down"
+): Promise<{ upvotes: number; downvotes: number; userVote: "up" | "down" | null } | null> {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/replies/${replyId}/vote`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ vote }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function reportForumContent(
+  contentType: "thread" | "reply",
+  contentId: string,
+  reason: string
+): Promise<{ success: boolean; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) return { success: false, message: "Authentication required" };
+
+  try {
+    const res = await fetch(`${baseUrl}/api/forum/report`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ contentType, contentId, reason }),
+    });
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message || "Failed to submit report" };
+    return { success: true, message: data.message };
+  } catch {
+    return { success: false, message: "Unexpected error submitting report" };
+  }
+}
+
+export async function searchForumThreads(
+  query: string,
+  page = 1,
+  limit = 20
+): Promise<ThreadsResponse> {
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/forum/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return { threads: [], total: 0, page: 1, totalPages: 0 };
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        threads: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
+  } catch {
+    return { threads: [], total: 0, page: 1, totalPages: 0 };
   }
 }

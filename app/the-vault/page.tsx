@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useCallback, useRef, use } from "react";
 import {
   Heart,
   MessageCircle,
@@ -12,15 +12,15 @@ import {
   Compass,
   ShoppingCart,
   Gavel,
-  ImageIcon,
-  VideoIcon,
-  Smile,
   TrendingUp,
   Users,
   Leaf,
   PlusSquare,
   Bell,
   User,
+  ArrowUpDown,
+  Eye,
+  Loader2,
 } from "lucide-react";
 
 interface Plant {
@@ -66,6 +66,7 @@ import Pagination from "@/components/Pagination";
 import Loading from "../loading";
 import Link from "next/link";
 import { marketplacePlants } from "@/mock/marketplaceData";
+import PostsFeed from "@/components/posts/PostsFeed";
 
 interface Props {
   searchParams?: Promise<{
@@ -88,11 +89,38 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const [mobileTab, setMobileTab] = useState("home");
   const [searchCategory, setSearchCategory] = useState("all");
   const [searchSubmitted, setSearchSubmitted] = useState(false);
+  const [gallerySort, setGallerySort] = useState<"newest" | "oldest" | "popular" | "az">("newest");
+  const [galleryPlants, setGalleryPlants] = useState<Plant[]>([]);
+  const [galleryPage, setGalleryPage] = useState(1);
+  const [galleryHasMore, setGalleryHasMore] = useState(true);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const galleryObserver = useRef<IntersectionObserver | null>(null);
+  const galleryEndRef = useRef<HTMLDivElement | null>(null);
 
   const unwrappedSearchParams = searchParams ? use(searchParams) : {};
   const currentPage = Number(unwrappedSearchParams?.page || 1);
   const selectedType = unwrappedSearchParams?.type;
   const selectedTag = unwrappedSearchParams?.tag;
+
+  const loadGalleryPlants = useCallback(async (page: number, reset = false) => {
+    setGalleryLoading(true);
+    setFetchError(null);
+    try {
+      const { plants: fetched, total: t } = await getPaginatedPlants(page, 20);
+      if (reset) {
+        setGalleryPlants(fetched);
+      } else {
+        setGalleryPlants((prev) => [...prev, ...fetched]);
+      }
+      setTotal(t);
+      setGalleryHasMore(page * 20 < t);
+      setGalleryPage(page);
+    } catch (err) {
+      setFetchError(err instanceof Error ? err.message : "Failed to load plants");
+    }
+    setGalleryLoading(false);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if (activeFilter !== "Gallery") {
@@ -101,30 +129,42 @@ export default function PlantVaultFeed({ searchParams }: Props) {
       setLoading(false);
       return;
     }
-
-    let ignore = false;
     setLoading(true);
-    setFetchError(null);
-    getPaginatedPlants(currentPage, limit).then(
-      ({ plants: fetchedPlants, total }) => {
-        if (!ignore) {
-          setPlants(fetchedPlants);
-          setTotal(total);
-          setLoading(false);
+    setGalleryPlants([]);
+    setGalleryPage(1);
+    setGalleryHasMore(true);
+    loadGalleryPlants(1, true);
+  }, [activeFilter, gallerySort, loadGalleryPlants]);
+
+  useEffect(() => {
+    if (activeFilter !== "Gallery" || !galleryHasMore || galleryLoading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && galleryHasMore && !galleryLoading) {
+          loadGalleryPlants(galleryPage + 1);
         }
-      }
-    ).catch((err) => {
-      if (!ignore) {
-        setFetchError(err instanceof Error ? err.message : "Failed to load plants");
-        setLoading(false);
-      }
-    });
-    return () => {
-      ignore = true;
-    };
-  }, [currentPage, activeFilter]);
+      },
+      { threshold: 0.1 }
+    );
+    galleryObserver.current = observer;
+    if (galleryEndRef.current) observer.observe(galleryEndRef.current);
+    return () => observer.disconnect();
+  }, [activeFilter, galleryHasMore, galleryLoading, galleryPage, loadGalleryPlants]);
 
   const totalPages = Math.ceil(total / limit);
+
+  const sortedGalleryPlants = [...galleryPlants].sort((a, b) => {
+    switch (gallerySort) {
+      case "oldest":
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      case "popular":
+        return (b.likes ?? 0) - (a.likes ?? 0);
+      case "az":
+        return (a.commonName || a.botanicalName).localeCompare(b.commonName || b.botanicalName);
+      default:
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+  });
 
   const filters = ["Feed", "Gallery", "Forum"];
 
@@ -175,12 +215,12 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               />
             </nav>
 
-            <Link
-              href="/forum"
+            <button
+              onClick={() => setActiveFilter("Feed")}
               className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-[#81a308]/25 block text-center"
             >
               Create Post
-            </Link>
+            </button>
 
             <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
               <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
@@ -235,39 +275,6 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             )}
           </div>
 
-          <div className="hidden lg:block p-4 border-b border-gray-200 dark:border-gray-800/50">
-            <div className="flex gap-3">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#81a308]/30 to-emerald-500/20 flex-shrink-0 flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-[#81a308]" />
-              </div>
-              <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder="Share something with the community..."
-                  className="w-full bg-white dark:bg-gray-900/60 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#81a308]/30 border border-gray-300 dark:border-gray-800/50 transition-all"
-                />
-              </div>
-            </div>
-            <div className="flex items-center justify-between mt-3 pl-14">
-              <div className="flex gap-1">
-                <button className="flex items-center gap-1.5 text-gray-500 hover:text-[#81a308] px-3 py-1.5 rounded-lg hover:bg-[#81a308]/5 transition-all text-sm">
-                  <ImageIcon className="w-4 h-4" />
-                  Photo
-                </button>
-                <button className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-400 px-3 py-1.5 rounded-lg hover:bg-emerald-500/5 transition-all text-sm">
-                  <VideoIcon className="w-4 h-4" />
-                  Video
-                </button>
-                <button className="flex items-center gap-1.5 text-gray-500 hover:text-green-400 px-3 py-1.5 rounded-lg hover:bg-green-500/5 transition-all text-sm">
-                  <Smile className="w-4 h-4" />
-                  Feeling
-                </button>
-              </div>
-              <button className="bg-[#81a308] hover:bg-[#6c8a0a] text-white px-5 py-1.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-[#81a308]/20 transition-all">
-                Post
-              </button>
-            </div>
-          </div>
 
           {mobileTab === "search" && (
             <div className="lg:hidden">
@@ -342,24 +349,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           )}
 
           {mobileTab !== "search" && !showMarketplaceContent ? (
-            <div className="divide-y divide-gray-200 dark:divide-gray-800/50">
+            <div>
               {activeFilter === "Feed" ? (
-                <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
-                    <Leaf className="w-8 h-8 text-[#81a308]" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-zinc-600 dark:text-gray-300 mb-2">
-                    No posts yet
-                  </h3>
-                  <p className="text-gray-500 max-w-md text-sm">
-                    Posts from the community will appear here. Use the Create Post button to share something!
-                  </p>
-                  <Link
-                    href="/forum"
-                    className="mt-4 bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2.5 px-6 rounded-xl transition-all hover:shadow-lg hover:shadow-[#81a308]/25 text-sm"
-                  >
-                    Create Post
-                  </Link>
+                <div className="p-4">
+                  <PostsFeed />
                 </div>
               ) : activeFilter === "Forum" ? (
                 <div className="flex flex-col justify-center items-center py-20 text-center">
@@ -373,49 +366,73 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                     Community discussions and plant care tips will be available here.
                   </p>
                 </div>
-              ) : loading ? (
-                <Loading />
-              ) : fetchError ? (
-                <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
-                    <Leaf className="w-8 h-8 text-red-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    Could not load plants
-                  </h3>
-                  <p className="text-gray-500 max-w-md text-sm">{fetchError}</p>
-                </div>
-              ) : filteredPlants.length === 0 ? (
-                <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
-                    <Leaf className="w-8 h-8 text-[#81a308]" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                    No plants to show
-                  </h3>
-                  <p className="text-gray-500 max-w-md">
-                    Browse the Gallery to discover plants from the community!
-                  </p>
-                </div>
               ) : (
-                filteredPlants.map((plant) => (
-                  <PlantPost key={plant.id} plant={plant} />
-                ))
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {total > 0 ? `${total} plants` : ""}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-zinc-500" />
+                      <select
+                        value={gallerySort}
+                        onChange={(e) => setGallerySort(e.target.value as typeof gallerySort)}
+                        className="text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1.5 text-zinc-700 dark:text-zinc-300 outline-none focus:border-[#81a308]/50"
+                      >
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="popular">Most Liked</option>
+                        <option value="az">A → Z</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {loading && galleryPlants.length === 0 ? (
+                    <div className="columns-2 sm:columns-3 gap-3 space-y-3">
+                      {Array.from({ length: 9 }).map((_, i) => (
+                        <div key={i} className="break-inside-avoid rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800/50 animate-pulse" style={{ height: `${180 + (i % 3) * 60}px` }} />
+                      ))}
+                    </div>
+                  ) : fetchError ? (
+                    <div className="flex flex-col justify-center items-center py-20 text-center">
+                      <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+                        <Leaf className="w-8 h-8 text-red-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-300 mb-2">Could not load plants</h3>
+                      <p className="text-gray-500 max-w-md text-sm">{fetchError}</p>
+                    </div>
+                  ) : sortedGalleryPlants.length === 0 ? (
+                    <div className="flex flex-col justify-center items-center py-20 text-center">
+                      <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
+                        <Leaf className="w-8 h-8 text-[#81a308]" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-300 mb-2">No plants to show</h3>
+                      <p className="text-gray-500 max-w-md text-sm">Browse the Gallery to discover plants from the community!</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="columns-2 sm:columns-3 gap-3 space-y-3">
+                        {sortedGalleryPlants.map((plant) => (
+                          <GalleryCard key={plant.id} plant={plant} />
+                        ))}
+                      </div>
+                      <div ref={galleryEndRef} className="h-10" />
+                      {galleryLoading && (
+                        <div className="flex justify-center py-6">
+                          <Loader2 className="w-6 h-6 animate-spin text-[#81a308]" />
+                        </div>
+                      )}
+                      {!galleryHasMore && galleryPlants.length > 0 && (
+                        <p className="text-center text-xs text-zinc-500 py-4">You&apos;ve seen all plants</p>
+                      )}
+                    </>
+                  )}
+                </div>
               )}
             </div>
           ) : mobileTab !== "search" ? (
             <MarketplaceContent />
           ) : null}
-
-          {!loading && totalPages > 1 && !showMarketplaceContent && (
-            <div className="p-4 border-t border-gray-200 dark:border-gray-800/50">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                maxVisiblePages={5}
-              />
-            </div>
-          )}
         </main>
 
         <aside className="hidden xl:block w-80 p-5 space-y-5 sticky top-0 h-screen overflow-y-auto">
@@ -770,6 +787,102 @@ function PlantPost({ plant }: { plant: Plant }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function GalleryCard({ plant }: { plant: Plant }) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(plant.likes ?? 0);
+  const [saved, setSaved] = useState(false);
+
+  const mainImage = plant.images?.find((img) => img.isMain) || plant.images?.[0];
+
+  return (
+    <Link
+      href={
+        plant.collection && plant.user
+          ? `/profiles/${plant.user.username}/collections/${plant.collection.slug}/${plant.slug}`
+          : `/plants?search=${plant.slug}`
+      }
+      className="break-inside-avoid block group relative rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800/50 bg-white dark:bg-zinc-900/60 hover:border-[#81a308]/40 transition-all duration-200"
+    >
+      <div className="relative">
+        {mainImage ? (
+          <img
+            src={mainImage.url}
+            alt={plant.commonName || plant.botanicalName}
+            className="w-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+            loading="lazy"
+            onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
+          />
+        ) : (
+          <div className="w-full aspect-square bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+            <Leaf className="w-10 h-10 text-zinc-300 dark:text-zinc-600" />
+          </div>
+        )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setLiked(!liked); setLikeCount((c) => liked ? c - 1 : c + 1); }}
+                className="p-1.5 rounded-full bg-black/40 backdrop-blur-sm hover:bg-red-500/80 transition-colors"
+              >
+                <Heart className={`w-3.5 h-3.5 ${liked ? "text-red-400 fill-red-400" : "text-white"}`} />
+              </button>
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSaved(!saved); }}
+                className="p-1.5 rounded-full bg-black/40 backdrop-blur-sm hover:bg-[#81a308]/80 transition-colors"
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${saved ? "text-[#81a308] fill-[#81a308]" : "text-white"}`} />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(`${window.location.origin}/plants?search=${plant.slug}`);
+                }}
+                className="p-1.5 rounded-full bg-black/40 backdrop-blur-sm hover:bg-blue-500/80 transition-colors"
+              >
+                <Share2 className="w-3.5 h-3.5 text-white" />
+              </button>
+            </div>
+            {likeCount > 0 && (
+              <span className="text-[10px] text-white/80 font-medium">{likeCount} likes</span>
+            )}
+          </div>
+        </div>
+
+        {plant.type && (
+          <span className="absolute top-2 left-2 text-[10px] font-medium bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">
+            {plant.type}
+          </span>
+        )}
+      </div>
+
+      <div className="p-2.5">
+        <h3 className="text-xs font-semibold text-zinc-900 dark:text-white line-clamp-1 group-hover:text-[#81a308] transition-colors">
+          {plant.commonName || plant.botanicalName}
+        </h3>
+        {plant.commonName && plant.botanicalName && (
+          <p className="text-[10px] text-zinc-500 italic line-clamp-1 mt-0.5">{plant.botanicalName}</p>
+        )}
+        <div className="flex items-center gap-1.5 mt-1.5">
+          <div className="w-4 h-4 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden flex-shrink-0">
+            {plant.user.avatarUrl ? (
+              <img src={plant.user.avatarUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
+                <span className="text-white text-[8px] font-bold">{(plant.user.firstName?.[0] || plant.user.username[0]).toUpperCase()}</span>
+              </div>
+            )}
+          </div>
+          <span className="text-[10px] text-zinc-500 truncate">@{plant.user.username}</span>
+        </div>
+      </div>
+    </Link>
   );
 }
 

@@ -232,7 +232,7 @@ const Header = () => {
                 <AvatarImage
                   src={user.avatarUrl || "/default-avatar.png"}
                 />
-                <AvatarFallback className="bg-white">
+                <AvatarFallback className="bg-[#81a308] text-white">
                   {user?.firstName?.slice(0, 1).toLocaleUpperCase()}
                   {user?.lastName?.slice(0, 1).toLocaleUpperCase()}
                 </AvatarFallback>
@@ -243,7 +243,7 @@ const Header = () => {
               <div className="px-4 py-3 border-b border-gray-200 dark:border-zinc-800 flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatarUrl || "/default-avatar.png"} />
-                  <AvatarFallback className="bg-white text-[#2b2a2a]">
+                  <AvatarFallback className="bg-[#81a308] text-white">
                     {user?.firstName?.slice(0, 1).toLocaleUpperCase()}
                     {user?.lastName?.slice(0, 1).toLocaleUpperCase()}
                   </AvatarFallback>
