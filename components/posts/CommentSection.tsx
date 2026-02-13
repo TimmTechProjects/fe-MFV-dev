@@ -134,7 +134,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
   const renderComment = (comment: PostComment, isReply = false) => {
     const isOwner = user?.id === comment.author.id || user?.username === comment.author.username;
-    const hasReplies = (comment.replies?.length || 0) > 0;
+    const replyCount = comment.replies?.length || 0;
+    const hasReplies = replyCount > 0;
     const repliesExpanded = expandedReplies.has(comment.id);
 
     return (
@@ -206,14 +207,14 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             {repliesExpanded ? (
               <>
                 <ChevronUp className="w-3 h-3" />
-                Hide {comment.replies!.length}{" "}
-                {comment.replies!.length === 1 ? "reply" : "replies"}
+                Hide {replyCount}{" "}
+                {replyCount === 1 ? "reply" : "replies"}
               </>
             ) : (
               <>
                 <ChevronDown className="w-3 h-3" />
-                View {comment.replies!.length}{" "}
-                {comment.replies!.length === 1 ? "reply" : "replies"}
+                View {replyCount}{" "}
+                {replyCount === 1 ? "reply" : "replies"}
               </>
             )}
           </button>

@@ -1138,12 +1138,20 @@ export async function getForumPosts(
 > {
   try {
     const res = await fetch(
-      `${baseUrl}/api/forum/posts?limit=${limit}`,
+      `${baseUrl}/api/forum/threads?limit=${limit}`,
       { cache: "no-store" }
     );
     if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : data.posts || [];
+    const json = await res.json();
+    const threads = json.data || json.threads || (Array.isArray(json) ? json : []);
+    return threads.map((t: Record<string, unknown>) => ({
+      id: t.id as string,
+      title: t.title as string,
+      author: t.user || t.author || { username: "unknown" },
+      createdAt: t.createdAt as string,
+      replyCount: (t._count as Record<string, number>)?.replies ?? t.replyCount ?? 0,
+      category: (t.category as Record<string, string>)?.name || t.category || undefined,
+    }));
   } catch {
     return [];
   }
@@ -1164,7 +1172,16 @@ export async function getPosts(
       }
     );
     if (!res.ok) return { posts: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        posts: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { posts: [], total: 0, page: 1, totalPages: 0 };
   }
@@ -1185,7 +1202,16 @@ export async function getUserPosts(
       }
     );
     if (!res.ok) return { posts: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        posts: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { posts: [], total: 0, page: 1, totalPages: 0 };
   }
@@ -1209,7 +1235,7 @@ export async function createPost(
 
     const data = await res.json();
     if (!res.ok) return { success: false, message: data.message || "Failed to create post" };
-    return { success: true, post: data.post || data };
+    return { success: true, post: data.data || data.post || data };
   } catch {
     return { success: false, message: "Unexpected error" };
   }
@@ -1224,7 +1250,7 @@ export async function updatePost(
 
   try {
     const res = await fetch(`${baseUrl}/api/posts/${postId}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -1234,7 +1260,7 @@ export async function updatePost(
 
     const data = await res.json();
     if (!res.ok) return { success: false, message: data.message || "Failed to update post" };
-    return { success: true, post: data.post || data };
+    return { success: true, post: data.data || data.post || data };
   } catch {
     return { success: false, message: "Unexpected error" };
   }
@@ -1311,7 +1337,16 @@ export async function getPostComments(
       }
     );
     if (!res.ok) return { comments: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        comments: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { comments: [], total: 0, page: 1, totalPages: 0 };
   }
@@ -1337,7 +1372,7 @@ export async function createComment(
 
     const data = await res.json();
     if (!res.ok) return { success: false, message: data.message || "Failed to add comment" };
-    return { success: true, comment: data.comment || data };
+    return { success: true, comment: data.data || data.comment || data };
   } catch {
     return { success: false, message: "Unexpected error" };
   }
@@ -1390,8 +1425,8 @@ export async function getForumCategories(): Promise<ForumCategory[]> {
       cache: "no-store",
     });
     if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : data.categories || [];
+    const json = await res.json();
+    return Array.isArray(json) ? json : json.data || json.categories || [];
   } catch {
     return [];
   }
@@ -1417,7 +1452,16 @@ export async function getForumThreads(
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     if (!res.ok) return { threads: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        threads: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { threads: [], total: 0, page: 1, totalPages: 0 };
   }
@@ -1433,7 +1477,8 @@ export async function getForumThread(
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     if (!res.ok) return null;
-    return await res.json();
+    const json = await res.json();
+    return json.data || json;
   } catch {
     return null;
   }
@@ -1456,7 +1501,7 @@ export async function createForumThread(
     });
     const data = await res.json();
     if (!res.ok) return { success: false, message: data.message || "Failed to create thread" };
-    return { success: true, thread: data.thread || data };
+    return { success: true, thread: data.data || data.thread || data };
   } catch {
     return { success: false, message: "Unexpected error creating thread" };
   }
@@ -1477,7 +1522,16 @@ export async function getThreadReplies(
       }
     );
     if (!res.ok) return { replies: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        replies: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { replies: [], total: 0, page: 1, totalPages: 0 };
   }
@@ -1502,7 +1556,7 @@ export async function createThreadReply(
     });
     const data = await res.json();
     if (!res.ok) return { success: false, message: data.message || "Failed to post reply" };
-    return { success: true, reply: data.reply || data };
+    return { success: true, reply: data.data || data.reply || data };
   } catch {
     return { success: false, message: "Unexpected error posting reply" };
   }
@@ -1590,7 +1644,16 @@ export async function searchForumThreads(
       { cache: "no-store" }
     );
     if (!res.ok) return { threads: [], total: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    if (json.data && json.pagination) {
+      return {
+        threads: json.data,
+        total: json.pagination.total,
+        page: json.pagination.page,
+        totalPages: json.pagination.pages,
+      };
+    }
+    return json;
   } catch {
     return { threads: [], total: 0, page: 1, totalPages: 0 };
   }
