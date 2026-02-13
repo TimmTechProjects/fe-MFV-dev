@@ -81,7 +81,7 @@ const limit = 10;
 export default function PlantVaultFeed({ searchParams }: Props) {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [total, setTotal] = useState(0);
-  const [activeFilter, setActiveFilter] = useState("Feed");
+  const [activeFilter, setActiveFilter] = useState("For You");
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
@@ -166,11 +166,15 @@ export default function PlantVaultFeed({ searchParams }: Props) {
     }
   });
 
-  const filters = ["Feed", "Gallery", "Forum"];
+  const filters = ["For You", "Following", "Forum"];
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
     setShowMarketplaceContent(false);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const filteredPlants = plants.filter((p) => {
@@ -200,14 +204,23 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <NavItem
                 icon={<Home />}
                 label="Home"
-                active={!showMarketplaceContent && activeFilter === "Feed"}
+                active={!showMarketplaceContent && activeFilter === "For You"}
                 onClick={() => {
                   setShowMarketplaceContent(false);
-                  setActiveFilter("Feed");
+                  setActiveFilter("For You");
+                  scrollToTop();
                 }}
               />
-              <NavItem icon={<Compass />} label="Explore" />
-              <NavItem icon={<Bookmark />} label="Saved" />
+              <NavItem
+                icon={<Bookmark />}
+                label="Saved"
+                href="/saved"
+              />
+              <NavItem
+                icon={<MessageCircle />}
+                label="Forum"
+                href="/forum"
+              />
               <NavItem
                 icon={<ShoppingCart />}
                 label="Marketplace"
@@ -216,7 +229,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </nav>
 
             <button
-              onClick={() => setActiveFilter("Feed")}
+              onClick={() => {
+                setActiveFilter("For You");
+                scrollToTop();
+              }}
               className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-[#81a308]/25 block text-center"
             >
               Create Post
@@ -350,7 +366,11 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
           {mobileTab !== "search" && !showMarketplaceContent ? (
             <div>
-              {activeFilter === "Feed" ? (
+              {activeFilter === "For You" ? (
+                <div className="p-4">
+                  <PostsFeed />
+                </div>
+              ) : activeFilter === "Following" ? (
                 <div className="p-4">
                   <PostsFeed />
                 </div>
@@ -452,27 +472,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <TrendingUp className="w-4 h-4 text-[#81a308]" />
               <h2 className="font-bold text-base text-zinc-900 dark:text-white">Trending</h2>
             </div>
-            <div className="space-y-1">
-              <TrendingItem
-                category="Popular"
-                title="#MonsteraMonday"
-                posts="12.5K posts"
-              />
-              <TrendingItem
-                category="Plant Care"
-                title="Watering schedules"
-                posts="8,432 posts"
-              />
-              <TrendingItem
-                category="Community"
-                title="#PlantSwap"
-                posts="5,234 posts"
-              />
-              <TrendingItem
-                category="Events"
-                title="Rare plants auction"
-                posts="3,128 posts"
-              />
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <TrendingUp className="w-8 h-8 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No trending topics yet</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Be the first to post!</p>
             </div>
           </div>
 
@@ -481,23 +484,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <Users className="w-4 h-4 text-emerald-400" />
               <h2 className="font-bold text-base text-zinc-900 dark:text-white">Suggested Growers</h2>
             </div>
-            <div className="space-y-3">
-              {["PlantMom", "GreenThumb", "UrbanJungle"].map((name) => (
-                <div key={name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#81a308]/15 flex items-center justify-center text-xs font-bold text-[#81a308]">
-                      {name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">{name}</p>
-                      <p className="text-xs text-gray-500">@{name.toLowerCase()}</p>
-                    </div>
-                  </div>
-                  <button className="text-xs px-3 py-1 rounded-full border border-[#81a308]/30 text-[#81a308] hover:bg-[#81a308]/10 transition-all">
-                    Follow
-                  </button>
-                </div>
-              ))}
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Users className="w-8 h-8 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">Follow some growers</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">to see recommendations</p>
             </div>
           </div>
         </aside>
@@ -506,7 +496,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
       <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800/50 z-50 lg:hidden">
         <div className="flex items-center justify-around py-2 px-4 max-w-lg mx-auto">
           <button
-            onClick={() => { setMobileTab("home"); setShowMarketplaceContent(false); setActiveFilter("Feed"); }}
+            onClick={() => { setMobileTab("home"); setShowMarketplaceContent(false); setActiveFilter("For You"); scrollToTop(); }}
             className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "home" ? "text-[#81a308]" : "text-gray-500"}`}
           >
             <Home className="w-5 h-5" />
@@ -883,24 +873,6 @@ function GalleryCard({ plant }: { plant: Plant }) {
         </div>
       </div>
     </Link>
-  );
-}
-
-function TrendingItem({
-  category,
-  title,
-  posts,
-}: {
-  category: string;
-  title: string;
-  posts: string;
-}) {
-  return (
-    <div className="hover:bg-gray-200 dark:hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
-      <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
-      <p className="font-semibold text-zinc-900 dark:text-white text-sm mt-0.5">{title}</p>
-      <p className="text-gray-500 text-xs mt-0.5">{posts}</p>
-    </div>
   );
 }
 
