@@ -215,23 +215,23 @@ export default function AdminTicketsPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         {[
-          { key: "", label: "Total", count: stats.total, color: "[#81a308]", Icon: TicketIcon },
-          { key: "OPEN", label: "Open", count: stats.open, color: "blue-500", Icon: Clock },
-          { key: "IN_PROGRESS", label: "In Progress", count: stats.inProgress, color: "amber-500", Icon: AlertTriangle },
-          { key: "RESOLVED", label: "Resolved", count: stats.resolved, color: "emerald-500", Icon: CheckCircle2 },
-          { key: "CLOSED", label: "Closed", count: stats.closed, color: "zinc-500", Icon: XCircle },
-        ].map(({ key, label, count, color, Icon }) => (
+          { key: "", label: "Total", count: stats.total, activeBg: "bg-[#81a308]/10", activeBorder: "border-[#81a308]/30", iconColor: "text-[#81a308]", Icon: TicketIcon },
+          { key: "OPEN", label: "Open", count: stats.open, activeBg: "bg-blue-500/10", activeBorder: "border-blue-500/30", iconColor: "text-blue-400", Icon: Clock },
+          { key: "IN_PROGRESS", label: "In Progress", count: stats.inProgress, activeBg: "bg-amber-500/10", activeBorder: "border-amber-500/30", iconColor: "text-amber-400", Icon: AlertTriangle },
+          { key: "RESOLVED", label: "Resolved", count: stats.resolved, activeBg: "bg-emerald-500/10", activeBorder: "border-emerald-500/30", iconColor: "text-emerald-400", Icon: CheckCircle2 },
+          { key: "CLOSED", label: "Closed", count: stats.closed, activeBg: "bg-zinc-500/10", activeBorder: "border-zinc-500/30", iconColor: "text-zinc-400", Icon: XCircle },
+        ].map(({ key, label, count, activeBg, activeBorder, iconColor, Icon }) => (
           <button
             key={label}
             onClick={() => { setStatusFilter(key); setPage(1); }}
             className={`p-4 rounded-xl border transition-colors ${
               statusFilter === key
-                ? `bg-${color}/10 border-${color}/30`
+                ? `${activeBg} ${activeBorder}`
                 : "bg-white dark:bg-zinc-900/60 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"
             } ${label === "Closed" ? "col-span-2 lg:col-span-1" : ""}`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <Icon className={`w-4 h-4 text-${color.includes("[") ? color : color.replace("/10", "").replace("500", "400")}`} />
+              <Icon className={`w-4 h-4 ${iconColor}`} />
               <span className="text-xs text-zinc-500">{label}</span>
             </div>
             <p className="text-2xl font-bold text-zinc-900 dark:text-white">{count}</p>
