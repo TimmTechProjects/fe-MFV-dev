@@ -24,6 +24,9 @@ const Footer = () => {
           <Link href="/contact" className="hover:underline hover:text-[#81a308] transition-colors">
             Contact Us
           </Link>
+          <Link href="/support" className="hover:underline hover:text-[#81a308] transition-colors">
+            Support
+          </Link>
         </div>
       </div>
     </footer>

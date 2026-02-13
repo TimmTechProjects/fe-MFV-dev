@@ -16,6 +16,8 @@ export interface SupportTicket {
     avatarUrl?: string;
   };
   messages: TicketMessage[];
+  internalNotes?: InternalNote[];
+  assignedTo?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +34,16 @@ export interface TicketMessage {
   createdAt: string;
 }
 
+export interface InternalNote {
+  id: string;
+  content: string;
+  author: {
+    id: string;
+    username: string;
+  };
+  createdAt: string;
+}
+
 export interface CreateTicketInput {
   subject: string;
   description: string;
@@ -39,9 +51,26 @@ export interface CreateTicketInput {
   priority: TicketPriority;
 }
 
+export interface ContactFormInput {
+  name: string;
+  email: string;
+  subject: string;
+  category: TicketCategory;
+  message: string;
+}
+
 export interface TicketsResponse {
   tickets: SupportTicket[];
   total: number;
   page: number;
   totalPages: number;
+}
+
+export interface TicketStats {
+  total: number;
+  open: number;
+  inProgress: number;
+  resolved: number;
+  closed: number;
+  avgResponseTime?: string;
 }

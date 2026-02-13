@@ -30,6 +30,11 @@ export const navLinks = [
     href: "/my-collection",
     protected: true,
   },
+  {
+    label: "Support",
+    href: "/support",
+    protected: true,
+  },
 ];
 
 export const authUserLinks: authUserLinks[] = [
