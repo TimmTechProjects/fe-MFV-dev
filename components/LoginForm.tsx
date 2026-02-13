@@ -74,10 +74,9 @@ const SignInForm = () => {
         toast.success("Logged in successfully!");
         router.push(from);
       },
-      (error: { response?: { data?: { message?: string } }; message?: string }) => {
-        const msg = error?.response?.data?.message || error?.message || "Invalid credentials. Please check your username/email and password.";
+      (error: { message?: string }) => {
+        const msg = error?.message || "Invalid credentials. Please check your username/email and password.";
         setErrorMessage(msg);
-        toast.error(msg);
         setLoading(false);
       }
     );

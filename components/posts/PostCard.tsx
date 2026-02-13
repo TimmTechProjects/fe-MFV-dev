@@ -255,7 +255,7 @@ export default function PostCard({
         )}
       </div>
 
-      {post.images.length > 0 && (
+      {post.images && post.images.length > 0 && (
         <div
           className={`grid gap-0.5 ${
             post.images.length === 1

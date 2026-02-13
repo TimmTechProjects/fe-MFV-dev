@@ -22,8 +22,10 @@ export const _getLogin = (data, successCallBack, failCallBack) => {
       }
     } catch (error) {
       console.log({ error });
-      failCallBack?.(error);
-      toast.error("Invalid credentials");
+      const errData = error?.response?.data || {};
+      const msg = errData?.message || "Invalid credentials";
+      failCallBack?.(errData);
+      toast.error(msg);
     }
   };
 };
@@ -48,7 +50,14 @@ export const _getSignup = (data, successCallBack, failCallBack) => {
       }
     } catch (error) {
       console.log({ error });
-      failCallBack?.(error);
+      const errData = error?.response?.data || {};
+      const status = error?.response?.status;
+      let msg = errData?.message || "Registration failed. Please try again.";
+      if (status === 409) {
+        msg = errData?.message || "An account with this email or username already exists.";
+      }
+      failCallBack?.(errData);
+      toast.error(msg);
     }
   };
 };
