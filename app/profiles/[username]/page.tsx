@@ -49,6 +49,8 @@ import {
   SproutIcon,
   LeafDecoration,
 } from "@/components/ui/botanical";
+import ProfileEditModal from "@/components/ProfileEditModal";
+import ProfileImageUploadModal from "@/components/ProfileImageUploadModal";
 
 // Garden-themed cover images for variety
 const GARDEN_COVERS = [
@@ -78,6 +80,11 @@ const ProfilePage= () => {
     "garden" | "collections" | "posts" | "marketplace"
   >(initialSection);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  
+  // Modal states
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isProfileImageModalOpen, setIsProfileImageModalOpen] = useState(false);
+  const [isBannerImageModalOpen, setIsBannerImageModalOpen] = useState(false);
 
   // Update active section when URL param changes (e.g., back navigation)
   useEffect(() => {
@@ -167,6 +174,18 @@ const ProfilePage= () => {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(9,9,11,0.4)] to-[#18181b]" />
             
+            {/* Banner edit overlay (own profile only) */}
+            {isOwnProfile && (
+              <button
+                onClick={() => setIsBannerImageModalOpen(true)}
+                className="absolute bottom-4 right-4 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 z-10 hover:scale-105 transform transition-transform"
+              >
+                <div className="flex items-center gap-2 bg-black/60 hover:bg-black/70 px-4 py-2 rounded-full border border-emerald-500/40 hover:border-emerald-500/60 shadow-lg">
+                  <Camera className="w-5 h-5 text-emerald-400" />
+                  <span className="text-white text-sm font-medium">Edit Cover Image</span>
+                </div>
+              </button>
+            )}
 
             {/* Decorative leaf patterns */}
             <div className="absolute top-4 left-4 opacity-20 hidden sm:block">
@@ -183,6 +202,7 @@ const ProfilePage= () => {
               {/* Avatar */}
               <div 
                 className="relative group/avatar cursor-pointer"
+                onClick={() => isOwnProfile && setIsProfileImageModalOpen(true)}
               >
                 <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 border-2 sm:border-4 border-zinc-700 shadow-xl">
                   <AvatarImage
@@ -223,7 +243,11 @@ const ProfilePage= () => {
                   
                   <div className="flex gap-2 md:ml-auto">
                     {isOwnProfile ? (
-                      <BotanicalButton variant="outline" size="sm">
+                      <BotanicalButton 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setIsEditProfileModalOpen(true)}
+                      >
                         <Settings className="w-4 h-4" />
                         Edit Profile
                       </BotanicalButton>
@@ -564,6 +588,30 @@ const ProfilePage= () => {
           </main>
         </div>
       </div>
+      {/* Modals */}
+      {isOwnProfile && profileUser && (
+        <>
+          <ProfileEditModal
+            open={isEditProfileModalOpen}
+            onOpenChange={setIsEditProfileModalOpen}
+            user={profileUser}
+          />
+          <ProfileImageUploadModal
+            open={isProfileImageModalOpen}
+            onOpenChange={setIsProfileImageModalOpen}
+            username={profileUser.username}
+            type="profile"
+            currentImageUrl={profileUser.avatarUrl}
+          />
+          <ProfileImageUploadModal
+            open={isBannerImageModalOpen}
+            onOpenChange={setIsBannerImageModalOpen}
+            username={profileUser.username}
+            type="banner"
+            currentImageUrl={null}
+          />
+        </>
+      )}
     </div>
   );
 };
