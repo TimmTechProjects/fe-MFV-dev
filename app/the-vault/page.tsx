@@ -191,8 +191,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
-      <div className="max-w-6xl mx-auto flex">
-        <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-200 dark:border-gray-800/50 h-screen sticky top-0">
+      <div className="max-w-[1600px] mx-auto flex gap-6 px-4">
+        <aside className="hidden lg:block w-64 flex-shrink-0 py-5 h-screen sticky top-0">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
@@ -212,9 +212,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 }}
               />
               <NavItem
-                icon={<Bookmark />}
-                label="Saved"
-                href="/saved"
+                icon={<Eye />}
+                label="Reels"
               />
               <NavItem
                 icon={<MessageCircle />}
@@ -226,6 +225,11 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 label="Marketplace"
                 href="/marketplace"
               />
+              <NavItem
+                icon={<Bookmark />}
+                label="Saved"
+                href="/saved"
+              />
             </nav>
 
             <button
@@ -233,9 +237,9 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 setActiveFilter("For You");
                 scrollToTop();
               }}
-              className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-[#81a308]/25 block text-center"
+              className="w-full bg-gray-100 dark:bg-gray-900/60 hover:bg-gray-200 dark:hover:bg-gray-800/60 text-gray-500 hover:text-[#81a308] font-medium py-2.5 px-4 rounded-lg mt-4 transition-all text-sm border border-gray-200 dark:border-gray-800/50"
             >
-              Create Post
+              + Create Post
             </button>
 
             <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
@@ -258,7 +262,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           </div>
         </aside>
 
-        <main className="flex-1 border-r border-gray-200 dark:border-gray-800/50 pb-20 lg:pb-0">
+        <main className="flex-1 max-w-2xl pb-20 lg:pb-0">
           <div className="sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10">
             <div className="p-4">
               {showMarketplaceContent && (
@@ -455,7 +459,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           ) : null}
         </main>
 
-        <aside className="hidden xl:block w-80 p-5 space-y-5 sticky top-0 h-screen overflow-y-auto">
+        <aside className="hidden xl:block w-80 py-5 space-y-5 sticky top-0 h-screen overflow-y-auto">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
@@ -474,20 +478,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <TrendingUp className="w-8 h-8 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No trending topics yet</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Be the first to post!</p>
-            </div>
-          </div>
-
-          <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-4 h-4 text-emerald-400" />
-              <h2 className="font-bold text-base text-zinc-900 dark:text-white">Suggested Growers</h2>
-            </div>
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Users className="w-8 h-8 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">Follow some growers</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">to see recommendations</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">No trending content yet</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">🌱 Plants • 💬 Forums • 📅 Events</p>
             </div>
           </div>
         </aside>
