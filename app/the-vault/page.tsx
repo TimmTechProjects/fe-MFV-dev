@@ -82,6 +82,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [showSavedContent, setShowSavedContent] = useState(false);
   const [savedTab, setSavedTab] = useState<"saved" | "liked">("saved");
+  const [showReelsContent, setShowReelsContent] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileTab, setMobileTab] = useState("home");
   const [searchCategory, setSearchCategory] = useState("all");
@@ -185,6 +186,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
     setShowSavedContent(false);
+    setShowReelsContent(false);
   };
 
   const scrollToTop = () => {
@@ -218,9 +220,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <NavItem
                 icon={<Home />}
                 label="Home"
-                active={!showSavedContent && activeFilter === "For You"}
+                active={!showSavedContent && !showReelsContent && activeFilter === "For You"}
                 onClick={() => {
                   setShowSavedContent(false);
+                  setShowReelsContent(false);
                   setActiveFilter("For You");
                   scrollToTop();
                 }}
@@ -228,7 +231,13 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <NavItem
                 icon={<Film />}
                 label="Reels"
-                href="/reels"
+                active={showReelsContent}
+                onClick={() => {
+                  setShowReelsContent(true);
+                  setShowSavedContent(false);
+                  setActiveFilter("For You");
+                  scrollToTop();
+                }}
               />
               <NavItem
                 icon={<MessageCircle />}
@@ -240,7 +249,12 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 label="Saved"
                 active={showSavedContent}
                 onClick={() => {
+                  if (!isLoggedIn) {
+                    window.location.href = "/login?redirect=/the-vault";
+                    return;
+                  }
                   setShowSavedContent(true);
+                  setShowReelsContent(false);
                   setActiveFilter("For You");
                   scrollToTop();
                 }}
@@ -282,15 +296,18 @@ export default function PlantVaultFeed({ searchParams }: Props) {
         <main className="flex-1 w-full max-w-2xl pb-20 lg:pb-0 mx-auto">
           <div className={`sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10 transition-transform duration-300 ${showStickyHeader ? "translate-y-0" : "-translate-y-full"}`}>
             <div className="p-4">
-              {showSavedContent && (
-                <h1 className="text-xl font-bold">Saved</h1>
-              )}
-              {!showSavedContent && mobileTab === "search" && (
+                {showSavedContent && (
+                  <h1 className="text-xl font-bold">Saved</h1>
+                )}
+                {showReelsContent && (
+                  <h1 className="text-xl font-bold">Reels</h1>
+                )}
+                {!showSavedContent && !showReelsContent && mobileTab === "search" && (
                 <h1 className="text-xl font-bold lg:hidden">Search</h1>
               )}
             </div>
 
-            {!showSavedContent && (
+            {!showSavedContent && !showReelsContent && (
               <div className="flex">
                 {filters.map((filter) => (
                   <button
@@ -385,7 +402,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           )}
 
-          {mobileTab !== "search" && !showSavedContent ? (
+          {mobileTab !== "search" && !showSavedContent && !showReelsContent ? (
             <div>
               {activeFilter === "For You" ? (
                 <div className="p-4">
@@ -461,6 +478,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           ) : mobileTab !== "search" && showSavedContent ? (
             <SavedContent activeTab={savedTab} onTabChange={setSavedTab} />
+          ) : mobileTab !== "search" && showReelsContent ? (
+            <ReelsContent />
           ) : null}
         </main>
 
@@ -493,7 +512,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
       <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800/50 z-50 lg:hidden">
         <div className="flex items-center justify-around py-2 px-4 max-w-lg mx-auto">
           <button
-            onClick={() => { setMobileTab("home"); setShowSavedContent(false); setActiveFilter("For You"); scrollToTop(); }}
+            onClick={() => { setMobileTab("home"); setShowSavedContent(false); setShowReelsContent(false); setActiveFilter("For You"); scrollToTop(); }}
             className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "home" ? "text-[#81a308]" : "text-gray-500"}`}
           >
             <Home className="w-5 h-5" />
@@ -869,6 +888,22 @@ function GalleryCard({ plant }: { plant: Plant }) {
         </div>
       </div>
     </Link>
+  );
+}
+
+function ReelsContent() {
+  return (
+    <div className="p-4">
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <Film className="w-10 h-10 text-gray-400 dark:text-gray-600 mb-3" />
+        <h3 className="text-lg font-semibold text-zinc-600 dark:text-gray-300 mb-1">
+          No reels yet
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+          Short plant videos and reels will appear here. Stay tuned!
+        </p>
+      </div>
+    </div>
   );
 }
 
