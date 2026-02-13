@@ -80,7 +80,7 @@ interface Props {
 const limit = 10;
 
 export default function PlantVaultFeed({ searchParams }: Props) {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const [plants, setPlants] = useState<Plant[]>([]);
   const [total, setTotal] = useState(0);
   const [activeFilter, setActiveFilter] = useState("For You");
@@ -193,8 +193,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
-      <div className="max-w-[1800px] mx-auto flex gap-4 lg:gap-8 xl:gap-12 2xl:gap-16 justify-between px-4 lg:px-6 xl:px-8">
-        <aside className="hidden lg:block w-56 xl:w-64 2xl:w-72 flex-shrink-0 py-5 h-screen sticky top-0">
+      <div className="max-w-[2400px] mx-auto flex gap-4 lg:gap-6 xl:gap-10 2xl:gap-20 min-[2560px]:gap-32 justify-between px-4 lg:px-6 xl:px-10 2xl:px-16 min-[2560px]:px-24">
+        <aside className="hidden lg:block w-48 xl:w-56 2xl:w-72 min-[2560px]:w-80 flex-shrink-0 py-5 h-screen sticky top-0">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
@@ -244,25 +244,35 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               + Create Post
             </button>
 
-            {user && (
+            {isLoggedIn && user ? (
               <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
                 <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Your Plants</span>
-                    <span className="text-white font-medium">12</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">12</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Collections</span>
-                    <span className="text-white font-medium">3</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">3</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Following</span>
-                    <span className="text-white font-medium">24</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">24</span>
                   </div>
                 </div>
               </div>
-            )}
+            ) : !isLoggedIn ? (
+              <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50 text-center">
+                <div className="w-10 h-10 rounded-full bg-[#81a308]/10 flex items-center justify-center mx-auto mb-3">
+                  <Leaf className="w-5 h-5 text-[#81a308]" />
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-gray-400 mb-3">Sign up to track your plants</p>
+                <Link href="/signup" className="block w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 rounded-lg transition-all text-sm">
+                  Sign Up
+                </Link>
+              </div>
+            ) : null}
           </div>
         </aside>
 
@@ -463,7 +473,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           ) : null}
         </main>
 
-        <aside className="hidden xl:block w-80 2xl:w-96 py-5 space-y-5 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
+        <aside className="hidden lg:block w-56 xl:w-80 2xl:w-96 min-[2560px]:w-[26rem] py-5 space-y-5 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
