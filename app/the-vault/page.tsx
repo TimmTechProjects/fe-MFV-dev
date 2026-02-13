@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, use } from "react";
+import { useState, useEffect, useCallback, useRef, use, useMemo } from "react";
 import {
   Heart,
   MessageCircle,
@@ -168,7 +168,24 @@ export default function PlantVaultFeed({ searchParams }: Props) {
     }
   });
 
-  const filters = ["For You", "Following", "Forum"];
+  const filters = ["For You", "Following"];
+
+  const [showStickyHeader, setShowStickyHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
+        setShowStickyHeader(false);
+      } else {
+        setShowStickyHeader(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
@@ -194,7 +211,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
   return (
     <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
       <div className="max-w-[2400px] mx-auto flex gap-4 lg:gap-6 xl:gap-10 2xl:gap-20 min-[2560px]:gap-32 justify-between px-4 lg:px-6 xl:px-10 2xl:px-16 min-[2560px]:px-24">
-        <aside className="hidden lg:block w-48 xl:w-56 2xl:w-72 min-[2560px]:w-80 flex-shrink-0 py-5 h-screen sticky top-0">
+        <aside className="hidden lg:block w-48 xl:w-56 2xl:w-72 min-[2560px]:w-80 flex-shrink-0 pt-5 sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
@@ -277,7 +294,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
         </aside>
 
         <main className="flex-1 w-full max-w-2xl pb-20 lg:pb-0 mx-auto">
-          <div className="sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10">
+          <div className={`sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10 transition-transform duration-300 ${showStickyHeader ? "translate-y-0" : "-translate-y-full"}`}>
             <div className="p-4">
               {showMarketplaceContent && (
                 <h1 className="text-xl font-bold">Marketplace</h1>
@@ -386,23 +403,11 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <div>
               {activeFilter === "For You" ? (
                 <div className="p-4">
-                  <PostsFeed />
+                  <PostsFeed hideCreatePost={!showStickyHeader} />
                 </div>
               ) : activeFilter === "Following" ? (
                 <div className="p-4">
-                  <PostsFeed />
-                </div>
-              ) : activeFilter === "Forum" ? (
-                <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
-                    <MessageCircle className="w-8 h-8 text-[#81a308]" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-zinc-600 dark:text-gray-300 mb-2">
-                    Forum coming soon
-                  </h3>
-                  <p className="text-gray-500 max-w-md text-sm">
-                    Community discussions and plant care tips will be available here.
-                  </p>
+                  <PostsFeed hideCreatePost={!showStickyHeader} />
                 </div>
               ) : (
                 <div className="p-4">
@@ -473,7 +478,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           ) : null}
         </main>
 
-        <aside className="hidden lg:block w-56 xl:w-80 2xl:w-96 min-[2560px]:w-[26rem] py-5 space-y-5 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
+        <aside className="hidden lg:block w-56 xl:w-80 2xl:w-96 min-[2560px]:w-[26rem] pt-5 space-y-5 sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto flex-shrink-0">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
@@ -515,12 +520,18 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <Search className="w-5 h-5" />
             <span className="text-[10px]">Search</span>
           </button>
+          <button
+            onClick={() => { setMobileTab("home"); setActiveFilter("For You"); scrollToTop(); }}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#81a308] text-white shadow-lg -mt-4"
+          >
+            <PlusSquare className="w-5 h-5" />
+          </button>
           <Link
             href="/forum"
             className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-gray-500 hover:text-[#81a308] transition-colors"
           >
-            <PlusSquare className="w-5 h-5" />
-            <span className="text-[10px]">Create</span>
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-[10px]">Forum</span>
           </Link>
           <button
             onClick={() => setMobileTab("notifications")}
@@ -528,13 +539,6 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           >
             <Bell className="w-5 h-5" />
             <span className="text-[10px]">Alerts</span>
-          </button>
-          <button
-            onClick={() => setMobileTab("profile")}
-            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "profile" ? "text-[#81a308]" : "text-gray-500"}`}
-          >
-            <User className="w-5 h-5" />
-            <span className="text-[10px]">Profile</span>
           </button>
         </div>
       </div>
