@@ -656,9 +656,13 @@ function GardenPlantCard({
   index: number;
 }) {
   const mainImage = plant.images?.find((img) => img.isMain) || plant.images?.[0];
+  const collectionSlug = plant.collection?.slug || plant.originalCollection?.slug;
+  const plantHref = collectionSlug
+    ? `/profiles/${profileUser.username}/collections/${collectionSlug}/${plant.slug}`
+    : `/plants`;
 
   return (
-    <Link href={`/plants/${plant.slug}`}>
+    <Link href={plantHref}>
       <BotanicalCard
         className="overflow-hidden group cursor-pointer"
         style={{ animationDelay: `${index * 50}ms` }}
@@ -720,9 +724,13 @@ function GardenPlantListItem({
   profileUser: User;
 }) {
   const mainImage = plant.images?.find((img) => img.isMain) || plant.images?.[0];
+  const collectionSlug = plant.collection?.slug || plant.originalCollection?.slug;
+  const plantHref = collectionSlug
+    ? `/profiles/${profileUser.username}/collections/${collectionSlug}/${plant.slug}`
+    : `/plants`;
 
   return (
-    <Link href={`/plants/${plant.slug}`}>
+    <Link href={plantHref}>
       <BotanicalCard className="flex gap-2.5 sm:gap-4 p-2.5 sm:p-4">
         {mainImage ? (
           <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
