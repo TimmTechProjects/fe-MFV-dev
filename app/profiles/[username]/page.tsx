@@ -167,15 +167,6 @@ const ProfilePage= () => {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(9,9,11,0.4)] to-[#18181b]" />
             
-            {/* Banner edit overlay (own profile only) */}
-            {isOwnProfile && (
-              <div className="absolute bottom-4 right-4 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 z-[5]">
-                <div className="flex items-center gap-2 bg-black/60 px-4 py-2 rounded-full border border-emerald-500/40 shadow-sm">
-                  <Camera className="w-5 h-5 text-emerald-400" />
-                  <span className="text-white text-sm font-medium">Edit Cover Image</span>
-                </div>
-              </div>
-            )}
 
             {/* Decorative leaf patterns */}
             <div className="absolute top-4 left-4 opacity-20 hidden sm:block">
@@ -190,30 +181,29 @@ const ProfilePage= () => {
           <div className="relative px-4 pb-4 -mt-14 sm:px-6 sm:pb-6 sm:-mt-20 md:px-8 md:pb-8 z-10">
             <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-6">
               {/* Avatar */}
-              <div className="relative group/avatar cursor-pointer">
-                <Avatar className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 border-2 sm:border-4 border-[var(--botanical-forest)] shadow-xl">
+              <div 
+                className="relative group/avatar cursor-pointer"
+              >
+                <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 border-2 sm:border-4 border-zinc-700 shadow-xl">
                   <AvatarImage
                     src={profileUser?.avatarUrl}
                     alt={profileUser?.username}
                   />
-                  <AvatarFallback className="bg-[var(--botanical-sage)] text-[var(--botanical-forest)] text-xl sm:text-3xl font-bold">
+                  <AvatarFallback className="bg-zinc-700 text-white text-lg sm:text-2xl font-bold">
                     {profileUser?.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                   {/* Profile picture edit overlay (own profile only) */}
                   {isOwnProfile && (
-                    <>
-                      {/* Bottom wave overlay */}
-                      <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[115%] h-[48%] rounded-b-full bg-emerald-600/35 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200" />
-                      {/* Camera pill on right */}
-                      <div className="absolute bottom-2 right-2 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200">
-                        <div className="px-2.5 py-1 rounded-full bg-black/60 border border-emerald-500/40 text-white text-xs flex items-center gap-1 shadow-sm">
-                          <Camera className="w-4 h-4 text-emerald-400" />
-                          <span>Edit</span>
-                        </div>
+                    <div className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 pointer-events-none z-[1]">
+                      <div className="absolute bottom-0 left-0 right-0 h-[45%] bg-black/50 flex items-center justify-center">
+                        <Camera className="w-5 h-5 text-white" />
                       </div>
-                    </>
+                    </div>
                   )}
+                {!isOwnProfile && (
+                  <div className="absolute bottom-1 right-1 w-3 h-3 sm:bottom-2 sm:right-2 sm:w-4 sm:h-4 bg-emerald-500 border-2 border-zinc-900 rounded-full z-[3]" />
+                )}
               </div>
 
               {/* Profile Details */}
