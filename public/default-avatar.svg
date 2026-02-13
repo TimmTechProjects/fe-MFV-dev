@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="100" fill="#e8f5e9"/>
+  
+  <!-- Plant/leaf icon in center -->
+  <g transform="translate(100, 100)">
+    <!-- Leaf stem -->
+    <path d="M 0,-40 Q -5,-20 -8,0 Q -10,20 -12,40" 
+          fill="none" 
+          stroke="#81a308" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    
+    <!-- Left leaves -->
+    <path d="M -8,0 Q -30,-5 -35,-20 Q -32,-10 -8,-5" 
+          fill="#81a308" 
+          opacity="0.9"/>
+    <path d="M -10,15 Q -28,12 -32,0 Q -28,10 -10,18" 
+          fill="#81a308" 
+          opacity="0.8"/>
+    
+    <!-- Right leaves -->
+    <path d="M -8,0 Q 10,-8 15,-22 Q 10,-12 -5,-5" 
+          fill="#9ec20a" 
+          opacity="0.9"/>
+    <path d="M -10,15 Q 8,10 12,-2 Q 8,8 -8,18" 
+          fill="#9ec20a" 
+          opacity="0.8"/>
+    
+    <!-- Top leaf -->
+    <path d="M 0,-40 Q -15,-55 -18,-65 Q -10,-55 0,-42" 
+          fill="#6c8a0a" 
+          opacity="0.85"/>
+    <path d="M 0,-40 Q 15,-55 18,-65 Q 10,-55 0,-42" 
+          fill="#7fa148" 
+          opacity="0.85"/>
+  </g>
+  
+  <!-- Optional: Add subtle circle border -->
+  <circle cx="100" cy="100" r="98" fill="none" stroke="#81a308" stroke-width="2" opacity="0.3"/>
+</svg>
