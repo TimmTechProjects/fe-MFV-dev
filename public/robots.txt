@@ -1,0 +1,30 @@
+# My Floral Vault - Robots.txt
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages
+Disallow: /admin/
+Disallow: /settings/
+Disallow: /messages/
+Disallow: /notifications/
+
+# Disallow API routes
+Disallow: /api/
+
+# Disallow authentication pages (no SEO value)
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+
+# Allow specific important pages
+Allow: /
+Allow: /marketplace
+Allow: /the-vault
+Allow: /forum
+Allow: /profiles/*
+Allow: /plants/*
+
+# Sitemap location
+Sitemap: https://myfloralvault.com/sitemap.xml
