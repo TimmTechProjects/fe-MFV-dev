@@ -1478,7 +1478,12 @@ export async function getForumThread(
     });
     if (!res.ok) return null;
     const json = await res.json();
-    return json.data || json;
+    const raw = json.data || json;
+    if (!raw) return null;
+    if (raw.user && !raw.author) {
+      raw.author = raw.user;
+    }
+    return raw;
   } catch {
     return null;
   }

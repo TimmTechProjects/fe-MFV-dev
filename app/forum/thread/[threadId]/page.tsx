@@ -123,17 +123,21 @@ export default function ThreadDetailPage({ params }: { params: Promise<{ threadI
           <div className="flex items-center gap-3 mb-4 text-sm text-zinc-500 dark:text-zinc-400">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
-                {thread.author.avatarUrl ? (
+                {thread.author?.avatarUrl ? (
                   <Image src={thread.author.avatarUrl} alt="" width={28} height={28} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400">
-                    {(thread.author.firstName?.[0] || thread.author.username[0]).toUpperCase()}
+                    {(thread.author?.firstName?.[0] || thread.author?.username?.[0] || "?").toUpperCase()}
                   </div>
                 )}
               </div>
-              <Link href={`/profiles/${thread.author.username}`} className="font-medium text-zinc-700 dark:text-zinc-300 hover:text-[#81a308] transition-colors">
-                {thread.author.username}
-              </Link>
+              {thread.author?.username ? (
+                <Link href={`/profiles/${thread.author.username}`} className="font-medium text-zinc-700 dark:text-zinc-300 hover:text-[#81a308] transition-colors">
+                  {thread.author.username}
+                </Link>
+              ) : (
+                <span className="font-medium text-zinc-500 dark:text-zinc-500">Unknown User</span>
+              )}
             </div>
             <span>{formatRelativeTime(thread.createdAt)}</span>
             <span className="flex items-center gap-1">
