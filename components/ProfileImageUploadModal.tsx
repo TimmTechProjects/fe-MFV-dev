@@ -89,7 +89,7 @@ const ProfileImageUploadModal = ({
         return;
       }
 
-      const { url: ufsUrl, key } = uploadResult[0];
+      const { ufsUrl, key } = uploadResult[0];
 
       // Update profile or banner image
       const result = type === "profile"

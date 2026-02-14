@@ -31,7 +31,17 @@ async function fetchNotifications(page = 1, limit = 20): Promise<{ notifications
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return { notifications: [], total: 0, unreadCount: 0, page: 1, totalPages: 0 };
-    return await res.json();
+    const json = await res.json();
+    const notifs = Array.isArray(json.data) ? json.data : Array.isArray(json.notifications) ? json.notifications : [];
+    const mapped = notifs.map((n: Record<string, unknown>) => ({
+      ...n,
+      isRead: typeof n.isRead === "boolean" ? n.isRead : typeof n.read === "boolean" ? n.read : false,
+    }));
+    const total = json.pagination?.total ?? json.total ?? 0;
+    const unreadCount = json.unreadCount ?? 0;
+    const currentPage = json.pagination?.page ?? json.page ?? page;
+    const totalPages = json.pagination?.pages ?? json.totalPages ?? Math.ceil(total / limit) || 0;
+    return { notifications: mapped, total, unreadCount, page: currentPage, totalPages };
   } catch {
     return { notifications: [], total: 0, unreadCount: 0, page: 1, totalPages: 0 };
   }
@@ -42,7 +52,7 @@ async function markNotifRead(id: string): Promise<boolean> {
   if (!token) return false;
   try {
     const res = await fetch(`${apiBase}/api/notifications/${id}/read`, {
-      method: "POST",
+      method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
     });
     return res.ok;
@@ -56,7 +66,7 @@ async function markAllNotifsRead(): Promise<boolean> {
   if (!token) return false;
   try {
     const res = await fetch(`${apiBase}/api/notifications/read-all`, {
-      method: "POST",
+      method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
     });
     return res.ok;

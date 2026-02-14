@@ -44,7 +44,7 @@ const EditCollectionWrapper = ({ collection }: EditCollectionWrapperProps) => {
       <Button
         size="sm"
         variant="outline"
-        className="rounded-2xl text-black hover:text-black bg-gray-300 hover:bg-white"
+        className="rounded-2xl text-white hover:text-white bg-emerald-600 hover:bg-emerald-500"
         onClick={() => setShowModal(true)}
       >
         Edit Album

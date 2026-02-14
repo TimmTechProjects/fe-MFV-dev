@@ -24,6 +24,7 @@ export interface ForumThread {
   category: string;
   categorySlug?: string;
   author: ForumThreadAuthor;
+  user?: ForumThreadAuthor;
   upvotes: number;
   downvotes: number;
   userVote?: "up" | "down" | null;

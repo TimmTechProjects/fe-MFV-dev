@@ -296,7 +296,7 @@ const ProfilePage= () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6">
               <BotanicalStat
                 value={usersCollections.length}
                 label="Albums"
@@ -306,16 +306,6 @@ const ProfilePage= () => {
                 value={gardenPlants.length}
                 label="Plants"
                 icon={Leaf}
-              />
-              <BotanicalStat
-                value="1.2K"
-                label="Followers"
-                icon={Users}
-              />
-              <BotanicalStat
-                value="342"
-                label="Following"
-                icon={Heart}
               />
             </div>
           </div>
