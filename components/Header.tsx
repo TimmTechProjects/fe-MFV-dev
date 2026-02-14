@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, Search, UserIcon, Bell, Mail, Crown, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ResultsCard from "./cards/ResultsCard";
@@ -29,7 +29,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { UserResult } from "@/types/users";
 import useAuth from "@/redux/hooks/useAuth";
-import { useTheme } from "@/context/ThemeContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,11 +40,12 @@ const Header = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   const { user, LogoutUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname() || "/";
-  const { theme, toggleTheme } = useTheme();
+  const [msgOpen, setMsgOpen] = useState(false);
 
   // Debounce search input
   useEffect(() => {
@@ -213,17 +213,56 @@ const Header = () => {
           );
         })}
 
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-zinc-600" />
-          )}
-        </button>
+        <DropdownMenu open={msgOpen} onOpenChange={setMsgOpen}>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+              aria-label="Messages"
+            >
+              <Mail className="w-5 h-5 text-zinc-600 dark:text-white/90" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-xl w-80 mt-1 mr-5 border border-gray-200 dark:border-zinc-800 p-0 overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+              <h3 className="font-semibold text-sm">Messages</h3>
+              <button className="text-xs text-[#81a308] hover:text-[#6c8a0a] transition-colors">Mark all read</button>
+            </div>
+            {user ? (
+              <div className="py-6 text-center">
+                <Mail className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">No messages yet</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Start a conversation with someone</p>
+              </div>
+            ) : (
+              <div className="py-6 text-center">
+                <Mail className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to view messages</p>
+              </div>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu open={notifOpen} onOpenChange={setNotifOpen}>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5 text-zinc-600 dark:text-white/90" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-xl w-80 mt-1 mr-5 border border-gray-200 dark:border-zinc-800 p-0 overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+              <h3 className="font-semibold text-sm">Notifications</h3>
+              <button className="text-xs text-[#81a308] hover:text-[#6c8a0a] transition-colors">Mark all read</button>
+            </div>
+            <div className="py-6 text-center">
+              <Bell className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">We&apos;ll notify you when something arrives</p>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {user ? (
           <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
@@ -322,18 +361,6 @@ const Header = () => {
       </nav>
 
       <div className="flex lg:hidden items-center gap-2">
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-zinc-600" />
-          )}
-        </button>
-
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <Button

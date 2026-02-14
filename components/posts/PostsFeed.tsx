@@ -8,16 +8,18 @@ import CreatePostModal from "./CreatePostModal";
 import type { Post } from "@/types/posts";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Loader2, PenSquare, Leaf } from "lucide-react";
+import { Loader2, PenSquare, Leaf, ImageIcon, Video } from "lucide-react";
 
 interface PostsFeedProps {
   username?: string;
   showCreateButton?: boolean;
+  hideCreatePost?: boolean;
 }
 
 export default function PostsFeed({
   username,
   showCreateButton = true,
+  hideCreatePost = false,
 }: PostsFeedProps) {
   const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -71,7 +73,7 @@ export default function PostsFeed({
   return (
     <div className="space-y-4">
       {showCreateButton && user && (
-        <div className="bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
+        <div className={`bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 hidden lg:block transition-all duration-300 overflow-hidden ${hideCreatePost ? "lg:max-h-0 lg:p-0 lg:border-0 lg:opacity-0" : "lg:max-h-60 lg:opacity-100"}`}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden shrink-0">
               {user.avatarUrl ? (
@@ -103,37 +105,25 @@ export default function PostsFeed({
               <span className="hidden sm:inline">Post</span>
             </Button>
           </div>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            >
+              <ImageIcon className="w-4 h-4 text-emerald-500" />
+              Photo
+            </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            >
+              <Video className="w-4 h-4 text-blue-500" />
+              Video
+            </button>
+          </div>
         </div>
       )}
 
-      {!username && (
-        <div className="flex gap-2">
-          <Button
-            variant={sort === "recent" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setSort("recent")}
-            className={
-              sort === "recent"
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "text-zinc-600 dark:text-zinc-400"
-            }
-          >
-            Recent
-          </Button>
-          <Button
-            variant={sort === "popular" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setSort("popular")}
-            className={
-              sort === "popular"
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "text-zinc-600 dark:text-zinc-400"
-            }
-          >
-            Popular
-          </Button>
-        </div>
-      )}
 
       {loading ? (
         <div className="flex justify-center py-12">

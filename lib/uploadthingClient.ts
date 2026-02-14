@@ -28,4 +28,8 @@ const baseUrl = resolveApiBaseUrl();
 
 export const { useUploadThing, uploadFiles } = generateReactHelpers({
   url: `${baseUrl}/api/uploadthing`,
+  headers: () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  },
 });

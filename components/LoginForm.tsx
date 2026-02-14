@@ -43,7 +43,17 @@ const SignInForm = () => {
   const { __init } = useAppInit();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") || "/";
+  const fromParam = searchParams.get("from") || searchParams.get("redirect") || "/";
+  const from = (() => {
+    try {
+      const url = new URL(fromParam, window.location.origin);
+      if (url.origin !== window.location.origin) return "/";
+      return fromParam;
+    } catch {
+      if (fromParam.startsWith("/")) return fromParam;
+      return "/";
+    }
+  })();
 
   const [loading, setLoading] = useState(false);
   const [btnLoadings, setBtnLoadings] = useState({ google: false });

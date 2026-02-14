@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, use } from "react";
+import { useState, useEffect, useCallback, useRef, use, useMemo } from "react";
 import {
   Heart,
   MessageCircle,
@@ -9,17 +9,12 @@ import {
   Search,
   MoreHorizontal,
   Home,
-  Compass,
-  ShoppingCart,
-  Gavel,
   TrendingUp,
-  Users,
   Leaf,
   PlusSquare,
   Bell,
-  User,
   ArrowUpDown,
-  Eye,
+  Film,
   Loader2,
 } from "lucide-react";
 
@@ -65,8 +60,8 @@ import { getPaginatedPlants } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import Loading from "../loading";
 import Link from "next/link";
-import { marketplacePlants } from "@/mock/marketplaceData";
 import PostsFeed from "@/components/posts/PostsFeed";
+import useAuth from "@/redux/hooks/useAuth";
 
 interface Props {
   searchParams?: Promise<{
@@ -79,12 +74,15 @@ interface Props {
 const limit = 10;
 
 export default function PlantVaultFeed({ searchParams }: Props) {
+  const { user, isLoggedIn } = useAuth();
   const [plants, setPlants] = useState<Plant[]>([]);
   const [total, setTotal] = useState(0);
-  const [activeFilter, setActiveFilter] = useState("Feed");
+  const [activeFilter, setActiveFilter] = useState("For You");
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [showMarketplaceContent, setShowMarketplaceContent] = useState(false);
+  const [showSavedContent, setShowSavedContent] = useState(false);
+  const [savedTab, setSavedTab] = useState<"saved" | "liked">("saved");
+  const [showReelsContent, setShowReelsContent] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileTab, setMobileTab] = useState("home");
   const [searchCategory, setSearchCategory] = useState("all");
@@ -166,11 +164,33 @@ export default function PlantVaultFeed({ searchParams }: Props) {
     }
   });
 
-  const filters = ["Feed", "Gallery", "Forum"];
+  const filters = ["For You", "Following"];
+
+  const [showStickyHeader, setShowStickyHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
+        setShowStickyHeader(false);
+      } else {
+        setShowStickyHeader(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
-    setShowMarketplaceContent(false);
+    setShowSavedContent(false);
+    setShowReelsContent(false);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const filteredPlants = plants.filter((p) => {
@@ -187,8 +207,8 @@ export default function PlantVaultFeed({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white">
-      <div className="max-w-6xl mx-auto flex">
-        <aside className="hidden lg:block w-64 flex-shrink-0 p-5 border-r border-gray-200 dark:border-gray-800/50 h-screen sticky top-0">
+      <div className="max-w-[2400px] mx-auto flex gap-4 lg:gap-6 xl:gap-10 2xl:gap-20 min-[2560px]:gap-32 justify-between px-4 lg:px-6 xl:px-10 2xl:px-16 min-[2560px]:px-24">
+        <aside className="hidden lg:block w-48 xl:w-56 2xl:w-72 min-[2560px]:w-80 flex-shrink-0 pt-5 sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto">
           <div className="space-y-6">
             <div className="flex items-center gap-2 px-3 mb-6">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#81a308] to-emerald-600 flex items-center justify-center">
@@ -200,60 +220,94 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <NavItem
                 icon={<Home />}
                 label="Home"
-                active={!showMarketplaceContent && activeFilter === "Feed"}
+                active={!showSavedContent && !showReelsContent && activeFilter === "For You"}
                 onClick={() => {
-                  setShowMarketplaceContent(false);
-                  setActiveFilter("Feed");
+                  setShowSavedContent(false);
+                  setShowReelsContent(false);
+                  setActiveFilter("For You");
+                  scrollToTop();
                 }}
               />
-              <NavItem icon={<Compass />} label="Explore" />
-              <NavItem icon={<Bookmark />} label="Saved" />
               <NavItem
-                icon={<ShoppingCart />}
-                label="Marketplace"
-                href="/marketplace"
+                icon={<Film />}
+                label="Reels"
+                active={showReelsContent}
+                onClick={() => {
+                  setShowReelsContent(true);
+                  setShowSavedContent(false);
+                  setActiveFilter("For You");
+                  scrollToTop();
+                }}
+              />
+              <NavItem
+                icon={<MessageCircle />}
+                label="Forum"
+                href="/forum"
+              />
+              <NavItem
+                icon={<Bookmark />}
+                label="Saved"
+                active={showSavedContent}
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    window.location.href = "/login?redirect=/the-vault";
+                    return;
+                  }
+                  setShowSavedContent(true);
+                  setShowReelsContent(false);
+                  setActiveFilter("For You");
+                  scrollToTop();
+                }}
               />
             </nav>
 
-            <button
-              onClick={() => setActiveFilter("Feed")}
-              className="w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-semibold py-3 px-6 rounded-xl mt-4 transition-all hover:shadow-lg hover:shadow-[#81a308]/25 block text-center"
-            >
-              Create Post
-            </button>
-
-            <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
-              <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Your Plants</span>
-                  <span className="text-white font-medium">12</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Collections</span>
-                  <span className="text-white font-medium">3</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Following</span>
-                  <span className="text-white font-medium">24</span>
+            {isLoggedIn && user ? (
+              <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50">
+                <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Quick Stats</h4>
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">Your Plants</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">12</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">Collections</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">3</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">Following</span>
+                    <span className="text-zinc-900 dark:text-white font-medium">24</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : !isLoggedIn ? (
+              <div className="mt-8 p-4 rounded-xl bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800/50 text-center">
+                <div className="w-10 h-10 rounded-full bg-[#81a308]/10 flex items-center justify-center mx-auto mb-3">
+                  <Leaf className="w-5 h-5 text-[#81a308]" />
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-gray-400 mb-3">Sign up to track your plants</p>
+                <Link href="/signup" className="block w-full bg-[#81a308] hover:bg-[#6c8a0a] text-white font-medium py-2 px-4 rounded-lg transition-all text-sm">
+                  Sign Up
+                </Link>
+              </div>
+            ) : null}
           </div>
         </aside>
 
-        <main className="flex-1 border-r border-gray-200 dark:border-gray-800/50 pb-20 lg:pb-0">
-          <div className="sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10">
+        <main className="flex-1 w-full max-w-2xl pb-20 lg:pb-0 mx-auto">
+          <div className={`sticky top-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800/50 z-10 transition-transform duration-300 ${showStickyHeader ? "translate-y-0" : "-translate-y-full"}`}>
             <div className="p-4">
-              {showMarketplaceContent && (
-                <h1 className="text-xl font-bold">Marketplace</h1>
-              )}
-              {!showMarketplaceContent && mobileTab === "search" && (
+                {showSavedContent && (
+                  <h1 className="text-xl font-bold">Saved</h1>
+                )}
+                {showReelsContent && (
+                  <h1 className="text-xl font-bold">Reels</h1>
+                )}
+                {!showSavedContent && !showReelsContent && mobileTab === "search" && (
                 <h1 className="text-xl font-bold lg:hidden">Search</h1>
               )}
             </div>
 
-            {!showMarketplaceContent && (
+            {!showSavedContent && !showReelsContent && (
               <div className="flex">
                 {filters.map((filter) => (
                   <button
@@ -348,23 +402,15 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             </div>
           )}
 
-          {mobileTab !== "search" && !showMarketplaceContent ? (
+          {mobileTab !== "search" && !showSavedContent && !showReelsContent ? (
             <div>
-              {activeFilter === "Feed" ? (
+              {activeFilter === "For You" ? (
                 <div className="p-4">
-                  <PostsFeed />
+                  <PostsFeed hideCreatePost={!showStickyHeader} />
                 </div>
-              ) : activeFilter === "Forum" ? (
-                <div className="flex flex-col justify-center items-center py-20 text-center">
-                  <div className="w-16 h-16 bg-[#81a308]/10 rounded-full flex items-center justify-center mb-4">
-                    <MessageCircle className="w-8 h-8 text-[#81a308]" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-zinc-600 dark:text-gray-300 mb-2">
-                    Forum coming soon
-                  </h3>
-                  <p className="text-gray-500 max-w-md text-sm">
-                    Community discussions and plant care tips will be available here.
-                  </p>
+              ) : activeFilter === "Following" ? (
+                <div className="p-4">
+                  <PostsFeed hideCreatePost={!showStickyHeader} />
                 </div>
               ) : (
                 <div className="p-4">
@@ -430,12 +476,14 @@ export default function PlantVaultFeed({ searchParams }: Props) {
                 </div>
               )}
             </div>
-          ) : mobileTab !== "search" ? (
-            <MarketplaceContent />
+          ) : mobileTab !== "search" && showSavedContent ? (
+            <SavedContent activeTab={savedTab} onTabChange={setSavedTab} />
+          ) : mobileTab !== "search" && showReelsContent ? (
+            <ReelsContent />
           ) : null}
         </main>
 
-        <aside className="hidden xl:block w-80 p-5 space-y-5 sticky top-0 h-screen overflow-y-auto">
+        <aside className="hidden lg:block w-56 xl:w-80 2xl:w-96 min-[2560px]:w-[26rem] pt-5 space-y-5 sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto flex-shrink-0">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
@@ -452,52 +500,10 @@ export default function PlantVaultFeed({ searchParams }: Props) {
               <TrendingUp className="w-4 h-4 text-[#81a308]" />
               <h2 className="font-bold text-base text-zinc-900 dark:text-white">Trending</h2>
             </div>
-            <div className="space-y-1">
-              <TrendingItem
-                category="Popular"
-                title="#MonsteraMonday"
-                posts="12.5K posts"
-              />
-              <TrendingItem
-                category="Plant Care"
-                title="Watering schedules"
-                posts="8,432 posts"
-              />
-              <TrendingItem
-                category="Community"
-                title="#PlantSwap"
-                posts="5,234 posts"
-              />
-              <TrendingItem
-                category="Events"
-                title="Rare plants auction"
-                posts="3,128 posts"
-              />
-            </div>
-          </div>
-
-          <div className="bg-gray-100 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800/30">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-4 h-4 text-emerald-400" />
-              <h2 className="font-bold text-base text-zinc-900 dark:text-white">Suggested Growers</h2>
-            </div>
-            <div className="space-y-3">
-              {["PlantMom", "GreenThumb", "UrbanJungle"].map((name) => (
-                <div key={name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#81a308]/15 flex items-center justify-center text-xs font-bold text-[#81a308]">
-                      {name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">{name}</p>
-                      <p className="text-xs text-gray-500">@{name.toLowerCase()}</p>
-                    </div>
-                  </div>
-                  <button className="text-xs px-3 py-1 rounded-full border border-[#81a308]/30 text-[#81a308] hover:bg-[#81a308]/10 transition-all">
-                    Follow
-                  </button>
-                </div>
-              ))}
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <TrendingUp className="w-8 h-8 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No trending content yet</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">🌱 Plants • 💬 Forums • 📅 Events</p>
             </div>
           </div>
         </aside>
@@ -506,7 +512,7 @@ export default function PlantVaultFeed({ searchParams }: Props) {
       <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800/50 z-50 lg:hidden">
         <div className="flex items-center justify-around py-2 px-4 max-w-lg mx-auto">
           <button
-            onClick={() => { setMobileTab("home"); setShowMarketplaceContent(false); setActiveFilter("Feed"); }}
+            onClick={() => { setMobileTab("home"); setShowSavedContent(false); setShowReelsContent(false); setActiveFilter("For You"); scrollToTop(); }}
             className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "home" ? "text-[#81a308]" : "text-gray-500"}`}
           >
             <Home className="w-5 h-5" />
@@ -519,12 +525,18 @@ export default function PlantVaultFeed({ searchParams }: Props) {
             <Search className="w-5 h-5" />
             <span className="text-[10px]">Search</span>
           </button>
+          <button
+            onClick={() => { setMobileTab("home"); setActiveFilter("For You"); scrollToTop(); }}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#81a308] text-white shadow-lg -mt-4"
+          >
+            <PlusSquare className="w-5 h-5" />
+          </button>
           <Link
             href="/forum"
             className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-gray-500 hover:text-[#81a308] transition-colors"
           >
-            <PlusSquare className="w-5 h-5" />
-            <span className="text-[10px]">Create</span>
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-[10px]">Forum</span>
           </Link>
           <button
             onClick={() => setMobileTab("notifications")}
@@ -532,13 +544,6 @@ export default function PlantVaultFeed({ searchParams }: Props) {
           >
             <Bell className="w-5 h-5" />
             <span className="text-[10px]">Alerts</span>
-          </button>
-          <button
-            onClick={() => setMobileTab("profile")}
-            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${mobileTab === "profile" ? "text-[#81a308]" : "text-gray-500"}`}
-          >
-            <User className="w-5 h-5" />
-            <span className="text-[10px]">Profile</span>
           </button>
         </div>
       </div>
@@ -886,102 +891,60 @@ function GalleryCard({ plant }: { plant: Plant }) {
   );
 }
 
-function TrendingItem({
-  category,
-  title,
-  posts,
-}: {
-  category: string;
-  title: string;
-  posts: string;
-}) {
+function ReelsContent() {
   return (
-    <div className="hover:bg-gray-200 dark:hover:bg-gray-800/30 p-2.5 rounded-xl cursor-pointer transition-colors">
-      <p className="text-gray-500 text-[10px] uppercase tracking-wide">{category}</p>
-      <p className="font-semibold text-zinc-900 dark:text-white text-sm mt-0.5">{title}</p>
-      <p className="text-gray-500 text-xs mt-0.5">{posts}</p>
+    <div className="p-4">
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <Film className="w-10 h-10 text-gray-400 dark:text-gray-600 mb-3" />
+        <h3 className="text-lg font-semibold text-zinc-600 dark:text-gray-300 mb-1">
+          No reels yet
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+          Short plant videos and reels will appear here. Stay tuned!
+        </p>
+      </div>
     </div>
   );
 }
 
-function MarketplaceContent() {
+function SavedContent({ activeTab, onTabChange }: { activeTab: "saved" | "liked"; onTabChange: (tab: "saved" | "liked") => void }) {
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
-          Plant Marketplace
-        </h1>
-        <p className="text-zinc-500 dark:text-gray-400">
-          Discover beautiful plants from trusted sellers
-        </p>
+    <div className="p-4">
+      <div className="flex border-b border-gray-200 dark:border-gray-800/50 mb-4">
+        <button
+          onClick={() => onTabChange("saved")}
+          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+            activeTab === "saved" ? "text-zinc-900 dark:text-white" : "text-gray-500 hover:text-gray-300"
+          }`}
+        >
+          Saved Posts
+          {activeTab === "saved" && (
+            <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-[#81a308]" />
+          )}
+        </button>
+        <button
+          onClick={() => onTabChange("liked")}
+          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+            activeTab === "liked" ? "text-zinc-900 dark:text-white" : "text-gray-500 hover:text-gray-300"
+          }`}
+        >
+          Liked Posts
+          {activeTab === "liked" && (
+            <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-[#81a308]" />
+          )}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {marketplacePlants.map((plant) => (
-          <div
-            key={plant.id}
-            className="bg-white dark:bg-gray-900/40 rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-lg hover:shadow-[#81a308]/10 border border-gray-200 dark:border-gray-800/30 hover:border-[#81a308]/20"
-          >
-            <div className="relative aspect-square overflow-hidden">
-              <img
-                src={plant.image || "/fallback.png"}
-                alt={plant.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-                onError={(e) => { (e.target as HTMLImageElement).src = "/fallback.png"; }}
-              />
-              <div className="absolute top-3 left-3 flex flex-col gap-2">
-                {plant.sale && (
-                  <span className="bg-red-500/90 backdrop-blur text-white text-xs font-medium px-2.5 py-1 rounded-full">
-                    {plant.sale}
-                  </span>
-                )}
-                {plant.freeShipping && (
-                  <span className="bg-blue-500/90 backdrop-blur text-white text-xs font-medium px-2.5 py-1 rounded-full">
-                    Free Ship
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="p-4">
-              <h3 className="font-medium text-zinc-900 dark:text-white mb-1.5 line-clamp-1 group-hover:text-[#81a308] transition-colors cursor-pointer text-sm">
-                {plant.name}
-              </h3>
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="flex items-center gap-1">
-                  <span className="text-yellow-400 text-xs">&#9733;</span>
-                  <span className="text-xs text-zinc-900 dark:text-white">{plant.rating}</span>
-                </div>
-                <span className="text-[10px] text-gray-500">
-                  ({plant.reviews})
-                </span>
-              </div>
-              <p className="text-xs text-gray-500 mb-3 hover:text-[#81a308] cursor-pointer transition-colors">
-                by {plant.shop}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-base font-bold text-zinc-900 dark:text-white">
-                  {plant.price}
-                </span>
-                <div className="flex items-center gap-1.5">
-                  {(plant.listingType === "buy" || plant.listingType === "both") && (
-                    <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-[#81a308] hover:bg-[#6c8a0a] transition-all font-medium">
-                      <ShoppingCart className="w-3 h-3" />
-                      Cart
-                    </button>
-                  )}
-                  {(plant.listingType === "auction" || plant.listingType === "both") && (
-                    <button className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] rounded-full bg-amber-600 hover:bg-amber-700 transition-all font-medium">
-                      <Gavel className="w-3 h-3" />
-                      Bid
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <Bookmark className="w-10 h-10 text-gray-400 dark:text-gray-600 mb-3" />
+        <h3 className="text-lg font-semibold text-zinc-600 dark:text-gray-300 mb-1">
+          {activeTab === "saved" ? "No saved posts yet" : "No liked posts yet"}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+          {activeTab === "saved"
+            ? "Posts you save will appear here. Tap the bookmark icon on any post to save it."
+            : "Posts you like will appear here. Tap the heart icon on any post to like it."}
+        </p>
       </div>
     </div>
   );
